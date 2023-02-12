@@ -33,13 +33,12 @@ export default function Login() {
                                     <div className="ml-3 font-medium">
                                         <label htmlFor="saveAccount">Remember me</label>
                                     </div>
-                                <a className="font-medium text-blue-600 hover:underline absolute right-0 " href="#">Forgot Password?</a>
+                                    <a className="font-medium text-blue-600 hover:underline absolute right-0 " href="#">Forgot Password?</a>
                                 </div>
-                              
                                 <ButtonPrimary children='Log In' />
 
-                                <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                                    Already have an account? <a href="#" className="font-medium text-primary-600 hover:underline absolute right-0">Login here</a>
+                                <p className="text-sm text-center font-light text-gray-500 dark:text-gray-400">
+                                    Already have an account? <a href="#" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
                                 </p>
                             </form>
                             <div
