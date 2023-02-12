@@ -2,7 +2,6 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/SignIn": "pages/SignIn.js",
-  "/SignUp": "pages/SignUp.js",
+  "/api/csv": "pages/api/csv.js",
   "/": "pages/index.js"
 }
