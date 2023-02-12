@@ -10,33 +10,36 @@ export default function Login() {
                 <div className="flex flex-col items-center justify-center md:px-6 md:py-8 mx-auto md:h-screen lg:py-0">
                     <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 ">
                         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                            <div className='flex flex-col  text-center'>
+                            <div className="p-6 space-y-4 md:space-y-6 sm:p-8 text-center">
 
                                 <img
                                     src="/logo.png"
                                     className="w-36 mx-auto"
-                                    alt="Phone image" />
+                                    alt="logo image" />
 
-                                <div className='text-xl '>Welcome</div>
-                                <div className='mx-2.5 p-2 text-center'> Log in to Vio Sustainability to continue to Waste Tracking App</div>
+                                <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-600 md:text-2xl">
+                                    Welcome
+                                </h1>
+                                <div className='mx-2.5 text-center'> Log in to Vio Sustainability to continue to Waste Tracking App</div>
                             </div>
-                            <form className="space-y-4 md:space-y-6" action="#">
+                            <form className="md:space-y-6" action="#">
 
                                 <Input type='email' placeholder='Your Email' />
                                 <Input type='password' placeholder='Password' />
-                                <div className="flex items-between">
+                                <div className="flex items-between relative">
                                     <div className="flex items-center h-5">
                                         <input id="saveAccount" aria-describedby="saveAccount" type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" />
                                     </div>
-                                    <div className="ml-3 text-sm">
+                                    <div className="ml-3 font-medium">
                                         <label htmlFor="saveAccount">Remember me</label>
                                     </div>
+                                <a className="font-medium text-blue-600 hover:underline absolute right-0 " href="#">Forgot Password?</a>
                                 </div>
-                                <a className="self-end align-self-end"> forgot password?</a>
+                              
                                 <ButtonPrimary children='Log In' />
 
                                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                                    Already have an account? <a href="#" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
+                                    Already have an account? <a href="#" className="font-medium text-primary-600 hover:underline absolute right-0">Login here</a>
                                 </p>
                             </form>
                             <div

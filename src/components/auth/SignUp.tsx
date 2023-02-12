@@ -8,14 +8,13 @@ export default function SignUp() {
             <section className="bg-[#C7F2FE] ">
                 <div className="flex flex-col items-center justify-center md:px-6 md:py-8 mx-auto md:h-screen lg:py-0">
                     <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 ">
-                        <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                            <div className="w-4/12 lg:w-3/12 p-2 ">
+                        <div className="p-6 space-y-4 md:space-y-6 sm:p-8 text-center">
                                 <img
                                     src="/logo.png"
-                                    className="w-full"
-                                    alt="Phone image" />
-                            </div>
-                            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
+                                    className="w-36 mx-auto"
+                                    alt="logo image" />
+                          
+                            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-600 md:text-2xl">
                                 Create and account
                             </h1>
                             <form className="space-y-4 md:space-y-6" action="#">
