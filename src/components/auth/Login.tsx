@@ -6,8 +6,8 @@ import Input from '../box/Input'
 export default function Login() {
     return (
         <>
-            <section className="bg-[#C7F2FE] ">
-                <div className="flex flex-col items-center justify-center md:px-6 md:py-8 mx-auto md:h-screen lg:py-0">
+            <section className="bg-[#C7F2FE] py-0 md:py-10 ">
+                <div className="flex  flex-col items-center justify-center md:px-6 md:py-8 mx-auto md:h-screen lg:py-0">
                     <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 ">
                         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                             <div className="p-6 space-y-4 md:space-y-6 sm:p-8 text-center">

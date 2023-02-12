@@ -5,7 +5,7 @@ import { FcGoogle } from 'react-icons/fc';
 export default function SignUp() {
     return (
         <>
-            <section className="bg-[#C7F2FE] ">
+            <section className="bg-[#C7F2FE] py-0 md:py-10">
                 <div className="flex flex-col items-center justify-center md:px-6 md:py-8 mx-auto md:h-screen lg:py-0">
                     <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 ">
                         <div className="p-6 space-y-4 md:space-y-6 sm:p-8 text-center">
@@ -15,7 +15,7 @@ export default function SignUp() {
                                     alt="logo image" />
                           
                             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-600 md:text-2xl">
-                                Create and account
+                                Create an account
                             </h1>
                             <form className="space-y-4 md:space-y-6" action="#">
                                     <Input type='text' placeholder='First Name'/>
@@ -35,7 +35,6 @@ export default function SignUp() {
 
                                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                                     Already have an account? <a href="#" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
-                                    
                                 </p>
                             </form>
                             <div
