@@ -45,7 +45,7 @@ export const options: object = {
       },
       title: {
         display: true,
-        text: 'Chart.js Line Chart',
+        text: "Transfer Station Landfill Garbage (tonnes) (UBCV)",
       },
     },
   };
