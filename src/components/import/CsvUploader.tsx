@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Papa from "papaparse";
+import LineChart from "@/components/chart/LineChart";
 
 function CSVUploader(): JSX.Element {
   const [file, setFile] = useState<File | null>(null);
