@@ -57,6 +57,7 @@ model City {
   province    Province @relation(fields: [province_id], references: [id])
   province_id Int
   Address     Site[]
+
   @@unique([city, province_id])
 }
 
@@ -87,20 +88,20 @@ model Company_type {
 }
 
 model Entry {
-  id           Int          @id @default(autoincrement())
-  created_at   DateTime     @default(now())
-  updated_at   DateTime     @updatedAt
-  weight       Float
-  collaborator collaborator @relation(fields: [collaborator_id], references: [id])
+  id              Int          @id @default(autoincrement())
+  created_at      DateTime     @default(now())
+  updated_at      DateTime     @updatedAt
+  weight          Float
+  collaborator    collaborator @relation(fields: [collaborator_id], references: [id])
   collaborator_id Int
-  waste        Waste        @relation(fields: [waste_id], references: [id])
-  waste_id     Int
+  waste           Waste        @relation(fields: [waste_id], references: [id])
+  waste_id        Int
 }
 
 model collaborator {
-  id Int     @id @default(autoincrement())
-  collaborator    String
-  Entry           Entry[]
+  id           Int     @id @default(autoincrement())
+  collaborator String
+  Entry        Entry[]
 
   @@unique([collaborator])
 }
@@ -150,9 +151,10 @@ model Session {
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
 model testingData {
-  id        Int      @id @default(autoincrement())
-  jsonArray    Json?
+  id        Int   @id @default(autoincrement())
+  jsonArray Json?
 }
 
 model VerificationToken {
