@@ -1,5 +1,6 @@
 import LineChart from "@/components/chart/LineChart";
 import BarChart from "@/components/chart/BarChart";
+import PieChart from "@/components/chart/PieChart";
 import CsvUploader from "@/components/import/CsvUploader";
 import { useEffect, useState } from "react";
 import { json } from "stream/consumers";
@@ -40,6 +41,7 @@ export default function Home({ data, years, allDataSum }: any) {
       {/* <CsvUploader /> */}
       <LineChart chartData={dataState} />
       <BarChart chartData={dataState} />
+      <PieChart chartData={dataState} />
     </>
   );
 }
