@@ -10,7 +10,7 @@ export default function Layout({ children }: Props) {
     <>
       <Navbar links={[
         { label: 'Collection Summaries', href: '/' },
-        { label: 'Collection Details', href: '/deatails' },
+        { label: 'Collection Details', href: '/details' },
         { label: 'New Entry', href: '/entry' },
       ]} logoSrc="/logo.png" username ="username"/>
       <main className="flex justify-center">
