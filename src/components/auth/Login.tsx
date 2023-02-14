@@ -2,8 +2,52 @@ import React from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import ButtonPrimary from '../button/ButtonPrimary';
 import Input from '../box/Input'
+import { signIn } from 'next-auth/react';
+import axios from "axios";
+import { useState } from 'react';
+
 
 export default function Login() {
+
+let [email, setEmail] = useState("");
+let [password, setPassword] = useState("");
+
+
+
+// send user data to the server to be authenticated
+    async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+        e.preventDefault();
+        const result = await axios.post('/api/login', {
+            email,
+            password,
+        })
+        .then((res) => {
+            console.log("res", res)
+
+            signIn('credentials', {
+                email: email,
+                password: password,
+                callbackUrl: '/',
+                redirect: false,
+            })
+
+            if (res.status === 200) {
+                window.location.href = "/"
+                
+            }
+
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+        console.log("email", email)
+        console.log("result: ", result)
+      }
+
+
+
+
+
     return (
         <>
             <section className="bg-[#C7F2FE] ">
@@ -24,8 +68,8 @@ export default function Login() {
                             </div>
                             <form className="md:space-y-6" action="#">
 
-                                <Input type='email' placeholder='Your Email' />
-                                <Input type='password' placeholder='Password' />
+                                <Input type='email' onChange={(e) => {setEmail(e.target.value)}} placeholder='Your Email' />
+                                <Input type='password' onChange={(e) => {setPassword(e.target.value)}} placeholder='Password' />
                                 <div className="flex items-between relative">
                                     <div className="flex items-center h-5">
                                         <input id="saveAccount" aria-describedby="saveAccount" type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" />
@@ -35,7 +79,9 @@ export default function Login() {
                                     </div>
                                     <a className="font-medium text-blue-600 hover:underline absolute right-0 " href="#">Forgot Password?</a>
                                 </div>
-                                <ButtonPrimary children='Log In' />
+
+                                
+                                <ButtonPrimary onClick={handleSubmit} children='Log In' />
 
                                 <p className="text-sm text-center font-light text-gray-500 dark:text-gray-400">
                                     Already have an account? <a href="#" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
@@ -62,3 +108,22 @@ export default function Login() {
         </>
     );
 }
+
+
+
+// const result = await signIn("credentials", {
+//     username: "murad@abc.com",
+//     password: "1234",
+//     redirect: true,
+//     callbackUrl: "/",
+//   });
+// const result = await signIn("credentials", {
+//     username: "murad@abc.com",
+//     password: "1234",
+//     redirect: true,
+//     callbackUrl: "/",
+//   });
+//   if (result?.error) {
+//     console.log("ERROR", result.error)
+//   }
+//   console.log("RESULT", result)

@@ -25,11 +25,6 @@
       "static/chunks/main.js",
       "static/chunks/pages/SignIn.js"
     ],
-    "/SignUp": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/SignUp.js"
-    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
