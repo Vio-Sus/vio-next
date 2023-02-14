@@ -56,7 +56,7 @@ model City {
   city        String
   province    Province @relation(fields: [province_id], references: [id])
   province_id Int
-  Address     Site[]
+  site     Site[]
 
   @@unique([city, province_id])
 }
