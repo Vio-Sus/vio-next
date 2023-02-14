@@ -2,7 +2,34 @@ import React from 'react';
 import Input from '../box/Input'
 import ButtonPrimary from '../button/ButtonPrimary';
 import { FcGoogle } from 'react-icons/fc';
+import axios from 'axios';
+import { useState } from 'react';
+
 export default function SignUp() {
+
+    let [firstName, setFirstName] = useState("");
+    let [lastName, setLastName] = useState("");
+    let [email, setEmail] = useState("");
+    let [password, setPassword] = useState("");
+
+
+    const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        const result = await axios.post('/api/register', {
+            firstName,
+            lastName,
+            email,
+            password,
+        });
+        console.log("email", email)
+        console.log("result: ", result)
+    }
+
+
+
+
+
+
     return (
         <>
             <section className="bg-[#C7F2FE] py-0 md:py-10">
@@ -18,10 +45,10 @@ export default function SignUp() {
                                 Create an account
                             </h1>
                             <form className="space-y-4 md:space-y-6" action="#">
-                                    <Input type='text' placeholder='First Name'/>
-                                    <Input type='text' placeholder='Last Name'/>
-                                    <Input type='email' placeholder='Your Email'/>
-                                    <Input type='password' placeholder='Password'/>
+                                    <Input type='text' onChange={(e) => setFirstName(e.target.value)} placeholder='First Name'/>
+                                    <Input type='text'  onChange={(e) => setLastName(e.target.value)}  placeholder='Last Name'/>
+                                    <Input type='email'  onChange={(e) => setEmail(e.target.value)} placeholder='Your Email'/>
+                                    <Input type='password'  onChange={(e) => setPassword(e.target.value)} placeholder='Password'/>
                                     <Input type='password' placeholder='Confirm Password'/>
                                 <div className="flex items-start">
                                     <div className="flex items-center h-5">
@@ -31,7 +58,7 @@ export default function SignUp() {
                                         <label htmlFor="terms" className="font-light text-gray-500 dark:text-gray-300">I accept the <a className="font-medium text-primary-600 hover:underline dark:text-primary-500" href="#">Terms and Conditions</a></label>
                                     </div>
                                 </div>
-                                <ButtonPrimary children='Create an account'/>
+                                <ButtonPrimary onClick={handleSubmit} children='Create an account'/>
 
                                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                                     Already have an account? <a href="#" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>

@@ -2,12 +2,16 @@ import Link from "next/link"
 import { usePathname } from 'next/navigation';
 import { FaUser } from 'react-icons/fa'
 import React, { useEffect } from 'react';
+import {getSession, signIn, signOut, useSession} from 'next-auth/react'
+import { GetServerSideProps } from "next";
+import { getServerSession } from "next-auth";
 
 
 interface Props {
     links: { label: string; href: string }[];
     logoSrc: string;
     username: string;
+    session: any;
 }
 
 
@@ -22,7 +26,14 @@ function toggleHamburger() {
     navMenu?.classList.toggle('hidden');
 }
 
-const Navbar: React.FC<Props> = ({ links, logoSrc, username }) => (
+
+
+
+const Navbar: React.FC<Props> = ({ links, logoSrc, username, session }) => (
+
+
+
+
     <div>
         <nav className="bg-[#e1eedd]">
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -57,11 +68,14 @@ const Navbar: React.FC<Props> = ({ links, logoSrc, username }) => (
                             </div>
                         </div>
                     </div>
-                    <div className="hidden md:block">
-                        <FaUser />
-                    </div>
-                    <p className="hidden md:block">{username}</p>
-                    <button className='hidden p-2 border border-black hover:border-green-50 rounded-lg ml-2 md:block'>sign out</button>
+
+                    {!session ? (
+                    <button className='hidden p-2 border border-black hover:border-green-50 rounded-lg ml-2 md:block' onClick={() => {signIn()}}>Sign innn</button>
+                    ) : (
+                    <button className='hidden p-2 border border-black hover:border-green-50 rounded-lg ml-2 md:block' onClick={() => {signOut()}}>Sign out</button>
+                    )}
+
+
                 </div>
             </div>
 
@@ -78,9 +92,28 @@ const Navbar: React.FC<Props> = ({ links, logoSrc, username }) => (
                     <button className=' text-dark hover:bg-[#80CF76] hover:text-white px-3 py-2 rounded-md text-lg font-medium '>sign out</button>
                 </div>
             </div>
+
         </nav>
     </div>
 
 );
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const { req, res } = context;
+    const session = await getServerSession();
+    // if (!session) {
+    //     // res.writeHead(302, { Location: '/login' });
+    //     console.log("NO session")
+    //     res.end();
+    //     return { props: {} };
+    // }
+    console.log("SESSION", session)
+    return {
+        props: {
+            session,
+        },
+    };
+};
+
 
 export default Navbar;
