@@ -2,9 +2,10 @@ import Link from "next/link"
 import { usePathname } from 'next/navigation';
 import { FaUser } from 'react-icons/fa'
 import React, { useEffect } from 'react';
-import {getSession, signIn, signOut, useSession} from 'next-auth/react'
+import {signIn, signOut } from 'next-auth/react'
 import { GetServerSideProps } from "next";
 import { getServerSession } from "next-auth";
+import { useSession } from "next-auth/react"
 
 
 interface Props {
@@ -26,14 +27,17 @@ function toggleHamburger() {
     navMenu?.classList.toggle('hidden');
 }
 
+// function session() {
+    // return session
+    // }
+    
+    // console.log("SESSION FROM NAV BAR: ", session())
+    
+    const Navbar: React.FC<Props> = ({ links, logoSrc, username }) => {
+    const { data: session } = useSession()
 
 
-
-const Navbar: React.FC<Props> = ({ links, logoSrc, username, session }) => (
-
-
-
-
+    return (
     <div>
         <nav className="bg-[#e1eedd]">
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -52,8 +56,10 @@ const Navbar: React.FC<Props> = ({ links, logoSrc, username, session }) => (
                     </div>
                     <div className="flex flex-1 items-center justify-center md:items-stretch md:justify-start">
                         <div className="flex flex-shrink-0 items-center">
-                            <img className="block h-8 w-auto lg:hidden " src={logoSrc} alt="Your Company" />
+                            <a href="/">
                             <img className="hidden h-8 w-auto lg:block" src={logoSrc} alt="Your Company" />
+                            </a>
+                            <img className="block h-8 w-auto lg:hidden " src={logoSrc} alt="Your Company" />
                         </div>
                         <div className="hidden md:ml-6 md:block">
                             <div className="flex space-x-4">
@@ -70,9 +76,9 @@ const Navbar: React.FC<Props> = ({ links, logoSrc, username, session }) => (
                     </div>
 
                     {!session ? (
-                    <button className='hidden p-2 border border-black hover:border-green-50 rounded-lg ml-2 md:block' onClick={() => {signIn()}}>Sign innn</button>
-                    ) : (
-                    <button className='hidden p-2 border border-black hover:border-green-50 rounded-lg ml-2 md:block' onClick={() => {signOut()}}>Sign out</button>
+                        <button className='hidden p-2 border border-black hover:border-green-50 rounded-lg ml-2 md:block' onClick={() => {signIn()}}>Sign in</button>
+                        ) : (
+                            <button className='hidden p-2 border border-black hover:border-green-50 rounded-lg ml-2 md:block' onClick={() => {signOut()}}>Sign out</button>
                     )}
 
 
@@ -95,25 +101,21 @@ const Navbar: React.FC<Props> = ({ links, logoSrc, username, session }) => (
 
         </nav>
     </div>
+    );
 
-);
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-    const { req, res } = context;
-    const session = await getServerSession();
-    // if (!session) {
-    //     // res.writeHead(302, { Location: '/login' });
-    //     console.log("NO session")
-    //     res.end();
-    //     return { props: {} };
-    // }
-    console.log("SESSION", session)
-    return {
-        props: {
-            session,
-        },
-    };
 };
+
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+//     const { req, res } = context;
+//     const session = await getServerSession();
+    
+//     console.log("SESSION", session)
+//     return {
+//         props: {
+//             session,
+//         },
+//     };
+// };
 
 
 export default Navbar;

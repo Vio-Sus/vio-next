@@ -18,8 +18,21 @@ export type Datasets = {
   backgroundColor: string;
 };
 
+export const options: object = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'top',
+    },
+    title: {
+      display: true,
+      text: "Transfer Station Landfill Garbage (tonnes) (UBCV)",
+    },
+  },
+};
+
 function PieChart({ chartData }: Props) {
-  return <Pie data={chartData} />;
+  return <Pie data={chartData} options={options}/>;
 }
 
 export default PieChart;

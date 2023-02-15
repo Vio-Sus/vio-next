@@ -40,7 +40,7 @@ export const options = {
     },
     title: {
       display: true,
-      text: 'Chart.js Bar Chart',
+      text: "Transfer Station Landfill Garbage (tonnes) (UBCV)",
     },
   },
 };

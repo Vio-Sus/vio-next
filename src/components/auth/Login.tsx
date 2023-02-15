@@ -23,25 +23,36 @@ let [password, setPassword] = useState("");
         })
         .then((res) => {
             console.log("res", res)
+            return res
 
-            signIn('credentials', {
-                email: email,
-                password: password,
-                callbackUrl: '/',
-                redirect: false,
-            })
+            // signIn('credentials', {
+            //     email: res.data.email,
+            //     password: res.data.password,
+            //     callbackUrl: '/',
+                // redirect: true,
+            // })
 
-            if (res.status === 200) {
-                window.location.href = "/"
+            // if (res.status === 200) {
+            //     window.location.href = "/"
                 
-            }
+            // }
 
         })
         .catch((err) => {
             console.log(err)
         })
         console.log("email", email)
+
         console.log("result: ", result)
+
+        // sign user in with credentials
+        signIn('credentials', {
+            email: result?.data.userCheck.email,
+            password: result?.data.userCheck.password,
+            callbackUrl: '/',
+            redirect: true,
+        })
+
       }
 
 
