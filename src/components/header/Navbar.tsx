@@ -56,8 +56,10 @@ function toggleHamburger() {
                     </div>
                     <div className="flex flex-1 items-center justify-center md:items-stretch md:justify-start">
                         <div className="flex flex-shrink-0 items-center">
-                            <img className="block h-8 w-auto lg:hidden " src={logoSrc} alt="Your Company" />
+                            <a href="/">
                             <img className="hidden h-8 w-auto lg:block" src={logoSrc} alt="Your Company" />
+                            </a>
+                            <img className="block h-8 w-auto lg:hidden " src={logoSrc} alt="Your Company" />
                         </div>
                         <div className="hidden md:ml-6 md:block">
                             <div className="flex space-x-4">
