@@ -1,49 +1,54 @@
-import NextAuth, { NextAuthOptions } from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
+import NextAuth, { NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcrypt";
+import { PrismaAdapter } from "@next-auth/prisma-adapter"
+import { prisma } from '../../../../server/db/client'
 
-
-export const authOptions:NextAuthOptions = {
-  // Configure one or more authentication providers
+export const authOptions: NextAuthOptions = {
+  
+  adapter: PrismaAdapter(prisma),
   session: {
-    strategy: "jwt",
+    strategy: "jwt"
   },
   providers: [
-   CredentialsProvider({
-    // The name to display on the sign in form (e.g. "Sign in with...")
-    name: "Credentials",
-    // `credentials` is used to generate a form on the sign in page.
-    // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-    // e.g. domain, username, password, 2FA token, etc.
-    // You can pass any HTML attribute to the <input> tag through the object.
-    credentials: {
-      username: { label: "Username", type: "text", placeholder: "jsmith" },
-      password: { label: "Password", type: "password" }
-    },
-    async authorize(credentials, req) {
-      // Add logic here to look up the user from the credentials supplied
-        const {username, password} = credentials as {username: string, password: string}
-        const res = await fetch("http://localhost:3000/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({username, password})
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "email", type: "text", placeholder: "a@b.c" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials, req) {
+
+        const { email, password } = credentials as { email: string, password: string }
+        const prismaUser = await prisma.user.findUnique({
+          where: {
+            email: email
+          }
         })
-        const user = await res.json()
-        if (user) {
-            // Any user object returned here will be saved in the JSON Web Token
-            return user
+        const isValid = await bcrypt.compare(password, prismaUser?.password || "")
+        if(email !== prismaUser?.email ) {
+          console.log("wrong email")
+          throw new Error("Invalid credentials")
+        } else if (!isValid) {
+          console.log("wrong password")
+          throw new Error("Invalid credentials")
         }
-        console.log("USERRRR", user)
-        return null
-    }
-  })
+
+     
+
+        // if (email !== prismaUser?.email || !isValid) {
+        //   console.log("Invalid credentials")
+        //   throw new Error("Invalid credentials")
+        // }
+
+       
+        console.log(email, password)
+        return { id: prismaUser.id, firstnName: prismaUser.first_name,lastName: prismaUser.last_name, email: prismaUser.email }
+      }
+    })
   ],
   pages: {
-    signIn: "../../SignIn"
+    signIn: '/auth/login',
   }
-
 }
-
-
 export default NextAuth(authOptions)

@@ -4,6 +4,7 @@ import ButtonPrimary from '../button/ButtonPrimary';
 import { FcGoogle } from 'react-icons/fc';
 import axios from 'axios';
 import { useState } from 'react';
+import {signIn} from 'next-auth/react'
 
 export default function SignUp() {
 
@@ -11,24 +12,32 @@ export default function SignUp() {
     let [lastName, setLastName] = useState("");
     let [email, setEmail] = useState("");
     let [password, setPassword] = useState("");
-
+    let [confirmPassword, setconfirmPassword] = useState("");
 
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        if(password !== confirmPassword) {
+            alert("Passwords don't match")
+            return;
+        }
         const result = await axios.post('/api/register', {
             firstName,
             lastName,
             email,
             password,
-        });
-        console.log("email", email)
-        console.log("result: ", result)
+        }).then((res) => {
+            console.log(res);
+            const user = res.data;
+            signIn('credentials', {
+                email: user.email,
+                password: user.password.toSting(),
+                redirect: false,
+            })
+        }).catch((err) => {
+            console.log(err);
+        }
+        )
     }
-
-
-
-
-
 
     return (
         <>
@@ -49,7 +58,7 @@ export default function SignUp() {
                                     <Input type='text'  onChange={(e) => setLastName(e.target.value)}  placeholder='Last Name'/>
                                     <Input type='email'  onChange={(e) => setEmail(e.target.value)} placeholder='Your Email'/>
                                     <Input type='password'  onChange={(e) => setPassword(e.target.value)} placeholder='Password'/>
-                                    <Input type='password' placeholder='Confirm Password'/>
+                                    <Input type='password'  onChange={(e) => setconfirmPassword(e.target.value)}  placeholder='Confirm Password'/>
                                 <div className="flex items-start">
                                     <div className="flex items-center h-5">
                                         <input id="terms" aria-describedby="terms" type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" />
@@ -61,7 +70,7 @@ export default function SignUp() {
                                 <ButtonPrimary onClick={handleSubmit} children='Create an account'/>
 
                                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                                    Already have an account? <a href="#" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
+                                    Already have an account? <a href="/auth/SignIn" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
                                 </p>
                             </form>
                             <div

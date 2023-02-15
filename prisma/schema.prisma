@@ -16,11 +16,9 @@ model User {
   last_name     String?
   email         String?     @unique
   emailVerified DateTime?
-  image         String?
-  role_id       String?
   password      String?
-  // role          Role?       @relation(fields: [role_id], references: [id])
-  User_Role     User_Role[]
+  image         String?
+  role          User_Role[]
   accounts      Account[]
   sessions      Session[]
 }

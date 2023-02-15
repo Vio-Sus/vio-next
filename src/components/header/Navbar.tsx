@@ -2,16 +2,15 @@ import Link from "next/link"
 import { usePathname } from 'next/navigation';
 import { FaUser } from 'react-icons/fa'
 import React, { useEffect } from 'react';
-import {getSession, signIn, signOut, useSession} from 'next-auth/react'
-import { GetServerSideProps } from "next";
-import { getServerSession } from "next-auth";
+import ButtonSecondary from "../button/ButtonSecondary";
+// import { GetServerSideProps } from "next";
+// import { getServerSession } from "next-auth";
 
 
 interface Props {
     links: { label: string; href: string }[];
     logoSrc: string;
     username: string;
-    session: any;
 }
 
 
@@ -27,12 +26,7 @@ function toggleHamburger() {
 }
 
 
-
-
-const Navbar: React.FC<Props> = ({ links, logoSrc, username, session }) => (
-
-
-
+const Navbar: React.FC<Props> = ({ links, logoSrc}) => (
 
     <div>
         <nav className="bg-[#e1eedd]">
@@ -67,15 +61,10 @@ const Navbar: React.FC<Props> = ({ links, logoSrc, username, session }) => (
                                 ))}
                             </div>
                         </div>
-                    </div>
-
-                    {!session ? (
-                    <button className='hidden p-2 border border-black hover:border-green-50 rounded-lg ml-2 md:block' onClick={() => {signIn()}}>Sign innn</button>
-                    ) : (
-                    <button className='hidden p-2 border border-black hover:border-green-50 rounded-lg ml-2 md:block' onClick={() => {signOut()}}>Sign out</button>
-                    )}
-
-
+                    </div>  
+                   <a href="/auth/SignIn">
+                   <ButtonSecondary type="button" text="Sign in"/>
+                    </a> 
                 </div>
             </div>
 
@@ -98,22 +87,22 @@ const Navbar: React.FC<Props> = ({ links, logoSrc, username, session }) => (
 
 );
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-    const { req, res } = context;
-    const session = await getServerSession();
-    // if (!session) {
-    //     // res.writeHead(302, { Location: '/login' });
-    //     console.log("NO session")
-    //     res.end();
-    //     return { props: {} };
-    // }
-    console.log("SESSION", session)
-    return {
-        props: {
-            session,
-        },
-    };
-};
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+//     const { req, res } = context;
+//     const session = await getServerSession();
+//     // if (!session) {
+//     //     // res.writeHead(302, { Location: '/login' });
+//     //     console.log("NO session")
+//     //     res.end();
+//     //     return { props: {} };
+//     // }
+//     console.log("SESSION", session)
+//     return {
+//         props: {
+//             session,
+//         },
+//     };
+// };
 
 
 export default Navbar;
