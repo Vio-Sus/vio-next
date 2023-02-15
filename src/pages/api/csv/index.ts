@@ -11,7 +11,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-    // console.log(req.body)
+    console.log(req.body)
     const jsonFakeData = await prisma.testingData.create({
       data: {
         jsonArray: req.body

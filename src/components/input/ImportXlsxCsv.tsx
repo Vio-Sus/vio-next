@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Button from "../button/ButtonShort"
 import ButtonPrimary from '../button/ButtonPrimary';
 import * as XLSX from "xlsx"
+import axios from "axios";
 
 interface SheetData {
     [key: string]: any;
@@ -42,9 +43,15 @@ const ImportXlsxCsv: React.FC = () => {
         document.getElementById("file")!.click()
     }
 
-    function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent> ) {
+    async function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent> ) {
         event.preventDefault();
-        console.log(sheetData)
+        // console.log(sheetData)
+        try {
+            const response = await axios.post('/api/csv', sheetData);
+            console.log(response.data);
+          } catch (error) {
+            console.error(error);
+          }
     }
 
     return (
@@ -57,7 +64,7 @@ const ImportXlsxCsv: React.FC = () => {
                 <input onChange={(e) => {
                     const file = e.target.files![0]
                     readExcel(file)
-                }} name="file" type="file" id="file"
+                }} name="file" type="file" id="file" accept=".csv"
                     style={{ display: 'none' }}
                 />
                 {sheetData.length > 0 && <Button text="Submit" type="submit" onClick={handleSubmit} />}
