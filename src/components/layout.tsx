@@ -19,7 +19,7 @@ export default function Layout({ children, session }: Props) {
         { label: 'New Entry', href: '/entry' },
       ]} logoSrc="/logo.png" username ="username" session={session}/>
 
-      // center main content
+      {/* // center main content */}
       <main className="flex justify-center">
         <div className="w-3/4">
           {children}
