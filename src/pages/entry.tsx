@@ -5,9 +5,9 @@ import ImportXlsxCsv from "@/components/input/ImportXlsxCsv";
 export default function entry() {
   return (
     <div>
-      <CSVUploader />
+      {/* <CSVUploader /> */}
+      {/* entry */}
       <ImportXlsxCsv />
-      entry
     </div>
   );
 }

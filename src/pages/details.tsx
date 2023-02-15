@@ -37,8 +37,7 @@ export default function Home({ data, years, allDataSum }: any) {
 
   return (
     <>
-      <h1>bow</h1>
-      {/* <CsvUploader /> */}
+      
       <LineChart chartData={dataState} />
       <BarChart chartData={dataState} />
       <PieChart chartData={dataState} />
