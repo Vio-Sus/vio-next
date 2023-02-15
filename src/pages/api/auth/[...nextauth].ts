@@ -1,11 +1,13 @@
 import NextAuth, { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
+import {prisma} from "../../../../server/db/client"
 
 
 export const authOptions:NextAuthOptions = {
   // Configure one or more authentication providers
+  secret: process.env.AUTH_SECRET,
   session: {
-    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days-
   },
   providers: [
    CredentialsProvider({
@@ -16,27 +18,33 @@ export const authOptions:NextAuthOptions = {
     // e.g. domain, username, password, 2FA token, etc.
     // You can pass any HTML attribute to the <input> tag through the object.
     credentials: {
-      username: { label: "Username", type: "text", placeholder: "jsmith" },
+      email: { label: "Email", type: "text", placeholder: "murad@gmail.com" },
       password: { label: "Password", type: "password" }
     },
     async authorize(credentials, req) {
       // Add logic here to look up the user from the credentials supplied
-        const {username, password} = credentials as {username: string, password: string}
-        const res = await fetch("http://localhost:3000/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({username, password})
-        })
-        const user = await res.json()
+        // const {username, password} = credentials as {username: string, password: string}
+
+        console.log("credentials", credentials)
+        
+const user = await prisma.user.findUnique({
+  where: {
+    email: credentials?.email,
+  },
+})
+
+        
+
         if (user) {
             // Any user object returned here will be saved in the JSON Web Token
             return user
         }
+        
         console.log("USERRRR", user)
         return null
-    }
+      }
+
+
   })
   ],
   pages: {
