@@ -71,7 +71,7 @@ const ImportXlsxCsv: React.FC = () => {
                 <input onChange={(e) => {
                     const file = e.target.files![0]
                     readExcel(file)
-                }} name="file" type="file" id="file" accept=".csv"
+                }} name="file" type="file" id="file" 
                 style={{ display: 'none' }}
                 />
                 {sheetData.length > 0 && <Button text="Submit" type="submit" onClick={handleSubmit} />}
