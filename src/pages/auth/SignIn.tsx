@@ -1,10 +1,10 @@
-import SignUp from "../components/auth/SignUp";
+import Login from "../../components/auth/Login";
 
 
 export default function SignIn() {
   return (
     <>
-    <SignUp/>
+    <Login/>
     </>
   )
 }
