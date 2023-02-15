@@ -5,6 +5,7 @@ import CsvUploader from "@/components/import/CsvUploader";
 import { useEffect, useState } from "react";
 import { json } from "stream/consumers";
 import { prisma } from "../../server/db/client";
+import Button from "@/components/button/ButtonMap"
 
 export interface ChartData {
   labels: string[];
@@ -19,7 +20,8 @@ export type Datasets = {
 
 export default function Home({ data, years, allDataSum }: any) {
 
-
+  const [whatGraphToShow, setWhatGraphToShow] = useState("")
+  const [availableGraphs, setAvailableGraphs] = useState(["Line", "Bar", "Pie"])
   const [dataState, setDataState] = useState({
     labels: years,
     datasets: [
@@ -35,12 +37,16 @@ export default function Home({ data, years, allDataSum }: any) {
     ],
   });
 
+  async function handleButtonClick(click: string) {
+    
+  }
+
   return (
-    <>
-      
-      <LineChart chartData={dataState} />
-      <BarChart chartData={dataState} />
-      <PieChart chartData={dataState} />
+    <>     
+      <Button ButtonArray={availableGraphs} onClick={setWhatGraphToShow} /> 
+      {whatGraphToShow === "Line" && <LineChart chartData={dataState} />}
+      {whatGraphToShow === "Bar" && <BarChart chartData={dataState} />}
+      {whatGraphToShow === "Pie" && <PieChart chartData={dataState} />}
     </>
   );
 }
