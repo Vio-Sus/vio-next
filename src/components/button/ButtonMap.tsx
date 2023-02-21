@@ -17,6 +17,7 @@ export default function ButtonShort({
       {ButtonArray.map((m: string) => {
         return (
           <button
+            key={"button of" + m}
             type={"button"}
             className="mx-auto px-7 py-3 bg-[#80CF76] text-white font-medium text-sm leading-snug rounded shadow-md hover:bg-[#9FDF97] hover:shadow-lg transition duration-150 ease-in-out"
             onClick={() => onClick(m)}

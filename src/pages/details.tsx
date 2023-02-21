@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { json } from "stream/consumers";
 import { prisma } from "../../server/db/client";
 import Button from "@/components/button/ButtonMap"
+import Datepicker from "react-tailwindcss-datepicker";
 
 export interface ChartData {
   labels: string[];
@@ -19,15 +20,20 @@ export type Datasets = {
 };
 
 export default function Home({ data, years, allDataSum }: any) {
-
+  const [value, setValue] = useState({
+    startDate: new Date("1950-01-01"),
+    endDate: new Date("2050-01-01")
+  });
+  const [listOfYears, setListOfYears] = useState(years)
   const [whatGraphToShow, setWhatGraphToShow] = useState("")
   const [availableGraphs, setAvailableGraphs] = useState(["Line", "Bar", "Pie"])
+  const [listYearsHiding, setListYearsHiding] = useState([])
   const [dataState, setDataState] = useState({
-    labels: years,
+    labels: listOfYears,
     datasets: [
       {
         label: "UBCV",
-        data: years.map((year: number, index: number) => {
+        data: listOfYears.map((year: number, index: number) => {
           // console.log(datasetsData)
           return allDataSum[index]
         }),
@@ -36,13 +42,19 @@ export default function Home({ data, years, allDataSum }: any) {
       },
     ],
   });
-
-  async function handleButtonClick(click: string) {
-    
-  }
+  const handleValueChange = (newValue: any) => {
+    console.log("newValue:", newValue);
+    setValue(newValue);
+}
 
   return (
     <>     
+    <Datepicker
+                value={value}
+                primaryColor={"green"} 
+                onChange={handleValueChange}
+                showShortcuts={true} 
+            />
       <Button ButtonArray={availableGraphs} onClick={setWhatGraphToShow} /> 
       {whatGraphToShow === "Line" && <LineChart chartData={dataState} />}
       {whatGraphToShow === "Bar" && <BarChart chartData={dataState} />}
