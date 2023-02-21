@@ -3,9 +3,6 @@ import { usePathname } from 'next/navigation';
 import { FaUser } from 'react-icons/fa'
 import React, { useEffect } from 'react';
 import ButtonSecondary from "../button/ButtonSecondary";
-// import { GetServerSideProps } from "next";
-// import { getServerSession } from "next-auth";
-
 
 interface Props {
     links: { label: string; href: string }[];
@@ -25,16 +22,9 @@ function toggleHamburger() {
     navMenu?.classList.toggle('hidden');
 }
 
-// function session() {
-// return session
-// }
+const Navbar: React.FC<Props> = ({ links, logoSrc }) => {
 
-// console.log("SESSION FROM NAV BAR: ", session())
-
-
-
-const Navbar: React.FC<Props> = ({ links, logoSrc }) => (
-
+    return (
     <div>
         <nav className="bg-[#e1eedd]">
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -93,38 +83,11 @@ const Navbar: React.FC<Props> = ({ links, logoSrc }) => (
 
         </nav>
     </div>
-);
+    )
+};
 
 
 
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//     const { req, res } = context;
-//     const session = await getServerSession();
-//     // if (!session) {
-//     //     // res.writeHead(302, { Location: '/login' });
-//     //     console.log("NO session")
-//     //     res.end();
-//     //     return { props: {} };
-//     // }
-//     console.log("SESSION", session)
-//     return {
-//         props: {
-//             session,
-//         },
-//     };
-// };
-
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//     const { req, res } = context;
-//     const session = await getServerSession();
-
-//     console.log("SESSION", session)
-//     return {
-//         props: {
-//             session,
-//         },
-//     };
-// };
 
 
 export default Navbar;

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { json } from "stream/consumers";
 import { prisma } from "../../server/db/client";
 import Button from "@/components/button/ButtonMap"
+import YearAndMaterialInputs from "@/components/YearlyComparison/YearAndMaterialInputs"
 
 export interface ChartData {
   labels: string[];
@@ -37,6 +38,10 @@ export default function Home({ data, years, allDataSum }: any) {
     ],
   });
 
+
+
+  console.log("dataset", dataState);
+
   async function handleButtonClick(click: string) {
     
   }
@@ -47,6 +52,8 @@ export default function Home({ data, years, allDataSum }: any) {
       {whatGraphToShow === "Line" && <LineChart chartData={dataState} />}
       {whatGraphToShow === "Bar" && <BarChart chartData={dataState} />}
       {whatGraphToShow === "Pie" && <PieChart chartData={dataState} />}
+
+      {/* <YearAndMaterialInputs/> */}
     </>
   );
 }
@@ -65,6 +72,7 @@ export async function getServerSideProps() {
     }
     return sum;
   }
+  
   const jsonArrayFromBackend = await prisma.testingData.findUnique({
     where: {
       id: 1,
@@ -74,11 +82,13 @@ export async function getServerSideProps() {
     JSON.stringify(jsonArrayFromBackend)
   );
 
-  // console.log(jsonArrayFromBackendJSON.jsonArray);
+  // console.log("jsonArrayFromBackendJSON",jsonArrayFromBackendJSON.jsonArray);
 
   const allTheYearWithDuplicates = jsonArrayFromBackendJSON.jsonArray.map((m: any, i: number) => {
+    // console.log("m", m)
     const dataDate = new Date(m.Date);
     const year = dataDate.getFullYear();
+    // console.log("year", year)
     return year;
   })
 
@@ -88,6 +98,8 @@ export async function getServerSideProps() {
     }
   );
 
+  // console.log("newYearsDuplicatesRemoved", newYearsDuplicatesRemoved)
+
   const allTheDataWithDuplicates =
     newYearsDuplicatesRemoved.map((year: number) => {
       const everyYearDataOBJ = jsonArrayFromBackendJSON.jsonArray.filter((m: any) => {
@@ -96,6 +108,7 @@ export async function getServerSideProps() {
           return m;
         }
       });
+      // console.log("allTheDataWithDuplicates", allTheDataWithDuplicates);
       const theValueOfTrash = everyYearDataOBJ.map((m: any) => {
         for (const key in m) {
           if (key == "Transfer Station Landfill Garbage (tonnes) (UBCV)") {
@@ -105,7 +118,7 @@ export async function getServerSideProps() {
           }
         }
       });
-      // console.log(theValueOfTrash);
+      // console.log("theValueOfTrash", theValueOfTrash);
       const trashValuesButInNumber = theValueOfTrash.map((m: any) => {
         if (m != "NA") {
           return parseInt(m);
@@ -120,8 +133,8 @@ export async function getServerSideProps() {
       return allTheDataWithDuplicates.indexOf(c) === index;
     }
   );
-  console.log(dataSetsDuplicatesRemoved)
-  console.log(newYearsDuplicatesRemoved)
+  // console.log("dataSetsDuplicatesRemoved", dataSetsDuplicatesRemoved);
+  // console.log("newYearsDuplicatesRemoved", newYearsDuplicatesRemoved);
   const newYearsDuplicatesRemovedJSON = JSON.parse(
     JSON.stringify(newYearsDuplicatesRemoved)
   );
@@ -129,6 +142,8 @@ export async function getServerSideProps() {
     JSON.stringify(dataSetsDuplicatesRemoved)
   );
 
+  // console.log("newYearsDuplicatesRemovedJSON", newYearsDuplicatesRemovedJSON);
+  // console.log("dataSetsDuplicatesRemovedJSON", dataSetsDuplicatesRemovedJSON);
   return {
     props: {
       data: jsonArrayFromBackendJSON,

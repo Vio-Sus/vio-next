@@ -11,8 +11,9 @@ interface SheetData {
 
 const ImportXlsxCsv: React.FC = () => {
 
-    const [sheetData, setsheetData] = useState<SheetData[]>([]);
+    const [sheetData, setSheetdata] = useState<SheetData[]>([]);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    
     const readExcel = (file: File) => {
         const promise = new Promise<SheetData[]>((resolve, reject) => {
             const fileReader = new FileReader()
@@ -21,14 +22,14 @@ const ImportXlsxCsv: React.FC = () => {
                 fileReader.readAsArrayBuffer(file)
                 // fileReader.readAsBinaryString(file)
 
-                fileReader.onload = (e) => {
+                fileReader.onload = (e) => { 
                     const bufferArray = e.target?.result
                     const workBook = XLSX.read(bufferArray, { type: 'buffer' })
                     const workSheetName = workBook.SheetNames[0]
                     const workSheet = workBook.Sheets[workSheetName]
                     const data = XLSX.utils.sheet_to_json(workSheet) as SheetData[]
                     resolve(data)
-                    setsheetData(data)
+                    setSheetdata(data)
                 }
             }
             fileReader.onerror = ((err) => {

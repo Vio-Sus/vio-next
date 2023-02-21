@@ -5,6 +5,7 @@ CREATE TABLE "User" (
     "last_name" TEXT,
     "email" TEXT,
     "emailVerified" TIMESTAMP(3),
+    "password" TEXT,
     "image" TEXT,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")

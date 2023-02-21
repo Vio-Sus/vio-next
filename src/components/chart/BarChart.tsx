@@ -47,6 +47,8 @@ export const options = {
 
 
 export default function App({chartData}: Props) {
+
     return <Bar options={options} data={chartData} />;
-  }
+
+}
   
