@@ -76,7 +76,7 @@ const ImportXlsxCsv: React.FC = () => {
                 />
                 {sheetData.length > 0 && <Button text="Submit" type="submit" onClick={handleSubmit} />}
             </form>
-            <table>
+            {/* <table>
                 <thead>
                     <tr>
                         {sheetData.length > 0 && Object.keys(sheetData[0]).map((key) => {
@@ -100,7 +100,7 @@ const ImportXlsxCsv: React.FC = () => {
                     )}
                 </tbody>
 
-            </table>
+            </table> */}
         </div>
     </>
 

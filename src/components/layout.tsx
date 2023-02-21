@@ -15,13 +15,9 @@ export default function Layout({ children }: Props) {
         { label: 'Collection Summaries', href: '/' },
         { label: 'Collection Details', href: '/details' },
         { label: 'New Entry', href: '/entry' },
-<<<<<<< HEAD
-      ]} logoSrc="/logo.png" username ="username" session={session}/>
+      ]} logoSrc="/logo.png" username ="username"/>
 
       {/* // center main content */}
-=======
-      ]} logoSrc="/logo.png" username ="username"/>
->>>>>>> jane
       <main className="flex justify-center">
         <div className="w-3/4">
           {children}
