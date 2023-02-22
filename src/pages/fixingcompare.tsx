@@ -1,5 +1,5 @@
 import BarChart from "@/components/chart/BarChart";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { prisma } from "../../server/db/client";
 import Button from "@/components/button/ButtonMap"
 
@@ -18,11 +18,23 @@ export type Datasets = {
 export default function Home({ transformedData, years }: any) {
     const [yearOne, setYearOne] = useState<string>("");
     const [yearTwo, setYearTwo] = useState<string>("");
+    const [material, setMaterial] = useState<string[]>(["Containers", "Mixed Paper", "Office Paper", "Refuse (ICI Waste)", "Corrugated Cardboard", "Transfer Station Landfill Garbage"]);
+
+    const [formData, setFormData] = useState<any>({})
+    const [firstYear, setFirstYear] = useState(transformedData.filter((data: any) => {
+        if(+data.year == formData.yearOne && data.material == formData.material) {
+            return data
+        }
+    }))
+    const [secondYear, setSecondYear] = useState(transformedData.filter((data: any) => {
+        if(+data.year == formData.yearTwo && data.material == formData.material) {
+            return data
+        }
+    }))
+
     const [firstYearSum, setFirstYearSum] = useState<number>(0);
     const [secondYearSum, setSecondYearSum] = useState<number>(0);
-    const [material, setMaterial] = useState<string[]>(["Containers", "Mixed Paper", "Office Paper", "Refuse (ICI Waste)", "Corrugated Cardboard", "Transfer Station Landfill Garbage"]);
     const [year, setYear] = useState<number[]>(years) 
-    const [formData, setFormData] = useState<any>({})
     const [showGraph, setShowGraph] = useState<boolean>(false)
     const [dataState, setDataState] = useState({} as ChartData);
 
@@ -41,33 +53,14 @@ export default function Home({ transformedData, years }: any) {
     })
     }, [formData, firstYearSum, secondYearSum])
 
-    console.log("formData", formData);
-    console.log("dataset", dataState);
+    // console.log("formData", formData);
+    // console.log("dataset", dataState);
 
 
 
-
-  const firstYear = useMemo(() => {
-      return transformedData.filter((data: any) => {
-        if(+data.year == formData.yearOne && data.material == formData.material) {
-            return data
-        }
-      })
-  }, [formData]);
-
-
-  const secondYear = useMemo(() => {
-     return transformedData.filter((data: any) => {
-        if(+data.year == formData.yearTwo && data.material == formData.material) {
-            return data
-        }
-    })
-  }, [formData]);
-
-
-
-
-
+    
+    
+ 
 useEffect(() => {
   let sum = 0;
   firstYear.forEach((element: any) => {
@@ -83,7 +76,8 @@ useEffect(() => {
   setSecondYearSum(sum2)
 }, [firstYear, secondYear])
 
-
+// console.log("firstYearSum", firstYearSum)
+// console.log("secondYearSum", secondYearSum)
 
 
 
@@ -98,6 +92,35 @@ useEffect(() => {
       material: material[0]
     })
     console.log("formData", formData)
+    setFirstYear( transformedData.filter((data: any) => {
+        if(+data.year == {
+            yearOne: +yearOne,
+            yearTwo: +yearTwo,
+            material: material[0]
+          }.yearOne && data.material == {
+            yearOne: +yearOne,
+            yearTwo: +yearTwo,
+            material: material[0]
+          }.material) {
+            return data
+        }
+    }))
+    
+    
+    setSecondYear( transformedData.filter((data: any) => {
+        if(+data.year == {
+            yearOne: +yearOne,
+            yearTwo: +yearTwo,
+            material: material[0]
+          }.yearTwo && data.material == {
+            yearOne: +yearOne,
+            yearTwo: +yearTwo,
+            material: material[0]
+          }.material) {
+            return data
+        }
+    }))
+
     setShowGraph(true)
 }
 
@@ -137,7 +160,7 @@ useEffect(() => {
     <div className="flex mb-12  flex-col mb-12">
         <label htmlFor="materials">Material</label>
       <select className="border-2 border-lime-600" name="materials" id="materials" onChange={(e) => {setMaterial([e.target.value])}}>
-        {material.map((material: string) => {
+        {["Containers", "Mixed Paper", "Office Paper", "Refuse (ICI Waste)", "Corrugated Cardboard", "Transfer Station Landfill Garbage"].map((material: string) => {
             return <option key={material} value={material}>{material}</option>;
         })}
       </select>
@@ -159,8 +182,7 @@ useEffect(() => {
 
       </form>
     </div>
-    ) : (
-<> 
+    ) : (<> 
         <div className="content-start m-12">
         
     <form action="#">
@@ -223,7 +245,7 @@ useEffect(() => {
 
 
 export async function getServerSideProps() {
-
+    
   const jsonArrayFromBackend = await prisma.testingData.findUnique({
   where: {
     id: 1,
