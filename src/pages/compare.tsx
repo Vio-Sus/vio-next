@@ -1,5 +1,5 @@
 import BarChart from "@/components/chart/BarChart";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { prisma } from "../../server/db/client";
 import Button from "@/components/button/ButtonMap"
 
@@ -46,18 +46,26 @@ export default function Home({ transformedData, years }: any) {
 
 
 
-let firstYear = transformedData.filter((data: any) => {
-    if(+data.year == formData.yearOne && data.material == formData.material) {
-        return data
-    }
-})
+
+  const firstYear = useMemo(() => {
+      return transformedData.filter((data: any) => {
+        if(+data.year == formData.yearOne && data.material == formData.material) {
+            return data
+        }
+      })
+  }, [formData]);
 
 
-let secondYear = transformedData.filter((data: any) => {
-    if(+data.year == formData.yearTwo && data.material == formData.material) {
-        return data
-    }
-})
+
+  const secondYear = useMemo(() => {
+     return transformedData.filter((data: any) => {
+        if(+data.year == formData.yearTwo && data.material == formData.material) {
+            return data
+        }
+    })
+  }, [formData]);
+
+
 
 
 
@@ -76,8 +84,7 @@ useEffect(() => {
   setSecondYearSum(sum2)
 }, [firstYear, secondYear])
 
-console.log("firstYearSum", firstYearSum)
-console.log("secondYearSum", secondYearSum)
+
 
 
 
