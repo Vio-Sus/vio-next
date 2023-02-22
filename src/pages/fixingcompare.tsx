@@ -160,7 +160,7 @@ useEffect(() => {
     <div className="flex mb-12  flex-col mb-12">
         <label htmlFor="materials">Material</label>
       <select className="border-2 border-lime-600" name="materials" id="materials" onChange={(e) => {setMaterial([e.target.value])}}>
-        {material.map((material: string) => {
+        {["Containers", "Mixed Paper", "Office Paper", "Refuse (ICI Waste)", "Corrugated Cardboard", "Transfer Station Landfill Garbage"].map((material: string) => {
             return <option key={material} value={material}>{material}</option>;
         })}
       </select>
@@ -191,7 +191,7 @@ useEffect(() => {
 
     <div className="flex mb-12  flex-col mb-12">
       <label htmlFor="yearOne" className="mt-0">Year One</label>
-      <select className="border-2 border-lime-600" name="yearOne" id="yearOne" onChange={(e) => {setYearOne(e.target.value)}}>
+      <select value={yearOne} className="border-2 border-lime-600" name="yearOne" id="yearOne" onChange={(e) => {setYearOne(e.target.value)}}>
         {year.map((year: number) => {
             return <option key={year} value={year}>{year}</option>;
         })}
@@ -201,7 +201,7 @@ useEffect(() => {
 
     <div className="flex mb-12  flex-col mb-12">
         <label htmlFor="yearTwo">Year Two</label>
-      <select className="border-2 border-lime-600" name="yearTwo" id="yearTwo" onChange={(e) => {setYearTwo(e.target.value)}}>
+      <select value={yearTwo} className="border-2 border-lime-600" name="yearTwo" id="yearTwo" onChange={(e) => {setYearTwo(e.target.value)}}>
         {year.map((year: number) => {
             return <option key={year} value={year}>{year}</option>;
         })}
@@ -211,8 +211,8 @@ useEffect(() => {
 
     <div className="flex mb-12  flex-col mb-12">
         <label htmlFor="materials">Material</label>
-      <select className="border-2 border-lime-600" name="materials" id="materials" onChange={(e) => {setMaterial([e.target.value])}}>
-        {material.map((material: string) => {
+      <select value={material} className="border-2 border-lime-600" name="materials" id="materials" onChange={(e) => {setMaterial([e.target.value])}}>
+        {["Containers", "Mixed Paper", "Office Paper", "Refuse (ICI Waste)", "Corrugated Cardboard", "Transfer Station Landfill Garbage"].map((material: string) => {
             return <option key={material} value={material}>{material}</option>;
         })}
       </select>
