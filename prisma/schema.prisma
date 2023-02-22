@@ -57,7 +57,7 @@ model City {
   city        String
   province    Province @relation(fields: [province_id], references: [id])
   province_id Int
-  site     Site[]
+  site        Site[]
 
   @@unique([city, province_id])
 }
@@ -154,8 +154,10 @@ model Session {
 }
 
 model testingData {
-  id        Int   @id @default(autoincrement())
-  jsonArray Json?
+  id           Int      @id @default(autoincrement())
+  name         String   @unique
+  creationTime DateTime @default(now())
+  jsonArray    Json?
 }
 
 model VerificationToken {

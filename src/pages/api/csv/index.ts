@@ -11,10 +11,12 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-    console.log(req.body)
+    const {fileName, sheetData} = req.body
+    console.log(fileName)
     const jsonFakeData = await prisma.testingData.create({
       data: {
-        jsonArray: req.body
+        name: fileName,
+        jsonArray: sheetData
       }
     })
     console.log(jsonFakeData.jsonArray)

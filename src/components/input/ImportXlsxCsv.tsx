@@ -13,12 +13,14 @@ const ImportXlsxCsv: React.FC = () => {
 
     const [sheetData, setSheetdata] = useState<SheetData[]>([]);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    const [fileName, setFileName] = useState("")
     
     const readExcel = (file: File) => {
         const promise = new Promise<SheetData[]>((resolve, reject) => {
             const fileReader = new FileReader()
             if (file) {
-
+                setFileName(file.name)
+                // console.log(file.name)
                 fileReader.readAsArrayBuffer(file)
                 // fileReader.readAsBinaryString(file)
 
@@ -50,7 +52,8 @@ const ImportXlsxCsv: React.FC = () => {
         event.preventDefault();
         // console.log(sheetData)
         try {
-            const response = await axios.post('/api/csv', sheetData);
+            console.log(fileName)
+            const response = await axios.post('/api/csv', {sheetData: sheetData, fileName: fileName});
             console.log(response.data);
           } catch (error) {
             console.error(error);
