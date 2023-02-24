@@ -212,7 +212,6 @@ useEffect(() => {
 
       </form>
     </div>
-        // not sure how to fix this error here but everything still works i guess...
        <BarChart chartData={dataState} />
     </>
     )}
@@ -252,6 +251,7 @@ export async function getServerSideProps() {
     return acc
     }, new Set<number>())
 
+    console.log(transformedData)
 
   return {
     props: {
