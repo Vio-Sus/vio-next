@@ -212,7 +212,7 @@ useEffect(() => {
 
       </form>
     </div>
-       <BarChart chartData={dataState} />
+       {/* <BarChart chartData={dataState} /> */}
     </>
     )}
     </>
@@ -251,7 +251,7 @@ export async function getServerSideProps() {
     return acc
     }, new Set<number>())
 
-    console.log(transformedData)
+    console.log("transformedData")
 
   return {
     props: {
