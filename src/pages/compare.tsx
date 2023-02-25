@@ -212,7 +212,6 @@ useEffect(() => {
 
       </form>
     </div>
-        // not sure how to fix this error here but everything still works i guess...
        <BarChart chartData={dataState} />
     </>
     )}
@@ -232,6 +231,8 @@ export async function getServerSideProps() {
   const jsonArrayFromBackendJSON = JSON.parse(
     JSON.stringify(jsonArrayFromBackend)
   );
+
+  console.log("jsonArrayFromBackendJSON")
 
   
   const transformedData: any = [];
