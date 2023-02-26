@@ -13,77 +13,121 @@ export interface ChartData {
 export type Datasets = {
   label: string;
   data: number[];
+  fill: boolean;
   borderColor: string;
-  backgroundColor: string;
+  tension: number;
 };
 
-export default function Home({ transformedData, years }: any) {
+export default function Home({ data, years, monthlyTotals }: any) {
     const [yearOne, setYearOne] = useState<string>("");
     const [yearTwo, setYearTwo] = useState<string>("");
-    const [firstYearSum, setFirstYearSum] = useState<number>(0);
-    const [secondYearSum, setSecondYearSum] = useState<number>(0);
-    const [material, setMaterial] = useState<string[]>(["Containers", "Mixed Paper", "Office Paper", "Refuse (ICI Waste)", "Corrugated Cardboard", "Transfer Station Landfill Garbage"]);
+    const [firstYearTotals, setFirstYearTotals] = useState<number[]>([]);
+    const [secondYearTotals, setSecondYearTotals] = useState<number[]>([]);
+    const [material, setMaterial] = useState<string[]>(["Containers (tonnes) (UBCV)", "Mixed Paper", "Office Paper", "Refuse (ICI Waste)", "Corrugated Cardboard", "Transfer Station Landfill Garbage"]);
     const [year, setYear] = useState<number[]>(years) 
     const [formData, setFormData] = useState<any>({})
     const [showGraph, setShowGraph] = useState<boolean>(false)
     const [dataState, setDataState] = useState({} as ChartData);
 
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
     useEffect(() => {
       setDataState({
-      labels: [formData.yearOne, formData.yearTwo],
-      datasets: [
-        {
-          label: "UBCV: " + formData.material,
-          data:  [firstYearSum, secondYearSum],        
-          borderColor: "#ddeeef",
-          backgroundColor: "#ddeeef"
+        labels: months,
+        datasets: [
+          // FIRST DATASET
+          {
+          label: formData.yearOne,
+          data: Object.entries(firstYearTotals).map(([month, total]) => ({
+            month,total
+          }
+          )).sort((a, b) => a.month.localeCompare(b.month)).map((element: any) => {
+            return element.total
+          }),
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1
         },
+        // SECOND DATASET
+        {
+          label: formData.yearTwo,
+          data: Object.entries(secondYearTotals).map(([month, total]) => ({month,total}))
+          .sort((a, b) => a.month.localeCompare(b.month)).map((element: any) => {
+            return element.total
+          }
+          ),
+          fill: false,
+          borderColor: 'rgb(335, 2, 192)',
+          tension: 0.1
+        }
       ]
     })
-    }, [formData, firstYearSum, secondYearSum])
+    }, [formData, firstYearTotals, secondYearTotals])
 
-    // console.log("formData", formData);
-    // console.log("dataset", dataState);
-
+  
 
 
 
-  const firstYear = useMemo(() => {
-      return transformedData.filter((data: any) => {
-        if(+data.year == formData.yearOne && data.material == formData.material) {
-            return data
+
+
+    useEffect(() => {
+      console.log("FORM DATA: ", formData)
+      const firstMonthlyTotals: any = {
+        '01': 0,
+        '02': 0,
+        '03': 0,
+        '04': 0,
+        '05': 0,
+        '06': 0,
+        '07': 0,
+        '08': 0,
+        '09': 0,
+        '10': 0,
+        '11': 0,
+        '12': 0,
+      };
+    
+    
+    data.forEach((item: any) => {
+        if (item.Date.startsWith(formData.yearOne)) {
+          const month = item.Date.substring(5, 7); // extract the month from the date
+          const weight = item[formData.material]; // get the weight for the desired material
+          if (weight !== 'NA') {
+            firstMonthlyTotals[month] += weight; // add the weight to the monthly total for that month
+          }
         }
-      })
-  }, [formData]);
+      });
+      setFirstYearTotals(firstMonthlyTotals)
 
 
-  const secondYear = useMemo(() => {
-     return transformedData.filter((data: any) => {
-        if(+data.year == formData.yearTwo && data.material == formData.material) {
-            return data
+      const secondMonthlyTotals: any = {
+        '01': 0,
+        '02': 0,
+        '03': 0,
+        '04': 0,
+        '05': 0,
+        '06': 0,
+        '07': 0,
+        '08': 0,
+        '09': 0,
+        '10': 0,
+        '11': 0,
+        '12': 0,
+      };
+
+      data.forEach((item: any) => {
+        if (item.Date.startsWith(formData.yearTwo)) {
+          const month = item.Date.substring(5, 7); // extract the month from the date
+          const weight = item[formData.material]; // get the weight for the desired material
+          if (weight !== 'NA') {
+            secondMonthlyTotals[month] += weight; // add the weight to the monthly total for that month
+          }
         }
-    })
-  }, [formData]);
+      });
+      setSecondYearTotals(secondMonthlyTotals)
 
 
-
-
-
-useEffect(() => {
-  let sum = 0;
-  firstYear.forEach((element: any) => {
-    sum += element.weight
-  });
-
-  setFirstYearSum(sum)
-
-  let sum2 = 0;
-  secondYear.forEach((element: any) => {
-    sum2 += element.weight
-  });
-  setSecondYearSum(sum2)
-}, [firstYear, secondYear])
+    }, [formData])
 
 
 
@@ -99,7 +143,6 @@ useEffect(() => {
       yearTwo: +yearTwo,
       material: material[0]
     })
-    // console.log("formData", formData)
     setShowGraph(true)
 }
 
@@ -214,8 +257,7 @@ useEffect(() => {
 
       </form>
     </div>
-       {/* <LineChart chartData={dataState} /> */}
-       {/* <LineChart chartData={dataState} /> */}
+       <LineChart chartData={dataState} />
     </>
     )}
     </>
@@ -235,29 +277,52 @@ export async function getServerSideProps() {
     JSON.stringify(jsonArrayFromBackend)
   );
 
-  console.log("jsonArrayFromBackendJSON")
 
 
-  console.log("jsonArrayFromBackendJSON", jsonArrayFromBackendJSON)
+let date = jsonArrayFromBackendJSON.jsonArray.map((m: any) => {
+    return m.Date.split('T')[0]
+})
 
 
-  /*
-  {
-    Date: '2021-01-01T00:00:00Z',
-    'Containers (tonnes) (UBCV)': 8.2,
-    'Mixed Paper (tonnes) (UBCV)': 11.95,
-    'Office Paper (tonnes) (UBCV)': 7.08,
-    'Refuse (ICI Waste) (tonnes) (UBCV)': 'NA',
-    'Moisture Correction (tonnes) (UBCV)': 'NA',
-    'Corrugated Cardboard (tonnes) (UBCV)': 28.34,
-    'Transfer Station Landfill Garbage (tonnes) (UBCV)': 164.14
-  }
-  */
+
+  let material = "Containers (tonnes) (UBCV)";
 
 
-jsonArrayFromBackendJSON.jsonArray.forEach((m: any) => {
-     console.log(m.Date)
-  })
+  const monthlyTotals: any = {
+    '01': 0,
+    '02': 0,
+    '03': 0,
+    '04': 0,
+    '05': 0,
+    '06': 0,
+    '07': 0,
+    '08': 0,
+    '09': 0,
+    '10': 0,
+    '11': 0,
+    '12': 0,
+  };
+
+
+jsonArrayFromBackendJSON.jsonArray.forEach((item: any) => {
+    if (item.Date.startsWith("2020")) {
+      const month = item.Date.substring(5, 7); // extract the month from the date
+      const weight = item[material]; // get the weight for the desired material
+      if (weight !== 'NA') {
+        monthlyTotals[month] += weight; // add the weight to the monthly total for that month
+      }
+    }
+  });
+
+  
+  console.log("monthlyTotals", monthlyTotals);
+
+
+
+
+
+
+  
 
 
   const transformedData: any = [];
@@ -279,10 +344,15 @@ jsonArrayFromBackendJSON.jsonArray.forEach((m: any) => {
     }, new Set<number>())
 
 
+  
+
+    
   return {
     props: {
       transformedData: transformedData,
-      years: Array.from(years)
+      years: Array.from(years),
+      monthlyTotals,
+      data: jsonArrayFromBackendJSON.jsonArray,
     },
   };
 }

@@ -212,7 +212,7 @@ useEffect(() => {
 
       </form>
     </div>
-       {/* <BarChart chartData={dataState} /> */}
+       <BarChart chartData={dataState} />
     </>
     )}
     </>
