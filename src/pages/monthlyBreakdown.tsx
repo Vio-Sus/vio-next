@@ -9,6 +9,7 @@ import { json } from "stream/consumers";
 export interface ChartData {
   labels: string[];
   datasets: Datasets[];
+  options?: {};
 }
 export type Datasets = {
   label: string;
@@ -16,6 +17,7 @@ export type Datasets = {
   fill: boolean;
   borderColor: string;
   tension: number;
+  options?: {};
 };
 
 export default function Home({ data, years, monthlyTotals }: any) {
@@ -47,7 +49,7 @@ export default function Home({ data, years, monthlyTotals }: any) {
           }),
           fill: false,
           borderColor: 'rgb(75, 192, 192)',
-          tension: 0.1
+          tension: 0.1,
         },
         // SECOND DATASET
         {
@@ -59,10 +61,24 @@ export default function Home({ data, years, monthlyTotals }: any) {
           ),
           fill: false,
           borderColor: 'rgb(335, 2, 192)',
-          tension: 0.1
+          tension: 0.1,
         }
-      ]
-    })
+      ],
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Total Weight (tonnes)'
+            }
+          }
+        } 
+    }
+
+    }
+    
+    )
     }, [formData, firstYearTotals, secondYearTotals])
 
   
@@ -232,7 +248,7 @@ export default function Home({ data, years, monthlyTotals }: any) {
     <div className="flex mb-12  flex-col mb-12">
         <label htmlFor="materials">Material</label>
       <select value={material} className="border-2 border-lime-600" name="materials" id="materials" onChange={(e) => {setMaterial([e.target.value])}}>
-        {["Containers", "Mixed Paper", "Office Paper", "Refuse (ICI Waste)", "Corrugated Cardboard", "Transfer Station Landfill Garbage"].map((material: string) => {
+        {["Containers (tonnes) (UBCV)", "Mixed Paper (tonnes) (UBCV)", "Office Paper (tonnes) (UBCV)", "Refuse (ICI Waste) (tonnes) (UBCV)", "Moisture Correction (tonnes) (UBCV)", "Corrugated Cardboard (tonnes) (UBCV)", "Transfer Station Landfill Garbage (tonnes) (UBCV)"].map((material: string) => {
             return <option key={material} value={material}>{material}</option>;
         })}
       </select>
