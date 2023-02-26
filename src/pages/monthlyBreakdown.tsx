@@ -23,13 +23,14 @@ export default function Home({ data, years, monthlyTotals }: any) {
     const [yearTwo, setYearTwo] = useState<string>("");
     const [firstYearTotals, setFirstYearTotals] = useState<number[]>([]);
     const [secondYearTotals, setSecondYearTotals] = useState<number[]>([]);
-    const [material, setMaterial] = useState<string[]>(["Containers (tonnes) (UBCV)", "Mixed Paper", "Office Paper", "Refuse (ICI Waste)", "Corrugated Cardboard", "Transfer Station Landfill Garbage"]);
+    const [material, setMaterial] = useState<string[]>(["Containers (tonnes) (UBCV)", "Mixed Paper (tonnes) (UBCV)", "Office Paper (tonnes) (UBCV)", "Refuse (ICI Waste) (tonnes) (UBCV)", "Moisture Correction (tonnes) (UBCV)", "Corrugated Cardboard (tonnes) (UBCV)", "Transfer Station Landfill Garbage (tonnes) (UBCV)"]);
     const [year, setYear] = useState<number[]>(years) 
     const [formData, setFormData] = useState<any>({})
     const [showGraph, setShowGraph] = useState<boolean>(false)
     const [dataState, setDataState] = useState({} as ChartData);
 
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
 
     useEffect(() => {
       setDataState({
@@ -65,10 +66,6 @@ export default function Home({ data, years, monthlyTotals }: any) {
     }, [formData, firstYearTotals, secondYearTotals])
 
   
-
-
-
-
 
     useEffect(() => {
       console.log("FORM DATA: ", formData)
@@ -279,52 +276,6 @@ export async function getServerSideProps() {
 
 
 
-let date = jsonArrayFromBackendJSON.jsonArray.map((m: any) => {
-    return m.Date.split('T')[0]
-})
-
-
-
-  let material = "Containers (tonnes) (UBCV)";
-
-
-  const monthlyTotals: any = {
-    '01': 0,
-    '02': 0,
-    '03': 0,
-    '04': 0,
-    '05': 0,
-    '06': 0,
-    '07': 0,
-    '08': 0,
-    '09': 0,
-    '10': 0,
-    '11': 0,
-    '12': 0,
-  };
-
-
-jsonArrayFromBackendJSON.jsonArray.forEach((item: any) => {
-    if (item.Date.startsWith("2020")) {
-      const month = item.Date.substring(5, 7); // extract the month from the date
-      const weight = item[material]; // get the weight for the desired material
-      if (weight !== 'NA') {
-        monthlyTotals[month] += weight; // add the weight to the monthly total for that month
-      }
-    }
-  });
-
-  
-  console.log("monthlyTotals", monthlyTotals);
-
-
-
-
-
-
-  
-
-
   const transformedData: any = [];
   jsonArrayFromBackendJSON.jsonArray.forEach((m: any) => {
     const year = new Date(m.Date).getFullYear().toString();
@@ -337,21 +288,16 @@ jsonArrayFromBackendJSON.jsonArray.forEach((item: any) => {
   });
 });
 
-
   const years = transformedData.reduce((acc: Set<number>, category: any) => {
     acc.add(category.year)
     return acc
     }, new Set<number>())
-
-
-  
 
     
   return {
     props: {
       transformedData: transformedData,
       years: Array.from(years),
-      monthlyTotals,
       data: jsonArrayFromBackendJSON.jsonArray,
     },
   };
