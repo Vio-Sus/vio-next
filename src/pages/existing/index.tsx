@@ -4,6 +4,15 @@ import { useSession } from "next-auth/react";
 import { prisma } from "../../../server/db/client";
 import DataTable from 'react-data-table-component';
 
+export type EntriesType = {
+  id: string;
+  name: string ;
+  creationTime: string | Date;
+  jsonArray: [] | number;
+};
+
+
+
 const columns2 = [
   {
       name: 'Id',
@@ -21,7 +30,7 @@ const columns2 = [
       sortable: true,
   },
   {
-      name: 'jsonArray',
+      name: 'Number of Rows',
       selector: (row: any) => row.jsonArray,
       sortable: true,
   },
@@ -35,6 +44,9 @@ export default function entry({allTheData}: any) {
       <DataTable
             columns={columns2}
             data={allTheData}
+            striped
+            highlightOnHover
+            noDataComponent
             // pagination
         />
     </>
@@ -50,9 +62,13 @@ export async function getServerSideProps() {
   const listOfAllDataJSON = JSON.parse(JSON.stringify(jsonArrayFromBackend)) 
   
   // console.log(listOfAllDataJSON[0].jsonArray.length)
-  
-  const theAmountOFData = listOfAllDataJSON[0].jsonArray.length
-  listOfAllDataJSON[0].jsonArray = theAmountOFData
+  listOfAllDataJSON.map((m: EntriesType) => {
+    let theAmountOFData
+    if (Array.isArray(m.jsonArray)) {
+      theAmountOFData = m.jsonArray.length
+      m.jsonArray = theAmountOFData
+    }
+  })
   
   
   let returnArray = []
@@ -64,7 +80,7 @@ export async function getServerSideProps() {
   const returnArrayJson = JSON.parse(JSON.stringify(returnArray)) 
   
   // console.log(typeof listOfAllDataJSON[0].creationTime)
-  // console.log(typeof listOfAllDataJSON[0].creationTime)
+  // console.log(listOfAllDataJSON)
 
   return {
     props: {

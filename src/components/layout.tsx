@@ -20,7 +20,7 @@ export default function Layout({ children }: Props) {
       ]} logoSrc="/logo.png" username ="username"/>
       {/* session={session} */}
 
-      // center main content
+      
 
       {/* // center main content */}
       <main className="flex justify-center">
