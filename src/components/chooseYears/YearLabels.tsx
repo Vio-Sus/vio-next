@@ -2,10 +2,17 @@ import { useEffect, useMemo, useState } from "react";
 
 interface Props {
   setYearOne: (input: string) => void;
+  setMonthOne: (input: string) => void;
   year: number[];
+  months: string[];
   setYearTwo: (input: string) => void;
+  setMonthTwo: (input: string) => void;
   setMaterial: (input: [string]) => void;
   material: string[];
+  yearOne: string;
+  yearTwo: string;
+  monthOne: string;
+  monthTwo: string;
   handleSubmit: (input: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
@@ -21,6 +28,7 @@ export default function YearsLabel(props: Props) {
             <select
               className="border-2 border-lime-600"
               name="yearOne"
+              value={props.yearOne}
               id="yearOne"
               onChange={(e) => {
                 props.setYearOne(e.target.value);
@@ -35,11 +43,34 @@ export default function YearsLabel(props: Props) {
               })}
             </select>
           </div>
+          <div className="flex mb-12  flex-col">
+            <label htmlFor="monthOne" className="mt-0">
+              The Month For Year One
+            </label>
+            <select
+              className="border-2 border-lime-600"
+              name="monthOne"
+              id="monthOne"
+              value={props.monthOne}
+              onChange={(e) => {
+                props.setMonthOne(e.target.value);
+              }}
+            >
+              {props.months.map((month: string) => {
+                return (
+                  <option key={month} value={month}>
+                    {month}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
 
           <div className="flex mb-12  flex-col">
             <label htmlFor="yearTwo">Year Two</label>
             <select
               className="border-2 border-lime-600"
+              value={props.yearTwo}
               name="yearTwo"
               id="yearTwo"
               onChange={(e) => {
@@ -50,6 +81,28 @@ export default function YearsLabel(props: Props) {
                 return (
                   <option key={year} value={year}>
                     {year}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+          <div className="flex mb-12  flex-col">
+            <label htmlFor="monthTwo" className="mt-0">
+              The Month For Year Two
+            </label>
+            <select
+              className="border-2 border-lime-600"
+              name="monthTwo"
+              id="monthTwo"
+              value={props.monthTwo}
+              onChange={(e) => {
+                props.setMonthTwo(e.target.value);
+              }}
+            >
+              {props.months.map((month: string) => {
+                return (
+                  <option key={month} value={month}>
+                    {month}
                   </option>
                 );
               })}
