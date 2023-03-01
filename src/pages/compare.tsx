@@ -51,8 +51,7 @@ export default function Home({
       yearOneLabel = formData.yearOne;
       yearOneSum = firstYearSum;
     } else {
-      console.log(monthOne);
-      yearOneLabel = `${monthOne} ${formData.yearOne}`;
+      yearOneLabel = `${monthOne} of ${formData.yearOne}`;
       yearOneSum = dataUntouched
         .filter(
           (m: any) =>
@@ -63,15 +62,13 @@ export default function Home({
         .reduce((accumulator: number, currentValue: any) => {
           return accumulator + currentValue.weight;
         }, 0);
-      console.log(yearOneSum);
     }
 
     if (monthTwo == "All Year") {
       yearTwoLabel = formData.yearTwo;
       yearTwoSum = secondYearSum;
     } else {
-      console.log(monthTwo);
-      yearTwoLabel = `${monthTwo} ${formData.yearTwo}`;
+      yearTwoLabel = `${monthTwo} of ${formData.yearTwo}`;
       yearTwoSum = dataUntouched
         .filter(
           (m: any) =>
@@ -82,7 +79,6 @@ export default function Home({
         .reduce((accumulator: number, currentValue: any) => {
           return accumulator + currentValue.weight;
         }, 0);
-      console.log(yearTwoSum);
     }
     setDataState({
       labels: [yearOneLabel, yearTwoLabel],
