@@ -2,83 +2,75 @@ import React, { useMemo } from "react";
 import ImportXlsxCsv from "@/components/input/ImportXlsxCsv";
 import { useSession } from "next-auth/react";
 import { prisma } from "../../../server/db/client";
-import DataTable from 'react-data-table-component';
+import DataTable from "react-data-table-component";
 
 export type EntriesType = {
   id: string;
-  name: string ;
+  name: string;
   creationTime: string | Date;
   jsonArray: [] | number;
 };
 
-
-
 const columns2 = [
   {
-      name: 'Id',
-      selector: (row: any) => row.id,
-      sortable: true,
+    name: "Id",
+    selector: (row: any) => row.id,
+    sortable: true,
   },
   {
-      name: 'Name',
-      selector: (row: any) => row.name,
-      sortable: true,
+    name: "Name",
+    selector: (row: any) => row.name,
+    sortable: true,
   },
   {
-      name: 'creationTime',
-      selector: (row: any) => row.creationTime,
-      sortable: true,
+    name: "creationTime",
+    selector: (row: any) => row.creationTime,
+    sortable: true,
   },
   {
-      name: 'Number of Rows',
-      selector: (row: any) => row.jsonArray,
-      sortable: true,
+    name: "Number of Rows",
+    selector: (row: any) => row.jsonArray,
+    sortable: true,
   },
 ];
 
-
-export default function entry({allTheData}: any) {
-
+export default function entry({ allTheData }: any) {
   return (
     <>
       <DataTable
-            columns={columns2}
-            data={allTheData}
-            striped
-            highlightOnHover
-            noDataComponent
-            // pagination
-        />
+        columns={columns2}
+        data={allTheData}
+        striped
+        highlightOnHover
+        noDataComponent
+        // pagination
+      />
     </>
   );
 }
 
-
-
 export async function getServerSideProps() {
-  
   const jsonArrayFromBackend = await prisma.testingData.findMany({});
-  
-  const listOfAllDataJSON = JSON.parse(JSON.stringify(jsonArrayFromBackend)) 
-  
+
+  const listOfAllDataJSON = JSON.parse(JSON.stringify(jsonArrayFromBackend));
+
   // console.log(listOfAllDataJSON[0].jsonArray.length)
   listOfAllDataJSON.map((m: EntriesType) => {
-    let theAmountOFData
+    let theAmountOFData;
     if (Array.isArray(m.jsonArray)) {
-      theAmountOFData = m.jsonArray.length
-      m.jsonArray = theAmountOFData
+      theAmountOFData = m.jsonArray.length;
+      m.jsonArray = theAmountOFData;
     }
-  })
-  
-  
-  let returnArray = []
+  });
+
+  let returnArray = [];
   for (const key in listOfAllDataJSON[0]) {
     // console.log({name: key, selector: (row: any) => row.year,})
-    returnArray.push({name: key, selector: (row: any) => row.year,})
+    returnArray.push({ name: key, selector: (row: any) => row.year });
   }
-  
-  const returnArrayJson = JSON.parse(JSON.stringify(returnArray)) 
-  
+
+  const returnArrayJson = JSON.parse(JSON.stringify(returnArray));
+
   // console.log(typeof listOfAllDataJSON[0].creationTime)
   // console.log(listOfAllDataJSON)
 
@@ -90,8 +82,6 @@ export async function getServerSideProps() {
   };
 }
 
-
-
 // const columns = useMemo(() => {
 //   let returnArray = []
 //   for (const key in allTheData[0].jsonArray[0]) {
@@ -101,7 +91,6 @@ export async function getServerSideProps() {
 //   console.log(allTheData[0].jsonArray[0])
 //   return returnArray
 // }, [])
-
 
 // return (
 //   <>
