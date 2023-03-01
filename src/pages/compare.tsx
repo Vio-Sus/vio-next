@@ -16,11 +16,11 @@ export type Datasets = {
 };
 
 export default function Home({ transformedData, years }: any) {
-    const [yearOne, setYearOne] = useState<string>("");
-    const [yearTwo, setYearTwo] = useState<string>("");
+    const [yearOne, setYearOne] = useState<String>("");
+    const [yearTwo, setYearTwo] = useState<String>("");
     const [firstYearSum, setFirstYearSum] = useState<number>(0);
     const [secondYearSum, setSecondYearSum] = useState<number>(0);
-    const [material, setMaterial] = useState<string[]>(["Containers", "Mixed Paper", "Office Paper", "Refuse (ICI Waste)", "Corrugated Cardboard", "Transfer Station Landfill Garbage"]);
+    const [material, setMaterial] = useState<String[]>(["Containers", "Mixed Paper", "Office Paper", "Refuse (ICI Waste)", "Corrugated Cardboard", "Transfer Station Landfill Garbage"]);
     const [year, setYear] = useState<number[]>(years) 
     const [formData, setFormData] = useState<any>({})
     const [showGraph, setShowGraph] = useState<boolean>(false)
@@ -57,7 +57,7 @@ export default function Home({ transformedData, years }: any) {
 
 
   const secondYear = useMemo(() => {
-     return transformedData.filter((data: any) => {
+     return transformedData.filter((data: { year: string | number; material: any; }) => {
         if(+data.year == formData.yearTwo && data.material == formData.material) {
             return data
         }
