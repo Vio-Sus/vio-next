@@ -26,6 +26,7 @@ export default function Home({ data, years, monthlyTotals }: any) {
     const [firstYearTotals, setFirstYearTotals] = useState<number[]>([]);
     const [secondYearTotals, setSecondYearTotals] = useState<number[]>([]);
     const [material, setMaterial] = useState<string[]>(["Containers (tonnes) (UBCV)", "Mixed Paper (tonnes) (UBCV)", "Office Paper (tonnes) (UBCV)", "Refuse (ICI Waste) (tonnes) (UBCV)", "Moisture Correction (tonnes) (UBCV)", "Corrugated Cardboard (tonnes) (UBCV)", "Transfer Station Landfill Garbage (tonnes) (UBCV)"]);
+    const [chosenMaterial, setChosenMaterial] = useState<any>("");
     const [year, setYear] = useState<number[]>(years) 
     const [formData, setFormData] = useState<any>({})
     const [showGraph, setShowGraph] = useState<boolean>(false)
@@ -84,6 +85,7 @@ export default function Home({ data, years, monthlyTotals }: any) {
   
 
     useEffect(() => {
+      // this useEffect is kinda ugly and im repeating myself and i kinda only wanna do the logic once but i dont know how to do that right now...
       console.log("FORM DATA: ", formData)
       const firstMonthlyTotals: any = {
         '01': 0,
@@ -154,7 +156,7 @@ export default function Home({ data, years, monthlyTotals }: any) {
     setFormData({
       yearOne: +yearOne,
       yearTwo: +yearTwo,
-      material: material[0]
+      material: chosenMaterial
     })
     setShowGraph(true)
 }
@@ -194,7 +196,7 @@ export default function Home({ data, years, monthlyTotals }: any) {
 
     <div className="flex mb-12  flex-col mb-12">
         <label htmlFor="materials">Material</label>
-      <select className="border-2 border-lime-600" name="materials" id="materials" onChange={(e) => {setMaterial([e.target.value])}}>
+      <select className="border-2 border-lime-600" name="materials" id="materials" onChange={(e) => {setChosenMaterial([e.target.value])}}>
         {material.map((material: string) => {
             return <option key={material} value={material}>{material}</option>;
         })}
@@ -247,8 +249,8 @@ export default function Home({ data, years, monthlyTotals }: any) {
 
     <div className="flex mb-12  flex-col mb-12">
         <label htmlFor="materials">Material</label>
-      <select value={material} className="border-2 border-lime-600" name="materials" id="materials" onChange={(e) => {setMaterial([e.target.value])}}>
-        {["Containers (tonnes) (UBCV)", "Mixed Paper (tonnes) (UBCV)", "Office Paper (tonnes) (UBCV)", "Refuse (ICI Waste) (tonnes) (UBCV)", "Moisture Correction (tonnes) (UBCV)", "Corrugated Cardboard (tonnes) (UBCV)", "Transfer Station Landfill Garbage (tonnes) (UBCV)"].map((material: string) => {
+      <select value={material} className="border-2 border-lime-600" name="materials" id="materials" onChange={(e) => {setChosenMaterial([e.target.value])}}>
+        {material.map((material: string) => {
             return <option key={material} value={material}>{material}</option>;
         })}
       </select>
