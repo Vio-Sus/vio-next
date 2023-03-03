@@ -191,7 +191,6 @@ export default function Home({
             monthTwo={monthTwo}
             months={["All Year", ...months]}
           />
-          {/* // not sure how to fix this error here but everything still works i guess... */}
           <BarChart chartData={dataState} />
         </>
       )}
