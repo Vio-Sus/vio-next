@@ -253,6 +253,7 @@ export async function getServerSideProps() {
     return acc
     }, new Set<number>())
 
+    console.log("transformedData")
 
   return {
     props: {
