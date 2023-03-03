@@ -48,6 +48,15 @@ export const options: object = {
         text: "Transfer Station Landfill Garbage (tonnes) (UBCV)",
       },
     },
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Total Weight (tonnes)' // i feel like this should be done in the "monthlybreakdown.tsx" file. need to update the config there.
+          }
+        }
+      } 
   };
 
 export default function LineChart({chartData}: Props) {
