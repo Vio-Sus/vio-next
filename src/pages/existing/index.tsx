@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import ImportXlsxCsv from "@/components/input/ImportXlsxCsv";
 import { useSession } from "next-auth/react";
 import { prisma } from "../../../server/db/client";
@@ -10,6 +10,12 @@ export type EntriesType = {
   creationTime: string | Date;
   jsonArray: [] | number;
 };
+
+
+// export type 
+
+
+// const rowDisabledCriteria = (row:any) => row.isOutOfStock;
 
 const columns2 = [
   {
@@ -35,6 +41,15 @@ const columns2 = [
 ];
 
 export default function entry({ allTheData }: any) {
+  const [selectedData, setSelectedData] = useState([])
+  const theSelectCallBack = ({
+    allSelected,
+    selectedCount,
+    selectedRows,
+  }: any) => {
+    console.log(selectedRows);
+    setSelectedData(selectedRows)
+  };
   return (
     <>
       <DataTable
@@ -43,7 +58,8 @@ export default function entry({ allTheData }: any) {
         striped
         highlightOnHover
         noDataComponent
-        // pagination
+        selectableRows
+        onSelectedRowsChange={theSelectCallBack}
       />
     </>
   );
