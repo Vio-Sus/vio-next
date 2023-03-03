@@ -23,7 +23,7 @@ export default function Home({ data, years, monthlyTotals }: any) {
     const [yearTwo, setYearTwo] = useState<string>("");
     const [firstYearTotals, setFirstYearTotals] = useState<number[]>([]);
     const [secondYearTotals, setSecondYearTotals] = useState<number[]>([]);
-    const [material, setMaterial] = useState<string[]>(["Containers (tonnes) (UBCV)", "Mixed Paper (tonnes) (UBCV)", "Office Paper (tonnes) (UBCV)", "Refuse (ICI Waste) (tonnes) (UBCV)", "Moisture Correction (tonnes) (UBCV)", "Corrugated Cardboard (tonnes) (UBCV)", "Transfer Station Landfill Garbage (tonnes) (UBCV)"]);
+    const [material, setMaterial] = useState<string[]>(["Containers (tonnes) (UBCV)", "Mixed Paper (tonnes) (UBCV)", "Office Paper (tonnes) (UBCV)", "Refuse (ICI Waste) (tonnes) (UBCV)", "Corrugated Cardboard (tonnes) (UBCV)", "Transfer Station Landfill Garbage (tonnes) (UBCV)"]);
     const [chosenMaterial, setChosenMaterial] = useState<any>([])
     const [year, setYear] = useState<number[]>(years) 
     const [formData, setFormData] = useState<any>({})
@@ -31,18 +31,18 @@ export default function Home({ data, years, monthlyTotals }: any) {
     const [chosenMaterialsSum, setChosenMaterialsSum] = useState<any>([])
     const [dataState, setDataState] = useState({} as ChartData);
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
+    const colors = ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#4bc0c0']
 
     useEffect(() => {
       setDataState({
         labels: months,
-        datasets: chosenMaterial.map((material: string) => {
+        datasets: chosenMaterial.map((material: string, index: number) => {
             console.log("material", material)
             return {
                     label: "UBCV: " + material,
                     data: getMonthlyBreakdown(formData.yearOne, material),
-                    borderColor: "#ddeeef",
-                    backgroundColor: "#ddeeef"
+                    borderColor: colors[index % colors.length],
+                    backgroundColor: colors[index % colors.length],
             };
             }),
     }
@@ -71,7 +71,7 @@ function getMonthlyBreakdown(year: number, material: string) {
         if(m.Date.startsWith(year)){
         let month = m.Date.substring(5, 7);
         let weight = m[material];
-        if(weight !== "NA") {
+        if(weight !== "NA" || weight < 0) {
             monthsOfYear[month] += weight;
           }
         }

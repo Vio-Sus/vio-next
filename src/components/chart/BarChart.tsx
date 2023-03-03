@@ -44,7 +44,8 @@ export const options = {
     },
     scales: {
       y: {
-        beginAtZero: true,
+        // beginAtZero: true,
+        suggestedMin: 0
       }
     }
   },
