@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { json } from "stream/consumers";
 import { prisma } from "../../server/db/client";
 import Button from "@/components/button/ButtonMap"
-import YearAndMaterialInputs from "@/components/YearlyComparison/YearAndMaterialInputs"
 
 export interface ChartData {
   labels: string[];

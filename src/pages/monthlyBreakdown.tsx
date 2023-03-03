@@ -1,83 +1,150 @@
-import BarChart from "@/components/chart/BarChart";
-import { useEffect, useState } from "react";
+import LineChart from "@/components/chart/LineChart";
+import { useEffect, useMemo, useState } from "react";
 import { prisma } from "../../server/db/client";
 import Button from "@/components/button/ButtonMap"
+import { utils } from "xlsx";
+import { json } from "stream/consumers";
 
 
 export interface ChartData {
   labels: string[];
   datasets: Datasets[];
+  options?: {};
 }
 export type Datasets = {
   label: string;
   data: number[];
+  fill: boolean;
   borderColor: string;
-  backgroundColor: string;
+  tension: number;
+  options?: {};
 };
 
-export default function Home({ transformedData, years }: any) {
+export default function Home({ data, years, monthlyTotals }: any) {
     const [yearOne, setYearOne] = useState<string>("");
     const [yearTwo, setYearTwo] = useState<string>("");
-    const [material, setMaterial] = useState<string[]>(["Containers", "Mixed Paper", "Office Paper", "Refuse (ICI Waste)", "Corrugated Cardboard", "Transfer Station Landfill Garbage"]);
-
-    const [formData, setFormData] = useState<any>({})
-    const [firstYear, setFirstYear] = useState(transformedData.filter((data: any) => {
-        if(+data.year == formData.yearOne && data.material == formData.material) {
-            return data
-        }
-    }))
-    const [secondYear, setSecondYear] = useState(transformedData.filter((data: any) => {
-        if(+data.year == formData.yearTwo && data.material == formData.material) {
-            return data
-        }
-    }))
-
-    const [firstYearSum, setFirstYearSum] = useState<number>(0);
-    const [secondYearSum, setSecondYearSum] = useState<number>(0);
+    const [firstYearTotals, setFirstYearTotals] = useState<number[]>([]);
+    const [secondYearTotals, setSecondYearTotals] = useState<number[]>([]);
+    const [material, setMaterial] = useState<string[]>(["Containers (tonnes) (UBCV)", "Mixed Paper (tonnes) (UBCV)", "Office Paper (tonnes) (UBCV)", "Refuse (ICI Waste) (tonnes) (UBCV)", "Moisture Correction (tonnes) (UBCV)", "Corrugated Cardboard (tonnes) (UBCV)", "Transfer Station Landfill Garbage (tonnes) (UBCV)"]);
+    const [chosenMaterial, setChosenMaterial] = useState<any>("");
     const [year, setYear] = useState<number[]>(years) 
+    const [formData, setFormData] = useState<any>({})
     const [showGraph, setShowGraph] = useState<boolean>(false)
     const [dataState, setDataState] = useState({} as ChartData);
+
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 
     useEffect(() => {
       setDataState({
-      labels: [formData.yearOne, formData.yearTwo],
-      datasets: [
-        {
-          label: "UBCV: " + formData.material,
-          data:  [firstYearSum, secondYearSum],        
-          borderColor: "#ddeeef",
-          backgroundColor: "#ddeeef"
+        labels: months,
+        datasets: [
+          // FIRST DATASET
+          {
+          label: formData.yearOne,
+          data: Object.entries(firstYearTotals).map(([month, total]) => ({
+            month,total
+          }
+          )).sort((a, b) => a.month.localeCompare(b.month)).map((element: any) => {
+            return element.total
+          }),
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1,
         },
-      ]
-    })
-    }, [formData, firstYearSum, secondYearSum])
+        // SECOND DATASET
+        {
+          label: formData.yearTwo,
+          data: Object.entries(secondYearTotals).map(([month, total]) => ({month,total}))
+          .sort((a, b) => a.month.localeCompare(b.month)).map((element: any) => {
+            return element.total
+          }
+          ),
+          fill: false,
+          borderColor: 'rgb(335, 2, 192)',
+          tension: 0.1,
+        }
+      ],
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Total Weight (tonnes)'
+            }
+          }
+        } 
+    }
 
-    // console.log("formData", formData);
-    // console.log("dataset", dataState);
+    }
+    
+    )
+    }, [formData, firstYearTotals, secondYearTotals])
 
+  
 
-
+    useEffect(() => {
+      // this useEffect is kinda ugly and im repeating myself and i kinda only wanna do the logic once but i dont know how to do that right now...
+      console.log("FORM DATA: ", formData)
+      const firstMonthlyTotals: any = {
+        '01': 0,
+        '02': 0,
+        '03': 0,
+        '04': 0,
+        '05': 0,
+        '06': 0,
+        '07': 0,
+        '08': 0,
+        '09': 0,
+        '10': 0,
+        '11': 0,
+        '12': 0,
+      };
     
     
- 
-useEffect(() => {
-  let sum = 0;
-  firstYear.forEach((element: any) => {
-    sum += element.weight
-  });
+    data.forEach((item: any) => {
+        if (item.Date.startsWith(formData.yearOne)) {
+          const month = item.Date.substring(5, 7); // extract the month from the date
+          const weight = item[formData.material]; // get the weight for the desired material
+          if (weight !== 'NA') {
+            firstMonthlyTotals[month] += weight; // add the weight to the monthly total for that month
+          }
+        }
+      });
+      setFirstYearTotals(firstMonthlyTotals)
 
-  setFirstYearSum(sum)
 
-  let sum2 = 0;
-  secondYear.forEach((element: any) => {
-    sum2 += element.weight
-  });
-  setSecondYearSum(sum2)
-}, [firstYear, secondYear])
+      const secondMonthlyTotals: any = {
+        '01': 0,
+        '02': 0,
+        '03': 0,
+        '04': 0,
+        '05': 0,
+        '06': 0,
+        '07': 0,
+        '08': 0,
+        '09': 0,
+        '10': 0,
+        '11': 0,
+        '12': 0,
+      };
 
-// console.log("firstYearSum", firstYearSum)
-// console.log("secondYearSum", secondYearSum)
+      data.forEach((item: any) => {
+        if (item.Date.startsWith(formData.yearTwo)) {
+          const month = item.Date.substring(5, 7); // extract the month from the date
+          const weight = item[formData.material]; // get the weight for the desired material
+          if (weight !== 'NA') {
+            secondMonthlyTotals[month] += weight; // add the weight to the monthly total for that month
+          }
+        }
+      });
+      setSecondYearTotals(secondMonthlyTotals)
+
+
+    }, [formData])
+
+
 
 
 
@@ -89,38 +156,8 @@ useEffect(() => {
     setFormData({
       yearOne: +yearOne,
       yearTwo: +yearTwo,
-      material: material[0]
+      material: chosenMaterial
     })
-    console.log("formData", formData)
-    setFirstYear( transformedData.filter((data: any) => {
-        if(+data.year == {
-            yearOne: +yearOne,
-            yearTwo: +yearTwo,
-            material: material[0]
-          }.yearOne && data.material == {
-            yearOne: +yearOne,
-            yearTwo: +yearTwo,
-            material: material[0]
-          }.material) {
-            return data
-        }
-    }))
-    
-    
-    setSecondYear( transformedData.filter((data: any) => {
-        if(+data.year == {
-            yearOne: +yearOne,
-            yearTwo: +yearTwo,
-            material: material[0]
-          }.yearTwo && data.material == {
-            yearOne: +yearOne,
-            yearTwo: +yearTwo,
-            material: material[0]
-          }.material) {
-            return data
-        }
-    }))
-
     setShowGraph(true)
 }
 
@@ -159,8 +196,8 @@ useEffect(() => {
 
     <div className="flex mb-12  flex-col mb-12">
         <label htmlFor="materials">Material</label>
-      <select className="border-2 border-lime-600" name="materials" id="materials" onChange={(e) => {setMaterial([e.target.value])}}>
-        {["Containers", "Mixed Paper", "Office Paper", "Refuse (ICI Waste)", "Corrugated Cardboard", "Transfer Station Landfill Garbage"].map((material: string) => {
+      <select className="border-2 border-lime-600" name="materials" id="materials" onChange={(e) => {setChosenMaterial([e.target.value])}}>
+        {material.map((material: string) => {
             return <option key={material} value={material}>{material}</option>;
         })}
       </select>
@@ -182,7 +219,8 @@ useEffect(() => {
 
       </form>
     </div>
-    ) : (<> 
+    ) : (
+<> 
         <div className="content-start m-12">
         
     <form action="#">
@@ -211,8 +249,8 @@ useEffect(() => {
 
     <div className="flex mb-12  flex-col mb-12">
         <label htmlFor="materials">Material</label>
-      <select value={material} className="border-2 border-lime-600" name="materials" id="materials" onChange={(e) => {setMaterial([e.target.value])}}>
-        {["Containers", "Mixed Paper", "Office Paper", "Refuse (ICI Waste)", "Corrugated Cardboard", "Transfer Station Landfill Garbage"].map((material: string) => {
+      <select value={material} className="border-2 border-lime-600" name="materials" id="materials" onChange={(e) => {setChosenMaterial([e.target.value])}}>
+        {material.map((material: string) => {
             return <option key={material} value={material}>{material}</option>;
         })}
       </select>
@@ -234,8 +272,7 @@ useEffect(() => {
 
       </form>
     </div>
-        // not sure how to fix this error here but everything still works i guess...
-       <BarChart chartData={dataState} />
+       <LineChart chartData={dataState} />
     </>
     )}
     </>
@@ -245,7 +282,7 @@ useEffect(() => {
 
 
 export async function getServerSideProps() {
-    
+
   const jsonArrayFromBackend = await prisma.testingData.findUnique({
   where: {
     id: 1,
@@ -255,7 +292,8 @@ export async function getServerSideProps() {
     JSON.stringify(jsonArrayFromBackend)
   );
 
-  
+
+
   const transformedData: any = [];
   jsonArrayFromBackendJSON.jsonArray.forEach((m: any) => {
     const year = new Date(m.Date).getFullYear().toString();
@@ -268,17 +306,17 @@ export async function getServerSideProps() {
   });
 });
 
-
   const years = transformedData.reduce((acc: Set<number>, category: any) => {
     acc.add(category.year)
     return acc
     }, new Set<number>())
 
-
+    
   return {
     props: {
       transformedData: transformedData,
-      years: Array.from(years)
+      years: Array.from(years),
+      data: jsonArrayFromBackendJSON.jsonArray,
     },
   };
 }

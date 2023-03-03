@@ -232,6 +232,8 @@ export async function getServerSideProps() {
     JSON.stringify(jsonArrayFromBackend)
   );
 
+  console.log("jsonArrayFromBackendJSON")
+
   
   const transformedData: any = [];
   jsonArrayFromBackendJSON.jsonArray.forEach((m: any) => {
@@ -251,7 +253,7 @@ export async function getServerSideProps() {
     return acc
     }, new Set<number>())
 
-    console.log(transformedData)
+    console.log("transformedData")
 
   return {
     props: {
