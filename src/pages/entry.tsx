@@ -8,8 +8,6 @@ export default function entry() {
   const { data: session, status } = useSession();
   return (
     <>
-      {/* <CSVUploader /> */}
-      {/* entry */}
       <ImportXlsxCsv />
     </>
   );

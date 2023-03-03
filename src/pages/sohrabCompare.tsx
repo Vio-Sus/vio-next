@@ -143,115 +143,58 @@ export default function Home({
   };
 
   return (
-    <>     
-    {!showGraph ? (
-
-
-    <div className="content-start m-12">
-        
-    <form action="#">
-
-<div className="flex  flex-col gap-3">
-
-    <div className="flex mb-12  flex-col mb-12">
-      <label htmlFor="yearOne" className="mt-0">Year One</label>
-      <select className="border-2 border-lime-600" name="yearOne" id="yearOne" onChange={(e) => {setYearOne(e.target.value)}}>
-        {year.map((year: number) => {
-            return <option key={year} value={year}>{year}</option>;
-        })}
-      </select>
-    </div>
-
-
-    <div className="flex mb-12  flex-col mb-12">
-        <label htmlFor="yearTwo">Year Two</label>
-      <select className="border-2 border-lime-600" name="yearTwo" id="yearTwo" onChange={(e) => {setYearTwo(e.target.value)}}>
-        {year.map((year: number) => {
-            return <option key={year} value={year}>{year}</option>;
-        })}
-      </select>
-    </div>
-    
-
-    <div className="flex mb-12  flex-col mb-12">
-        <label htmlFor="materials">Material</label>
-      <select className="border-2 border-lime-600" name="materials" id="materials" onChange={(e) => {setMaterial([e.target.value])}}>
-        {material.map((material: string) => {
-            return <option key={material} value={material}>{material}</option>;
-        })}
-      </select>
-    </div>
-
-
-
-</div>
-
-
-      <p>
-        <button 
-        type="submit" 
-        onClick={handleSubmit}
-        className="inline-block px-7 py-3 bg-[#80CF76] text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full">
-        Compare
-        </button>
-      </p>
-
-      </form>
-    </div>
-    ) : (
-<> 
-        <div className="content-start m-12">
-        
-    <form action="#">
-
-<div className="flex  flex-col gap-3">
-
-    <div className="flex mb-12  flex-col mb-12">
-      <label htmlFor="yearOne" className="mt-0">Year One</label>
-      <select value={yearOne} className="border-2 border-lime-600" name="yearOne" id="yearOne" onChange={(e) => {setYearOne(e.target.value)}}>
-        {year.map((year: number) => {
-            return <option key={year} value={year}>{year}</option>;
-        })}
-      </select>
-    </div>
-
-
-    <div className="flex mb-12  flex-col mb-12">
-        <label htmlFor="yearTwo">Year Two</label>
-      <select value={yearTwo} className="border-2 border-lime-600" name="yearTwo" id="yearTwo" onChange={(e) => {setYearTwo(e.target.value)}}>
-        {year.map((year: number) => {
-            return <option key={year} value={year}>{year}</option>;
-        })}
-      </select>
-    </div>
-    
-
-    <div className="flex mb-12  flex-col mb-12">
-        <label htmlFor="materials">Material</label>
-      <select value={material} className="border-2 border-lime-600" name="materials" id="materials" onChange={(e) => {setMaterial([e.target.value])}}>
-        {["Containers", "Mixed Paper", "Office Paper", "Refuse (ICI Waste)", "Corrugated Cardboard", "Transfer Station Landfill Garbage"].map((material: string) => {
-            return <option key={material} value={material}>{material}</option>;
-        })}
-      </select>
-    </div>
-
-
-
-</div>
-
-
-      <p>
-        <button 
-        type="submit" 
-        onClick={handleSubmit}
-        className="inline-block px-7 py-3 bg-[#80CF76] text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full">
-        Compare
-        </button>
-      </p>
-
-      </form>
-    </div>
-       <BarChart chartData={dataState} />
+    <>
+      {!showGraph ? (
+        <YearsLabel
+          setYearOne={setYearOne}
+          year={year}
+          setYearTwo={setYearTwo}
+          setMaterial={setMaterial}
+          material={[
+            "Containers",
+            "Mixed Paper",
+            "Office Paper",
+            "Refuse (ICI Waste)",
+            "Corrugated Cardboard",
+            "Transfer Station Landfill Garbage",
+          ]}
+          handleSubmit={handleSubmit}
+          setMonthTwo={setMonthTwo}
+          setMonthOne={setMonthOne}
+          yearOne={yearOne}
+          yearTwo={yearTwo}
+          monthOne={monthOne}
+          monthTwo={monthTwo}
+          months={["All Year", ...months]}
+        />
+      ) : (
+        <>
+          <YearsLabel
+            setYearOne={setYearOne}
+            year={year}
+            setYearTwo={setYearTwo}
+            setMaterial={setMaterial}
+            material={[
+              "Containers",
+              "Mixed Paper",
+              "Office Paper",
+              "Refuse (ICI Waste)",
+              "Corrugated Cardboard",
+              "Transfer Station Landfill Garbage",
+            ]}
+            handleSubmit={handleSubmit}
+            setMonthTwo={setMonthTwo}
+            setMonthOne={setMonthOne}
+            yearOne={yearOne}
+            yearTwo={yearTwo}
+            monthOne={monthOne}
+            monthTwo={monthTwo}
+            months={["All Year", ...months]}
+          />
+          {/* // not sure how to fix this error here but everything still works i guess... */}
+          <BarChart chartData={dataState} />
+        </>
+      )}
     </>
   );
 }
@@ -266,8 +209,6 @@ export async function getServerSideProps() {
     JSON.stringify(jsonArrayFromBackend)
   );
 
-
-
   const transformedData: any = [];
   jsonArrayFromBackendJSON.jsonArray.forEach((m: any) => {
     const year = new Date(m.Date).getFullYear().toString();
@@ -280,13 +221,34 @@ export async function getServerSideProps() {
     });
   });
 
+  let dataUntouched: (string | number | any)[] = [];
+  jsonArrayFromBackendJSON.jsonArray.forEach((m: any) => {
+    const month = new Date(m.Date).getUTCMonth().toString();
+    const year = new Date(m.Date).getFullYear().toString();
+    Object.keys(m).forEach((key) => {
+      // if (m[key] == "NA") m[key] = 0;
+      if (key !== "Date" && m[key] !== "NA") {
+        const material = key.replace(" (tonnes) (UBCV)", "");
+        const weight: number | string = m[key];
+        const monthName: string = new Date(
+          2000,
+          parseInt(month)
+        ).toLocaleString("default", { month: "long" });
+        // console.log(monthName, material, weight, year)
+        dataUntouched.push({ year, monthName, material, weight });
+      }
+    });
+  });
+
   const years = transformedData.reduce((acc: Set<number>, category: any) => {
     acc.add(category.year);
     return acc;
   }, new Set<number>());
 
-
-    console.log("transformedData")
+  const months = dataUntouched.reduce((acc: Set<number>, category: any) => {
+    acc.add(category.monthName);
+    return acc;
+  }, new Set<number>());
 
   return {
     props: {
