@@ -4,15 +4,6 @@ import { prisma } from "../../server/db/client";
 import YearsLabel from "@/components/chooseYears/YearLabels";
 import Button from "@/components/button/ButtonMap";
 
-interface MaterialValue {
-  material: string;
-  value: number;
-}
-
-interface MonthYearValues {
-  [monthYear: string]: MaterialValue[];
-}
-
 export interface ChartData {
   labels: string[];
   datasets: Datasets[];
@@ -30,8 +21,8 @@ export default function Home({
   months,
   dataUntouched,
 }: any) {
-  const [monthOne, setMonthOne] = useState<string>("Jan");
-  const [monthTwo, setMonthTwo] = useState<string>("Feb");
+  const [monthOne, setMonthOne] = useState<string>("January");
+  const [monthTwo, setMonthTwo] = useState<string>("February");
   const [yearOne, setYearOne] = useState<string>("2012");
   const [yearTwo, setYearTwo] = useState<string>("2012");
   const [firstYearSum, setFirstYearSum] = useState<number>(0);
@@ -51,59 +42,8 @@ export default function Home({
   const [showGraph, setShowGraph] = useState<boolean>(false);
   const [dataState, setDataState] = useState({} as ChartData);
   
- 
-function getMaterialValues(month: number, year: number, materials: string[]): MonthYearValues {
-  // Convert month and year to ISO string format for comparison
-  const dateStr = `${year}-${month.toString().padStart(2, '0')}-01T00:00:00Z`;
 
-  // Find the object that matches the given month and year
-  const obj = dataUntouched.find((item: any) => item.Date === dateStr);
-
-  // Extract the values for the given materials
-  const monthYear = `${new Date(dateStr).toLocaleString('en-us', { month: 'long' })} - ${year}`;
-  const materialValues: MaterialValue[] = [];
-  for (const material of materials) {
-    const value = obj[`${material} (tonnes) (UBCV)`];
-    if (value) {
-      materialValues.push({ material, value });
-    }
-  }
-
-  return { [monthYear]: materialValues };
-}
-  
   useEffect(() => {
-
-    // let yearOneSum = [0];
-    // let yearOneLabel = chosenMaterial.map((materialMap) => {
-    //   let yearOneSum = dataUntouched
-    //     .filter(
-    //       (m: any) =>
-    //         monthOne == m.monthName &&
-    //         yearOne == m.year &&
-    //         materialMap == m.material
-    //     )
-    //     .map((m: any) => {
-    //       return m.weight;
-    //     });
-    //   return `${monthOne} of ${formData.yearOne} for ${materialMap}`;
-    // });
-
-
-    // let yearTwoSum = [0];
-    // let yearTwoLabel = chosenMaterial.map((materialMap) => {
-    //   yearTwoSum = dataUntouched
-    //     .filter(
-    //       (m: any) =>
-    //         monthTwo == m.monthName &&
-    //         yearTwo == m.year &&
-    //         materialMap == m.material
-    //     )
-    //     .map((m: any) => {
-    //       return m.weight;
-    //     });
-    //   return `${monthTwo} of ${formData.yearTwo} for ${materialMap}`;
-    // });
 
     // setDataState({
     //   labels: [...yearOneLabel, ...yearTwoLabel],
@@ -288,6 +228,9 @@ export async function getServerSideProps() {
     acc.add(category.monthName);
     return acc;
   }, new Set<number>());
+
+console.log(dataUntouched);
+
 
   return {
     props: {
