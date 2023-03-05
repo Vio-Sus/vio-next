@@ -59,40 +59,41 @@ export default function Home({
   const [dataState, setDataState] = useState({} as ChartData);
 
   useEffect(() => {
-    let yearOneLabel = formData.yearOne;
+    let yearOneLabel = [formData.yearOne];
     let yearOneSum = firstYearSum;
-    let yearTwoLabel = formData.yearTwo;
+    let yearTwoLabel = [formData.yearTwo];
     let yearTwoSum = secondYearSum;
 
     if (monthOne !== "All Year") {
-      yearOneLabel = `${monthOne} of ${formData.yearOne}`;
+      yearOneLabel = chosenMaterial.map((m) => `${monthOne} of ${formData.yearOne} for ${m}`)
       yearOneSum = dataUntouched
         .filter(
           (m: any) =>
             monthOne == m.monthName &&
             yearOne == m.year &&
-            m.material == material
+            chosenMaterial.includes(m.material)
+        )
+        .reduce((accumulator: number, currentValue: any) => {
+          return accumulator + currentValue.weight;
+        }, 0);
+      }
+
+    if (monthTwo !== "All Year") {
+      yearTwoLabel = chosenMaterial.map((m) => `${monthTwo} of ${formData.yearTwo} for ${m}`)
+      yearTwoSum = dataUntouched
+        .filter(
+          (m: any) =>
+            monthTwo == m.monthName &&
+            yearTwo == m.year &&
+            chosenMaterial.includes(m.material)
         )
         .reduce((accumulator: number, currentValue: any) => {
           return accumulator + currentValue.weight;
         }, 0);
     }
 
-    if (monthTwo !== "All Year") {
-      yearTwoLabel = `${monthTwo} of ${formData.yearTwo}`;
-      yearTwoSum = dataUntouched
-        .filter(
-          (m: any) =>
-            monthTwo == m.monthName &&
-            yearTwo == m.year &&
-            m.material == material
-        )
-        .reduce((accumulator: number, currentValue: any) => {
-          return accumulator + currentValue.weight;
-        }, 0);
-    }
     setDataState({
-      labels: [yearOneLabel, yearTwoLabel],
+      labels: [...yearOneLabel, ...yearTwoLabel],
       datasets: [
         {
           label: "UBCV: " + formData.material,
@@ -187,6 +188,7 @@ export default function Home({
           monthTwo={monthTwo}
           months={["All Year", ...months]}
           onChange={handleMaterialChange}
+          chosenArray={chosenMaterial}
         />
       ) : (
         <>
@@ -212,6 +214,7 @@ export default function Home({
             monthTwo={monthTwo}
             months={["All Year", ...months]}
             onChange={handleMaterialChange}
+            chosenArray={chosenMaterial}
           />
           <BarChart chartData={dataState} />
         </>

@@ -7,6 +7,7 @@ interface Props {
   setMonthTwo: (input: string) => void;
   setMaterial: (input: [string]) => void;
   material: string[];
+  chosenArray: string[];
   yearOne: string;
   yearTwo: string;
   monthOne: string;
@@ -112,14 +113,24 @@ export default function YearsLabel(props: Props) {
             <span>Material</span>
             {props.material.map((material: string) => (
               <div key={material} className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="materials"
-                  id={material}
-                  value={material}
-                  // defaultChecked={}
-                  onChange={props.onChange}
-                />
+                {props.chosenArray.includes(material) ? (
+                  <input
+                    type="checkbox"
+                    name="materials"
+                    id={material}
+                    value={material}
+                    defaultChecked={true}
+                    onChange={props.onChange}
+                  />
+                ) : (
+                  <input
+                    type="checkbox"
+                    name="materials"
+                    id={material}
+                    value={material}
+                    onChange={props.onChange}
+                  />
+                )}
                 <label htmlFor={material} className="ml-2">
                   {material}
                 </label>
