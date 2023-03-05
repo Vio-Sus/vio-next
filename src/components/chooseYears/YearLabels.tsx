@@ -1,5 +1,3 @@
-import { useEffect, useMemo, useState } from "react";
-
 interface Props {
   setYearOne: (input: string) => void;
   setMonthOne: (input: string) => void;
@@ -14,6 +12,7 @@ interface Props {
   monthOne: string;
   monthTwo: string;
   handleSubmit: (input: React.MouseEvent<HTMLButtonElement>) => void;
+  onChange: (input: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function YearsLabel(props: Props) {
@@ -109,7 +108,26 @@ export default function YearsLabel(props: Props) {
             </select>
           </div>
 
-          <div className="flex mb-12  flex-col">
+          <div className="flex flex-col mb-12">
+            <span>Material</span>
+            {props.material.map((material: string) => (
+              <div key={material} className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="materials"
+                  id={material}
+                  value={material}
+                  // defaultChecked={}
+                  onChange={props.onChange}
+                />
+                <label htmlFor={material} className="ml-2">
+                  {material}
+                </label>
+              </div>
+            ))}
+          </div>
+
+          {/* <div className="flex mb-12  flex-col">
             <label htmlFor="materials">Material</label>
             <select
               className="border-2 border-lime-600"
@@ -127,7 +145,7 @@ export default function YearsLabel(props: Props) {
                 );
               })}
             </select>
-          </div>
+          </div> */}
         </div>
 
         <p>

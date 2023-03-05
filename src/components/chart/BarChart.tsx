@@ -17,7 +17,7 @@ export interface ChartData {
 }
 export type Datasets = {
     label: string;
-    data: (string | number);
+    data: (string | number | number[]);
     borderColor: string;
     backgroundColor: string;
 }
@@ -40,7 +40,7 @@ export const options = {
     },
     title: {
       display: true,
-      text: "Transfer Station Landfill Garbage (tonnes) (UBCV)",
+      text: "",
     },
     scales: {
       y: {

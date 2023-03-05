@@ -10,10 +10,26 @@ export interface ChartData {
 }
 export type Datasets = {
   label: string;
-  data: number[];
+  data: string | number | number[];
   borderColor: string;
   backgroundColor: string;
 };
+
+const months = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+const colors = ["#ff6384", "#36a2eb", "#cc65fe", "#ffce56", "#4bc0c0"];
 
 export default function Home({
   transformedData,
@@ -27,6 +43,8 @@ export default function Home({
   const [yearTwo, setYearTwo] = useState<string>("2012");
   const [firstYearSum, setFirstYearSum] = useState<number>(0);
   const [secondYearSum, setSecondYearSum] = useState<number>(0);
+  const [chosenMaterial, setChosenMaterial] = useState<string[]>([]);
+
   const [material, setMaterial] = useState<string[]>([
     "Containers",
     "Mixed Paper",
@@ -41,16 +59,12 @@ export default function Home({
   const [dataState, setDataState] = useState({} as ChartData);
 
   useEffect(() => {
-    let yearOneLabel;
-    let yearOneSum;
-    let yearTwoLabel;
-    let yearTwoSum;
+    let yearOneLabel = formData.yearOne;
+    let yearOneSum = firstYearSum;
+    let yearTwoLabel = formData.yearTwo;
+    let yearTwoSum = secondYearSum;
 
-    // console.log(yearOneSum)
-    if (monthOne == "All Year") {
-      yearOneLabel = formData.yearOne;
-      yearOneSum = firstYearSum;
-    } else {
+    if (monthOne !== "All Year") {
       yearOneLabel = `${monthOne} of ${formData.yearOne}`;
       yearOneSum = dataUntouched
         .filter(
@@ -64,10 +78,7 @@ export default function Home({
         }, 0);
     }
 
-    if (monthTwo == "All Year") {
-      yearTwoLabel = formData.yearTwo;
-      yearTwoSum = secondYearSum;
-    } else {
+    if (monthTwo !== "All Year") {
       yearTwoLabel = `${monthTwo} of ${formData.yearTwo}`;
       yearTwoSum = dataUntouched
         .filter(
@@ -141,7 +152,16 @@ export default function Home({
     // console.log("formData", formData);
     setShowGraph(true);
   };
-
+  const handleMaterialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.value)
+    if (e.target.checked) {
+      setChosenMaterial([...chosenMaterial, e.target.value]);
+    } else {
+      setChosenMaterial((prevMaterials) =>
+        prevMaterials.filter((m) => m !== e.target.value)
+      );
+    }
+  };
   return (
     <>
       {!showGraph ? (
@@ -166,6 +186,7 @@ export default function Home({
           monthOne={monthOne}
           monthTwo={monthTwo}
           months={["All Year", ...months]}
+          onChange={handleMaterialChange}
         />
       ) : (
         <>
@@ -190,6 +211,7 @@ export default function Home({
             monthOne={monthOne}
             monthTwo={monthTwo}
             months={["All Year", ...months]}
+            onChange={handleMaterialChange}
           />
           <BarChart chartData={dataState} />
         </>

@@ -45,7 +45,7 @@ export const options: object = {
       },
       title: {
         display: true,
-        text: "Transfer Station Landfill Garbage (tonnes) (UBCV)",
+        text: "",
       },
     },
       scales: {
