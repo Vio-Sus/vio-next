@@ -4,6 +4,15 @@ import { prisma } from "../../server/db/client";
 import YearsLabel from "@/components/chooseYears/YearLabels";
 import Button from "@/components/button/ButtonMap";
 
+interface MaterialValue {
+  material: string;
+  value: number;
+}
+
+interface MonthYearValues {
+  [monthYear: string]: MaterialValue[];
+}
+
 export interface ChartData {
   labels: string[];
   datasets: Datasets[];
@@ -15,30 +24,14 @@ export type Datasets = {
   backgroundColor: string;
 };
 
-const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
-const colors = ["#ff6384", "#36a2eb", "#cc65fe", "#ffce56", "#4bc0c0"];
-
 export default function Home({
   transformedData,
   years,
   months,
   dataUntouched,
 }: any) {
-  const [monthOne, setMonthOne] = useState<string>("All Year");
-  const [monthTwo, setMonthTwo] = useState<string>("All Year");
+  const [monthOne, setMonthOne] = useState<string>("Jan");
+  const [monthTwo, setMonthTwo] = useState<string>("Feb");
   const [yearOne, setYearOne] = useState<string>("2012");
   const [yearTwo, setYearTwo] = useState<string>("2012");
   const [firstYearSum, setFirstYearSum] = useState<number>(0);
@@ -57,52 +50,74 @@ export default function Home({
   const [formData, setFormData] = useState<any>({});
   const [showGraph, setShowGraph] = useState<boolean>(false);
   const [dataState, setDataState] = useState({} as ChartData);
+  
+ 
+function getMaterialValues(month: number, year: number, materials: string[]): MonthYearValues {
+  // Convert month and year to ISO string format for comparison
+  const dateStr = `${year}-${month.toString().padStart(2, '0')}-01T00:00:00Z`;
 
-  useEffect(() => {
-    let yearOneLabel = [formData.yearOne];
-    let yearOneSum = firstYearSum;
-    let yearTwoLabel = [formData.yearTwo];
-    let yearTwoSum = secondYearSum;
+  // Find the object that matches the given month and year
+  const obj = dataUntouched.find((item: any) => item.Date === dateStr);
 
-    if (monthOne !== "All Year") {
-      yearOneLabel = chosenMaterial.map((m) => `${monthOne} of ${formData.yearOne} for ${m}`)
-      yearOneSum = dataUntouched
-        .filter(
-          (m: any) =>
-            monthOne == m.monthName &&
-            yearOne == m.year &&
-            chosenMaterial.includes(m.material)
-        )
-        .reduce((accumulator: number, currentValue: any) => {
-          return accumulator + currentValue.weight;
-        }, 0);
-      }
-
-    if (monthTwo !== "All Year") {
-      yearTwoLabel = chosenMaterial.map((m) => `${monthTwo} of ${formData.yearTwo} for ${m}`)
-      yearTwoSum = dataUntouched
-        .filter(
-          (m: any) =>
-            monthTwo == m.monthName &&
-            yearTwo == m.year &&
-            chosenMaterial.includes(m.material)
-        )
-        .reduce((accumulator: number, currentValue: any) => {
-          return accumulator + currentValue.weight;
-        }, 0);
+  // Extract the values for the given materials
+  const monthYear = `${new Date(dateStr).toLocaleString('en-us', { month: 'long' })} - ${year}`;
+  const materialValues: MaterialValue[] = [];
+  for (const material of materials) {
+    const value = obj[`${material} (tonnes) (UBCV)`];
+    if (value) {
+      materialValues.push({ material, value });
     }
+  }
 
-    setDataState({
-      labels: [...yearOneLabel, ...yearTwoLabel],
-      datasets: [
-        {
-          label: "UBCV: " + formData.material,
-          data: [yearOneSum, yearTwoSum],
-          borderColor: "#ddeeef",
-          backgroundColor: "#ddeeef",
-        },
-      ],
-    });
+  return { [monthYear]: materialValues };
+}
+  
+  useEffect(() => {
+
+    // let yearOneSum = [0];
+    // let yearOneLabel = chosenMaterial.map((materialMap) => {
+    //   let yearOneSum = dataUntouched
+    //     .filter(
+    //       (m: any) =>
+    //         monthOne == m.monthName &&
+    //         yearOne == m.year &&
+    //         materialMap == m.material
+    //     )
+    //     .map((m: any) => {
+    //       return m.weight;
+    //     });
+    //   return `${monthOne} of ${formData.yearOne} for ${materialMap}`;
+    // });
+
+
+    // let yearTwoSum = [0];
+    // let yearTwoLabel = chosenMaterial.map((materialMap) => {
+    //   yearTwoSum = dataUntouched
+    //     .filter(
+    //       (m: any) =>
+    //         monthTwo == m.monthName &&
+    //         yearTwo == m.year &&
+    //         materialMap == m.material
+    //     )
+    //     .map((m: any) => {
+    //       return m.weight;
+    //     });
+    //   return `${monthTwo} of ${formData.yearTwo} for ${materialMap}`;
+    // });
+
+    // setDataState({
+    //   labels: [...yearOneLabel, ...yearTwoLabel],
+    //   datasets: [
+    //     {
+    //       label: "UBCV: " + chosenMaterial,
+    //       data: [...yearOneSum, ...yearTwoSum],
+    //       borderColor: "#4bc0c0",
+    //       backgroundColor: "#4bc0c0",
+    //     },
+    //   ],
+    // });
+    
+
   }, [formData, firstYearSum, secondYearSum]);
 
   const firstYear = useMemo(() => {
@@ -154,7 +169,7 @@ export default function Home({
     setShowGraph(true);
   };
   const handleMaterialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value)
+    console.log(e.target.value);
     if (e.target.checked) {
       setChosenMaterial([...chosenMaterial, e.target.value]);
     } else {
@@ -186,7 +201,7 @@ export default function Home({
           yearTwo={yearTwo}
           monthOne={monthOne}
           monthTwo={monthTwo}
-          months={["All Year", ...months]}
+          months={[...months]}
           onChange={handleMaterialChange}
           chosenArray={chosenMaterial}
         />
@@ -212,7 +227,7 @@ export default function Home({
             yearTwo={yearTwo}
             monthOne={monthOne}
             monthTwo={monthTwo}
-            months={["All Year", ...months]}
+            months={[...months]}
             onChange={handleMaterialChange}
             chosenArray={chosenMaterial}
           />
@@ -283,3 +298,29 @@ export async function getServerSideProps() {
     },
   };
 }
+
+// let yearOneSum = [0]
+// let yearOneLabel = chosenMaterial.map((materialMap) => {
+//   yearOneSum = dataUntouched
+//   .filter(
+//     (m: any) =>
+//     yearOne == m.year &&
+//     materialMap == m.material
+//     ).map((m: any) => {
+//       return  m.weight;
+//     });
+//     return `${formData.yearOne} for ${materialMap}`
+//   })
+
+//   let yearTwoSum = [0]
+//   let yearTwoLabel = chosenMaterial.map((materialMap) => {
+//   yearTwoSum = dataUntouched
+//   .filter(
+//     (m: any) =>
+//     yearTwo == m.year &&
+//     materialMap == m.material
+//     ).map((m: any) => {
+//       return  m.weight;
+//     });
+//     return `${formData.yearTwo} for ${materialMap}`
+//   })
