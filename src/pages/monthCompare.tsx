@@ -15,6 +15,15 @@ export type Datasets = {
   backgroundColor: string;
 };
 
+type WasteData = {
+  year: string,
+  monthName: string,
+  material: string,
+  weight: number
+};
+
+type WasteDataArray = WasteData[];
+
 export default function Home({
   transformedData,
   years,
@@ -59,7 +68,7 @@ export default function Home({
       });
       if (dataFound && dataFound.length > 1) {
         const totalWeight = dataFound.reduce(
-          (acc, item) => {
+          (acc:WasteData, item:WasteData) => {
             return {
               ...acc,
               weight: acc.weight + item.weight,
@@ -84,7 +93,7 @@ export default function Home({
       });
       if (dataFound && dataFound.length > 1) {
         const totalWeight = dataFound.reduce(
-          (acc, item) => {
+          (acc:WasteData, item:WasteData) => {
             return {
               ...acc,
               weight: acc.weight + item.weight,
