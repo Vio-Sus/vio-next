@@ -4,7 +4,7 @@ export interface ChartData {
   }
   export type Datasets = {
     label: string;
-    data: number[];
+    data: string | number | number[];
     borderColor: string;
     backgroundColor: string;
   };

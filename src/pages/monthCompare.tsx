@@ -15,6 +15,15 @@ export type Datasets = {
   backgroundColor: string;
 };
 
+type WasteData = {
+  year: string,
+  monthName: string,
+  material: string,
+  weight: number
+};
+
+type WasteDataArray = WasteData[];
+
 export default function Home({
   transformedData,
   years,
@@ -42,13 +51,9 @@ export default function Home({
   const [showGraph, setShowGraph] = useState<boolean>(false);
   const [dataState, setDataState] = useState({} as ChartData);
 
-  // function isWantedInData(inputUntouchedData) {
-  //   return (inputUntouchedData.year === yearOne && inputUntouchedData.month === monthOne && inputUntouchedData.material === );
-  // }
 
   useEffect(() => {
     let labels = [];
-    // console.log(chosenMaterial)
     const yearOneData = chosenMaterial.map((m) => {
       const dataFound = dataUntouched.find((inputUntouchedData: any) => {
         return (
@@ -59,7 +64,7 @@ export default function Home({
       });
       if (dataFound && dataFound.length > 1) {
         const totalWeight = dataFound.reduce(
-          (acc, item) => {
+          (acc:WasteData, item:WasteData) => {
             return {
               ...acc,
               weight: acc.weight + item.weight,
@@ -84,7 +89,7 @@ export default function Home({
       });
       if (dataFound && dataFound.length > 1) {
         const totalWeight = dataFound.reduce(
-          (acc, item) => {
+          (acc:WasteData, item:WasteData) => {
             return {
               ...acc,
               weight: acc.weight + item.weight,
@@ -99,11 +104,6 @@ export default function Home({
         return { year: yearTwo, monthName: monthTwo, material: m, weight: 0 };
       }
     });
-    // console.log(yearOneData)
-    // console.log(yearTwoData)
-    // chosenMaterial.map((m) => {
-
-    // })
 
     setDataState({
       labels: chosenMaterial,
