@@ -51,13 +51,9 @@ export default function Home({
   const [showGraph, setShowGraph] = useState<boolean>(false);
   const [dataState, setDataState] = useState({} as ChartData);
 
-  // function isWantedInData(inputUntouchedData) {
-  //   return (inputUntouchedData.year === yearOne && inputUntouchedData.month === monthOne && inputUntouchedData.material === );
-  // }
 
   useEffect(() => {
     let labels = [];
-    // console.log(chosenMaterial)
     const yearOneData = chosenMaterial.map((m) => {
       const dataFound = dataUntouched.find((inputUntouchedData: any) => {
         return (
@@ -108,11 +104,6 @@ export default function Home({
         return { year: yearTwo, monthName: monthTwo, material: m, weight: 0 };
       }
     });
-    // console.log(yearOneData)
-    // console.log(yearTwoData)
-    // chosenMaterial.map((m) => {
-
-    // })
 
     setDataState({
       labels: chosenMaterial,
