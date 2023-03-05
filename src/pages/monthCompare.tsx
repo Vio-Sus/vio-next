@@ -41,23 +41,91 @@ export default function Home({
   const [formData, setFormData] = useState<any>({});
   const [showGraph, setShowGraph] = useState<boolean>(false);
   const [dataState, setDataState] = useState({} as ChartData);
-  
+
+  // function isWantedInData(inputUntouchedData) {
+  //   return (inputUntouchedData.year === yearOne && inputUntouchedData.month === monthOne && inputUntouchedData.material === );
+  // }
 
   useEffect(() => {
+    let labels = [];
+    // console.log(chosenMaterial)
+    const yearOneData = chosenMaterial.map((m) => {
+      const dataFound = dataUntouched.find((inputUntouchedData: any) => {
+        return (
+          inputUntouchedData.year === yearOne &&
+          inputUntouchedData.monthName === monthOne &&
+          inputUntouchedData.material === m
+        );
+      });
+      if (dataFound && dataFound.length > 1) {
+        const totalWeight = dataFound.reduce(
+          (acc, item) => {
+            return {
+              ...acc,
+              weight: acc.weight + item.weight,
+            };
+          },
+          { year: "", monthName: "", material: "", weight: 0 }
+        );
+        return totalWeight;
+      } else if (dataFound) {
+        return dataFound;
+      } else {
+        return { year: yearOne, monthName: monthOne, material: m, weight: 0 };
+      }
+    });
+    const yearTwoData = chosenMaterial.map((m) => {
+      const dataFound = dataUntouched.find((inputUntouchedData: any) => {
+        return (
+          inputUntouchedData.year === yearTwo &&
+          inputUntouchedData.monthName === monthTwo &&
+          inputUntouchedData.material === m
+        );
+      });
+      if (dataFound && dataFound.length > 1) {
+        const totalWeight = dataFound.reduce(
+          (acc, item) => {
+            return {
+              ...acc,
+              weight: acc.weight + item.weight,
+            };
+          },
+          { year: "", monthName: "", material: "", weight: 0 }
+        );
+        return totalWeight;
+      } else if (dataFound) {
+        return dataFound;
+      } else {
+        return { year: yearTwo, monthName: monthTwo, material: m, weight: 0 };
+      }
+    });
+    // console.log(yearOneData)
+    // console.log(yearTwoData)
+    // chosenMaterial.map((m) => {
 
-    // setDataState({
-    //   labels: [...yearOneLabel, ...yearTwoLabel],
-    //   datasets: [
-    //     {
-    //       label: "UBCV: " + chosenMaterial,
-    //       data: [...yearOneSum, ...yearTwoSum],
-    //       borderColor: "#4bc0c0",
-    //       backgroundColor: "#4bc0c0",
-    //     },
-    //   ],
-    // });
-    
+    // })
 
+    setDataState({
+      labels: chosenMaterial,
+      datasets: [
+        {
+          label: "UBCV: " + yearOne + " " + monthOne,
+          data: yearOneData.map((m) => {
+            return m.weight;
+          }),
+          borderColor: "#4bc0c0",
+          backgroundColor: "#4bc0c0",
+        },
+        {
+          label: "UBCV: " + yearTwo + " " + monthTwo,
+          data: yearTwoData.map((m) => {
+            return m.weight;
+          }),
+          borderColor: "#cc65fe",
+          backgroundColor: "#cc65fe",
+        },
+      ],
+    });
   }, [formData, firstYearSum, secondYearSum]);
 
   const firstYear = useMemo(() => {
@@ -229,8 +297,7 @@ export async function getServerSideProps() {
     return acc;
   }, new Set<number>());
 
-console.log(dataUntouched);
-
+  console.log(dataUntouched);
 
   return {
     props: {
