@@ -1,19 +1,12 @@
 import {Line} from "react-chartjs-2"
 import React from 'react';
 
+import type { ChartData, Datasets } from "@/types/LineChart";
+
 export interface Props {
     chartData: ChartData;
 }
-export interface ChartData {
-    labels: string[];
-    datasets: Datasets[];
-}
-export type Datasets = {
-    label: string;
-    data: (string | number);
-    borderColor: string;
-    backgroundColor: string;
-}
+
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -46,6 +39,7 @@ export const options: object = {
       title: {
         display: true,
         text: "",
+
       },
     },
       scales: {
