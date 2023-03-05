@@ -10,7 +10,7 @@ export interface ChartData {
 }
 export type Datasets = {
   label: string;
-  data: number[];
+  data: string | number | number[];
   borderColor: string;
   backgroundColor: string;
 };
@@ -21,12 +21,14 @@ export default function Home({
   months,
   dataUntouched,
 }: any) {
-  const [monthOne, setMonthOne] = useState<string>("All Year");
-  const [monthTwo, setMonthTwo] = useState<string>("All Year");
+  const [monthOne, setMonthOne] = useState<string>("January");
+  const [monthTwo, setMonthTwo] = useState<string>("February");
   const [yearOne, setYearOne] = useState<string>("2012");
   const [yearTwo, setYearTwo] = useState<string>("2012");
   const [firstYearSum, setFirstYearSum] = useState<number>(0);
   const [secondYearSum, setSecondYearSum] = useState<number>(0);
+  const [chosenMaterial, setChosenMaterial] = useState<string[]>([]);
+
   const [material, setMaterial] = useState<string[]>([
     "Containers",
     "Mixed Paper",
@@ -40,54 +42,87 @@ export default function Home({
   const [showGraph, setShowGraph] = useState<boolean>(false);
   const [dataState, setDataState] = useState({} as ChartData);
 
+  // function isWantedInData(inputUntouchedData) {
+  //   return (inputUntouchedData.year === yearOne && inputUntouchedData.month === monthOne && inputUntouchedData.material === );
+  // }
+
   useEffect(() => {
-    let yearOneLabel;
-    let yearOneSum;
-    let yearTwoLabel;
-    let yearTwoSum;
+    let labels = [];
+    // console.log(chosenMaterial)
+    const yearOneData = chosenMaterial.map((m) => {
+      const dataFound = dataUntouched.find((inputUntouchedData: any) => {
+        return (
+          inputUntouchedData.year === yearOne &&
+          inputUntouchedData.monthName === monthOne &&
+          inputUntouchedData.material === m
+        );
+      });
+      if (dataFound && dataFound.length > 1) {
+        const totalWeight = dataFound.reduce(
+          (acc, item) => {
+            return {
+              ...acc,
+              weight: acc.weight + item.weight,
+            };
+          },
+          { year: "", monthName: "", material: "", weight: 0 }
+        );
+        return totalWeight;
+      } else if (dataFound) {
+        return dataFound;
+      } else {
+        return { year: yearOne, monthName: monthOne, material: m, weight: 0 };
+      }
+    });
+    const yearTwoData = chosenMaterial.map((m) => {
+      const dataFound = dataUntouched.find((inputUntouchedData: any) => {
+        return (
+          inputUntouchedData.year === yearTwo &&
+          inputUntouchedData.monthName === monthTwo &&
+          inputUntouchedData.material === m
+        );
+      });
+      if (dataFound && dataFound.length > 1) {
+        const totalWeight = dataFound.reduce(
+          (acc, item) => {
+            return {
+              ...acc,
+              weight: acc.weight + item.weight,
+            };
+          },
+          { year: "", monthName: "", material: "", weight: 0 }
+        );
+        return totalWeight;
+      } else if (dataFound) {
+        return dataFound;
+      } else {
+        return { year: yearTwo, monthName: monthTwo, material: m, weight: 0 };
+      }
+    });
+    // console.log(yearOneData)
+    // console.log(yearTwoData)
+    // chosenMaterial.map((m) => {
 
-    // console.log(yearOneSum)
-    if (monthOne == "All Year") {
-      yearOneLabel = formData.yearOne;
-      yearOneSum = firstYearSum;
-    } else {
-      yearOneLabel = `${monthOne} of ${formData.yearOne}`;
-      yearOneSum = dataUntouched
-        .filter(
-          (m: any) =>
-            monthOne == m.monthName &&
-            yearOne == m.year &&
-            m.material == material
-        )
-        .reduce((accumulator: number, currentValue: any) => {
-          return accumulator + currentValue.weight;
-        }, 0);
-    }
+    // })
 
-    if (monthTwo == "All Year") {
-      yearTwoLabel = formData.yearTwo;
-      yearTwoSum = secondYearSum;
-    } else {
-      yearTwoLabel = `${monthTwo} of ${formData.yearTwo}`;
-      yearTwoSum = dataUntouched
-        .filter(
-          (m: any) =>
-            monthTwo == m.monthName &&
-            yearTwo == m.year &&
-            m.material == material
-        )
-        .reduce((accumulator: number, currentValue: any) => {
-          return accumulator + currentValue.weight;
-        }, 0);
-    }
     setDataState({
-      labels: [yearOneLabel, yearTwoLabel],
+      labels: chosenMaterial,
       datasets: [
         {
-          label: "UBCV: " + formData.material,
-          data: [yearOneSum, yearTwoSum],
-          borderColor: "#ddeeef",
-          backgroundColor: "#ddeeef",
+          label: "UBCV: " + yearOne + " " + monthOne,
+          data: yearOneData.map((m) => {
+            return m.weight;
+          }),
+          borderColor: "#4bc0c0",
+          backgroundColor: "#4bc0c0",
+        },
+        {
+          label: "UBCV: " + yearTwo + " " + monthTwo,
+          data: yearTwoData.map((m) => {
+            return m.weight;
+          }),
+          borderColor: "#cc65fe",
+          backgroundColor: "#cc65fe",
         },
       ],
     });
@@ -141,7 +176,16 @@ export default function Home({
     // console.log("formData", formData);
     setShowGraph(true);
   };
-
+  const handleMaterialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.value);
+    if (e.target.checked) {
+      setChosenMaterial([...chosenMaterial, e.target.value]);
+    } else {
+      setChosenMaterial((prevMaterials) =>
+        prevMaterials.filter((m) => m !== e.target.value)
+      );
+    }
+  };
   return (
     <>
       {!showGraph ? (
@@ -165,7 +209,9 @@ export default function Home({
           yearTwo={yearTwo}
           monthOne={monthOne}
           monthTwo={monthTwo}
-          months={["All Year", ...months]}
+          months={[...months]}
+          onChange={handleMaterialChange}
+          chosenArray={chosenMaterial}
         />
       ) : (
         <>
@@ -189,7 +235,9 @@ export default function Home({
             yearTwo={yearTwo}
             monthOne={monthOne}
             monthTwo={monthTwo}
-            months={["All Year", ...months]}
+            months={[...months]}
+            onChange={handleMaterialChange}
+            chosenArray={chosenMaterial}
           />
           <BarChart chartData={dataState} />
         </>
@@ -249,6 +297,8 @@ export async function getServerSideProps() {
     return acc;
   }, new Set<number>());
 
+  console.log(dataUntouched);
+
   return {
     props: {
       dataUntouched: dataUntouched,
@@ -258,3 +308,29 @@ export async function getServerSideProps() {
     },
   };
 }
+
+// let yearOneSum = [0]
+// let yearOneLabel = chosenMaterial.map((materialMap) => {
+//   yearOneSum = dataUntouched
+//   .filter(
+//     (m: any) =>
+//     yearOne == m.year &&
+//     materialMap == m.material
+//     ).map((m: any) => {
+//       return  m.weight;
+//     });
+//     return `${formData.yearOne} for ${materialMap}`
+//   })
+
+//   let yearTwoSum = [0]
+//   let yearTwoLabel = chosenMaterial.map((materialMap) => {
+//   yearTwoSum = dataUntouched
+//   .filter(
+//     (m: any) =>
+//     yearTwo == m.year &&
+//     materialMap == m.material
+//     ).map((m: any) => {
+//       return  m.weight;
+//     });
+//     return `${formData.yearTwo} for ${materialMap}`
+//   })

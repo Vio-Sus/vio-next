@@ -201,7 +201,7 @@ const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
 
 <div className="flex  flex-col gap-3">
 
-    <div className="flex mb-12  flex-col mb-12">
+    <div className="flex flex-col mb-12">
       <label htmlFor="yearOne" className="mt-0">Year One</label>
       <select value={yearOne} className="border-2 border-lime-600" name="yearOne" id="yearOne" onChange={(e) => {setYearOne(e.target.value)}}>
         {year.map((year: number) => {
@@ -211,7 +211,7 @@ const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     </div>
     
 
-    <div className="flex mb-12  flex-col mb-12">
+    <div className="flex flex-col mb-12">
   <span>Material</span>
   {material.map((material: string) => (
     <div key={material} className="flex items-center">

@@ -1,5 +1,3 @@
-import { useEffect, useMemo, useState } from "react";
-
 interface Props {
   setYearOne: (input: string) => void;
   setMonthOne: (input: string) => void;
@@ -9,11 +7,13 @@ interface Props {
   setMonthTwo: (input: string) => void;
   setMaterial: (input: [string]) => void;
   material: string[];
+  chosenArray: string[];
   yearOne: string;
   yearTwo: string;
   monthOne: string;
   monthTwo: string;
   handleSubmit: (input: React.MouseEvent<HTMLButtonElement>) => void;
+  onChange: (input: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function YearsLabel(props: Props) {
@@ -109,7 +109,36 @@ export default function YearsLabel(props: Props) {
             </select>
           </div>
 
-          <div className="flex mb-12  flex-col">
+          <div className="flex flex-col mb-12">
+            <span>Material</span>
+            {props.material.map((material: string) => (
+              <div key={material} className="flex items-center">
+                {props.chosenArray.includes(material) ? (
+                  <input
+                    type="checkbox"
+                    name="materials"
+                    id={material}
+                    value={material}
+                    defaultChecked={true}
+                    onChange={props.onChange}
+                  />
+                ) : (
+                  <input
+                    type="checkbox"
+                    name="materials"
+                    id={material}
+                    value={material}
+                    onChange={props.onChange}
+                  />
+                )}
+                <label htmlFor={material} className="ml-2">
+                  {material}
+                </label>
+              </div>
+            ))}
+          </div>
+
+          {/* <div className="flex mb-12  flex-col">
             <label htmlFor="materials">Material</label>
             <select
               className="border-2 border-lime-600"
@@ -127,7 +156,7 @@ export default function YearsLabel(props: Props) {
                 );
               })}
             </select>
-          </div>
+          </div> */}
         </div>
 
         <p>
