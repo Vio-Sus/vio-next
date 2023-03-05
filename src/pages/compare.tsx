@@ -1,21 +1,16 @@
 import BarChart from "@/components/chart/BarChart";
 import { useEffect, useMemo, useState } from "react";
 import { prisma } from "../../server/db/client";
-import Button from "@/components/button/ButtonMap"
 
+import type { ChartData, Datasets } from "@/types/BarChart";
 
-export interface ChartData {
-  labels: string[];
-  datasets: Datasets[];
+type transformedData = {
+ year: string
+ material: string
+ weight: number 
 }
-export type Datasets = {
-  label: string;
-  data: number[];
-  borderColor: string;
-  backgroundColor: string;
-};
 
-export default function Home({ transformedData, years }: any) {
+export default function Home({ transformedData, years }: {transformedData: transformedData[], years: number[]}) {
     const [yearOne, setYearOne] = useState<string>("");
     const [yearTwo, setYearTwo] = useState<string>("");
     const [firstYearSum, setFirstYearSum] = useState<number>(0);
@@ -26,6 +21,7 @@ export default function Home({ transformedData, years }: any) {
     const [showGraph, setShowGraph] = useState<boolean>(false)
     const [dataState, setDataState] = useState({} as ChartData);
 
+    console.log("YEARS: ", years) // in the browser this logs as an array of strings and i have the type set as number[] (ask sam)
 
     useEffect(() => {
       setDataState({
@@ -235,7 +231,7 @@ export async function getServerSideProps() {
   console.log("jsonArrayFromBackendJSON")
 
   
-  const transformedData: any = [];
+  const transformedData: transformedData[] = [];
   jsonArrayFromBackendJSON.jsonArray.forEach((m: any) => {
     const year = new Date(m.Date).getFullYear().toString();
     Object.keys(m).forEach((key) => {
@@ -253,7 +249,8 @@ export async function getServerSideProps() {
     return acc
     }, new Set<number>())
 
-    console.log("transformedData")
+    console.log("transformedData", transformedData)
+    console.log("years", years)
 
   return {
     props: {
