@@ -6,31 +6,44 @@ import { utils } from "xlsx";
 import { json } from "stream/consumers";
 
 
-export interface ChartData {
-  labels: string[];
-  datasets: Datasets[];
-  options?: {};
-}
-export type Datasets = {
-  label: string;
-  data: number[];
-  fill: boolean;
-  borderColor: string;
-  tension: number;
-  options?: {};
-};
+import type { ChartData, Datasets } from "@/types/LineChart";
 
-export default function Home({ data, years, monthlyTotals }: any) {
-    const [yearOne, setYearOne] = useState<string>("");
-    const [yearTwo, setYearTwo] = useState<string>("");
+
+type data = {
+  Date: Date
+  'Transfer Station Landfill Garbage (tonnes) (UBCV)': string
+  'Containers (tonnes) (UBCV)': string
+  'Corrugated Cardboard (tonnes) (UBCV)': string
+  'Mixed Paper (tonnes) (UBCV)': string
+  'Office Paper (tonnes) (UBCV)': string
+  'Moisture Correction (tonnes) (UBCV)': string
+  'Refuse (ICI Waste) (tonnes) (UBCV)': string
+}
+
+type FormData = {
+  yearOne: string
+  yearTwo: string
+  material: string
+}
+
+export default function Home({ data, years }: {data: data[], years: number[]}) {
+    const [yearOne, setYearOne] = useState("");
+    const [yearTwo, setYearTwo] = useState("");
     const [firstYearTotals, setFirstYearTotals] = useState<number[]>([]);
     const [secondYearTotals, setSecondYearTotals] = useState<number[]>([]);
-    const [material, setMaterial] = useState<string[]>(["Containers (tonnes) (UBCV)", "Mixed Paper (tonnes) (UBCV)", "Office Paper (tonnes) (UBCV)", "Refuse (ICI Waste) (tonnes) (UBCV)", "Moisture Correction (tonnes) (UBCV)", "Corrugated Cardboard (tonnes) (UBCV)", "Transfer Station Landfill Garbage (tonnes) (UBCV)"]);
-    const [chosenMaterial, setChosenMaterial] = useState<any>("");
+    const [material, setMaterial] = useState(["Containers (tonnes) (UBCV)", "Mixed Paper (tonnes) (UBCV)", "Office Paper (tonnes) (UBCV)", "Refuse (ICI Waste) (tonnes) (UBCV)", "Moisture Correction (tonnes) (UBCV)", "Corrugated Cardboard (tonnes) (UBCV)", "Transfer Station Landfill Garbage (tonnes) (UBCV)"]);
+    const [chosenMaterial, setChosenMaterial] = useState<string>("");
     const [year, setYear] = useState<number[]>(years) 
-    const [formData, setFormData] = useState<any>({})
-    const [showGraph, setShowGraph] = useState<boolean>(false)
-    const [dataState, setDataState] = useState({} as ChartData);
+    const [formData, setFormData] = useState<FormData>({
+      yearOne: "",
+      yearTwo: "",
+      material: ""
+    })
+    const [showGraph, setShowGraph] = useState(false)
+    const [dataState, setDataState] = useState<ChartData>({
+      labels: [],
+      datasets: []
+    })
 
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -45,7 +58,7 @@ export default function Home({ data, years, monthlyTotals }: any) {
           data: Object.entries(firstYearTotals).map(([month, total]) => ({
             month,total
           }
-          )).sort((a, b) => a.month.localeCompare(b.month)).map((element: any) => {
+          )).sort((a, b) => a.month.localeCompare(b.month)).map((element) => {
             return element.total
           }),
           fill: false,
@@ -56,7 +69,7 @@ export default function Home({ data, years, monthlyTotals }: any) {
         {
           label: formData.yearTwo,
           data: Object.entries(secondYearTotals).map(([month, total]) => ({month,total}))
-          .sort((a, b) => a.month.localeCompare(b.month)).map((element: any) => {
+          .sort((a, b) => a.month.localeCompare(b.month)).map((element) => {
             return element.total
           }
           ),
@@ -87,7 +100,7 @@ export default function Home({ data, years, monthlyTotals }: any) {
     useEffect(() => {
       // this useEffect is kinda ugly and im repeating myself and i kinda only wanna do the logic once but i dont know how to do that right now...
       console.log("FORM DATA: ", formData)
-      const firstMonthlyTotals: any = {
+      const firstMonthlyTotals: any = { 
         '01': 0,
         '02': 0,
         '03': 0,
@@ -108,7 +121,7 @@ export default function Home({ data, years, monthlyTotals }: any) {
           const month = item.Date.substring(5, 7); // extract the month from the date
           const weight = item[formData.material]; // get the weight for the desired material
           if (weight !== 'NA') {
-            firstMonthlyTotals[month] += weight; // add the weight to the monthly total for that month
+            firstMonthlyTotals[month] += weight ; // add the weight to the monthly total for that month
           }
         }
       });
@@ -152,10 +165,10 @@ export default function Home({ data, years, monthlyTotals }: any) {
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    console.log(yearOne, yearTwo, material[0])
+    console.log(yearOne, yearTwo, chosenMaterial)
     setFormData({
-      yearOne: +yearOne,
-      yearTwo: +yearTwo,
+      yearOne: +yearOne + "",
+      yearTwo: +yearTwo + "",
       material: chosenMaterial
     })
     setShowGraph(true)
@@ -196,7 +209,7 @@ export default function Home({ data, years, monthlyTotals }: any) {
 
     <div className="flex mb-12  flex-col mb-12">
         <label htmlFor="materials">Material</label>
-      <select className="border-2 border-lime-600" name="materials" id="materials" onChange={(e) => {setChosenMaterial([e.target.value])}}>
+      <select className="border-2 border-lime-600" name="materials" id="materials" onChange={(e) => {setChosenMaterial(e.target.value)}}>
         {material.map((material: string) => {
             return <option key={material} value={material}>{material}</option>;
         })}
@@ -249,7 +262,7 @@ export default function Home({ data, years, monthlyTotals }: any) {
 
     <div className="flex mb-12  flex-col mb-12">
         <label htmlFor="materials">Material</label>
-      <select value={material} className="border-2 border-lime-600" name="materials" id="materials" onChange={(e) => {setChosenMaterial([e.target.value])}}>
+      <select value={material} className="border-2 border-lime-600" name="materials" id="materials" onChange={(e) => {setChosenMaterial(e.target.value)}}>
         {material.map((material: string) => {
             return <option key={material} value={material}>{material}</option>;
         })}

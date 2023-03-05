@@ -142,6 +142,8 @@ CREATE TABLE "Session" (
 -- CreateTable
 CREATE TABLE "testingData" (
     "id" SERIAL NOT NULL,
+    "name" TEXT,
+    "creationTime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "jsonArray" JSONB,
 
     CONSTRAINT "testingData_pkey" PRIMARY KEY ("id")
@@ -189,6 +191,9 @@ CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provi
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Session_sessionToken_key" ON "Session"("sessionToken");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "testingData_name_key" ON "testingData"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "VerificationToken_token_key" ON "VerificationToken"("token");
