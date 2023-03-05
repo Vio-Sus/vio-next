@@ -44,14 +44,19 @@ export default function Home({ data, years }: {data: data[], years: number[]}) {
     })
     const [showGraph, setShowGraph] = useState<boolean>(false)
     const [chosenMaterialsSum, setChosenMaterialsSum] = useState<any>([])
-    const [dataState, setDataState] = useState<ChartData>({
+    const [dataStateForYearOne, setDataStateForYearOne] = useState<ChartData>({
       labels: [],
       datasets: []
     });
+
+    const [dataStateForYearTwo, setDataStateForYearTwo] = useState<ChartData>({
+        labels: [],
+        datasets: []
+      });
   
     
     useEffect(() => {
-      setDataState({
+        setDataStateForYearOne({
         labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
         datasets: chosenMaterial.map((material: string, index: number) => {
         const colors = ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#4bc0c0']
@@ -64,6 +69,21 @@ export default function Home({ data, years }: {data: data[], years: number[]}) {
             }),
         }
       )
+
+        setDataStateForYearTwo({
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            datasets: chosenMaterial.map((material: string, index: number) => {
+            const colors = ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#4bc0c0']
+              return {
+                        label: "UBCV: " + material,
+                        data: getMonthlyBreakdown(formData.yearTwo, material),
+                        borderColor: colors[index % colors.length],
+                        backgroundColor: colors[index % colors.length],
+                };
+                }
+            )
+        }
+        )
   }, [formData, firstYearTotals, secondYearTotals])
 
 
@@ -128,7 +148,6 @@ const handleMaterialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
 const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    // setChosenMaterial([])
     console.log(yearOne, yearTwo, material[0])
     setFormData({
     yearOne: +yearOne + "",
@@ -152,8 +171,17 @@ const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
 <div className="flex  flex-col gap-3">
 
     <div className="flex mb-12  flex-col mb-12">
-      <label htmlFor="yearOne" className="mt-0">Pick year</label>
+      <label htmlFor="yearOne" className="mt-0">Pick first year</label>
       <select className="border-2 border-lime-600" name="yearOne" id="yearOne" onChange={(e) => {setYearOne(e.target.value)}}>
+        {year.map((year: number) => {
+            return <option key={year} value={year}>{year}</option>;
+        })}
+      </select>
+    </div>
+
+    <div className="flex mb-12  flex-col mb-12">
+      <label htmlFor="yearTwo" className="mt-0">Pick second year</label>
+      <select className="border-2 border-lime-600" name="yearTwo" id="yearTwo" onChange={(e) => {setYearTwo(e.target.value)}}>
         {year.map((year: number) => {
             return <option key={year} value={year}>{year}</option>;
         })}
@@ -209,6 +237,15 @@ const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
         })}
       </select>
     </div>
+
+    <div className="flex mb-12  flex-col mb-12">
+      <label htmlFor="yearTwo" className="mt-0">Pick second year</label>
+      <select className="border-2 border-lime-600" name="yearTwo" id="yearTwo" onChange={(e) => {setYearTwo(e.target.value)}}>
+        {year.map((year: number) => {
+            return <option key={year} value={year}>{year}</option>;
+        })}
+      </select>
+    </div>
     
 
     <div className="flex mb-12  flex-col mb-12">
@@ -242,7 +279,24 @@ const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
 
       </form>
     </div>
-       <BarChart chartData={dataState} />
+
+
+
+    <div className="flex flex-col md:flex-row md:space-x-4 h-96">
+        <div className="flex-1 h-full">
+            <h2>{formData.yearOne}</h2>
+            <BarChart chartData={dataStateForYearOne} />
+         </div>
+    <div className="flex-1 justify-center items-center">
+            <h2>{formData.yearTwo}</h2>
+             <BarChart chartData={dataStateForYearTwo} />
+         </div>
+    </div>
+
+
+
+
+
     </>
     )}
     </>
