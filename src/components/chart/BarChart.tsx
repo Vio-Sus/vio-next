@@ -15,6 +15,7 @@ export interface Props {
     chartData: ChartData;
 }
 
+
 import { Bar } from 'react-chartjs-2';
 
 ChartJS.register(
@@ -34,7 +35,8 @@ export const options = {
     },
     title: {
       display: true,
-      text: "Waste Items for UBCV",
+      text: "",
+
     },
     scales: {
       y: {
