@@ -159,68 +159,88 @@ const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
 
 
 
+
+
   return (
     <>     
     {!showGraph ? (
 
 
-    <div className="content-start m-12">
+<div className="content-start m-12">
         
-    <form action="#">
-
-<div className="flex  flex-col gap-3">
-
-    <div className="flex mb-12  flex-col mb-12">
-      <label htmlFor="yearOne" className="mt-0">Pick first year</label>
+        <form action="#">
+        
+        <div className="flex  flex-col gap-3">
+        
+        <div className="flex mb-12  flex-col mb-12">
+      <label htmlFor="yearOne" className="mt-0">Year One</label>
       <select className="border-2 border-lime-600" name="yearOne" id="yearOne" onChange={(e) => {setYearOne(e.target.value)}}>
+      <option value="">Select a year</option>
         {year.map((year: number) => {
             return <option key={year} value={year}>{year}</option>;
         })}
       </select>
     </div>
 
+
     <div className="flex mb-12  flex-col mb-12">
-      <label htmlFor="yearTwo" className="mt-0">Pick second year</label>
+        <label htmlFor="yearTwo">Year Two</label>
       <select className="border-2 border-lime-600" name="yearTwo" id="yearTwo" onChange={(e) => {setYearTwo(e.target.value)}}>
+      <option value="">Select a year</option>
         {year.map((year: number) => {
             return <option key={year} value={year}>{year}</option>;
         })}
       </select>
     </div>
-
-
+        
+        
+        
+        <div className="flex mb-12  flex-col mb-12">
+        <span>Material</span>
+        {material.map((material: string) => (
+        <div key={material} className="flex items-center">
+          <input
+            type="checkbox"
+            name="materials"
+            id={material}
+            value={material}
+            onChange={handleMaterialChange}        
+          />
+          <label htmlFor={material} className="ml-2">{material}</label>
+        </div>
+        ))}
+        </div>
+        
+        
+        </div>
+        
+        
+        {chosenMaterial == "" || yearOne == "" || yearTwo == "" ? (
+     <p>
+     <button 
+     disabled={true}
+     type="submit" 
+     onClick={handleSubmit}
+     className="inline-block px-7 py-3 bg-[#808080] text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full">
+     Compare
+     </button>
+    </p>
     
-    <div className="flex mb-12  flex-col mb-12">
-  <span>Material</span>
-  {material.map((material: string) => (
-    <div key={material} className="flex items-center">
-      <input
-        type="checkbox"
-        name="materials"
-        id={material}
-        value={material}
-        onChange={handleMaterialChange}        
-      />
-      <label htmlFor={material} className="ml-2">{material}</label>
-    </div>
-  ))}
-</div>
-
-
-</div>
-
-
+    ) : (
       <p>
-        <button 
-        type="submit" 
-        onClick={handleSubmit}
-        className="inline-block px-7 py-3 bg-[#80CF76] text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full">
-        Compare
-        </button>
-      </p>
+      <button 
+      type="submit" 
+      onClick={handleSubmit}
+      className="inline-block px-7 py-3 bg-[#80CF76] text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full">
+      Compare
+      </button>
+    </p>
+    )}
+        
+          </form>
+        </div>
 
-      </form>
-    </div>
+
     ) : (
 <> 
         <div className="content-start m-12">
@@ -255,8 +275,9 @@ const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
       <input
         type="checkbox"
         name="materials"
+
         id={material}
-        value={material}
+        defaultChecked={chosenMaterial.includes(material)}
         onChange={handleMaterialChange}    
       />
       <label htmlFor={material} className="ml-2">{material}</label>
@@ -345,3 +366,4 @@ export async function getServerSideProps() {
     },
   };
 }
+
