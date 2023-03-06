@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import BarChart from "@/components/chart/BarChart";
 import { prisma } from "../../server/db/client";
-import YearsLabel from "@/components/chooseYears/YearLabels";
+import YearsLabel from "@/components/compareMonthComponents/YearLabels";
 import Button from "@/components/button/ButtonMap";
+import MultipleYearCompare from "@/components/compareMonthComponents/multipleYear";
 
 export interface ChartData {
   labels: string[];
@@ -16,10 +17,10 @@ export type Datasets = {
 };
 
 type WasteData = {
-  year: string,
-  monthName: string,
-  material: string,
-  weight: number
+  year: string;
+  monthName: string;
+  material: string;
+  weight: number;
 };
 
 type WasteDataArray = WasteData[];
@@ -51,9 +52,7 @@ export default function Home({
   const [showGraph, setShowGraph] = useState<boolean>(false);
   const [dataState, setDataState] = useState({} as ChartData);
 
-
   useEffect(() => {
-    let labels = [];
     const yearOneData = chosenMaterial.map((m) => {
       const dataFound = dataUntouched.find((inputUntouchedData: any) => {
         return (
@@ -64,7 +63,7 @@ export default function Home({
       });
       if (dataFound && dataFound.length > 1) {
         const totalWeight = dataFound.reduce(
-          (acc:WasteData, item:WasteData) => {
+          (acc: WasteData, item: WasteData) => {
             return {
               ...acc,
               weight: acc.weight + item.weight,
@@ -89,7 +88,7 @@ export default function Home({
       });
       if (dataFound && dataFound.length > 1) {
         const totalWeight = dataFound.reduce(
-          (acc:WasteData, item:WasteData) => {
+          (acc: WasteData, item: WasteData) => {
             return {
               ...acc,
               weight: acc.weight + item.weight,
@@ -186,22 +185,33 @@ export default function Home({
       );
     }
   };
+  
   return (
     <>
+      {/* <MultipleYearCompare
+        setYearOne={setYearOne}
+        year={year}
+        setYearTwo={setYearTwo}
+        setMaterial={setMaterial}
+        material={material}
+        handleSubmit={handleSubmit}
+        setMonthTwo={setMonthTwo}
+        setMonthOne={setMonthOne}
+        yearOne={yearOne}
+        yearTwo={yearTwo}
+        monthOne={monthOne}
+        monthTwo={monthTwo}
+        months={[...months]}
+        onChange={handleMaterialChange}
+        chosenArray={chosenMaterial}
+      /> */}
       {!showGraph ? (
-        <YearsLabel
+        <MultipleYearCompare
           setYearOne={setYearOne}
           year={year}
           setYearTwo={setYearTwo}
           setMaterial={setMaterial}
-          material={[
-            "Containers",
-            "Mixed Paper",
-            "Office Paper",
-            "Refuse (ICI Waste)",
-            "Corrugated Cardboard",
-            "Transfer Station Landfill Garbage",
-          ]}
+          material={material}
           handleSubmit={handleSubmit}
           setMonthTwo={setMonthTwo}
           setMonthOne={setMonthOne}
@@ -215,19 +225,12 @@ export default function Home({
         />
       ) : (
         <>
-          <YearsLabel
+          <MultipleYearCompare
             setYearOne={setYearOne}
             year={year}
             setYearTwo={setYearTwo}
             setMaterial={setMaterial}
-            material={[
-              "Containers",
-              "Mixed Paper",
-              "Office Paper",
-              "Refuse (ICI Waste)",
-              "Corrugated Cardboard",
-              "Transfer Station Landfill Garbage",
-            ]}
+            material={material}
             handleSubmit={handleSubmit}
             setMonthTwo={setMonthTwo}
             setMonthOne={setMonthOne}
