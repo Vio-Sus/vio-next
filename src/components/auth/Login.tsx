@@ -2,12 +2,24 @@ import React, { FormEventHandler } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import ButtonPrimary from '../button/ButtonPrimary';
 import Input from '../box/Input'
-import { signIn } from 'next-auth/react';
 import { useState } from 'react';
+import {useSession, signIn} from 'next-auth/react'
+import axios from 'axios';
+import { redirect } from 'next/dist/server/api-utils';
 export default function Login() {
 
     let [email, setEmail] = useState("");
     let [password, setPassword] = useState("");
+    const { data: session, status } = useSession()
+
+    if (status === "authenticated") {
+        const prismaUser = axios.get("/api/account/user")
+            .then((res) => {
+              
+            }).catch((err) => {
+                console.log(err);
+            })
+    }
 
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -17,11 +29,17 @@ export default function Login() {
             redirect: false,
         })
     }
+
+    function clickGoogleSignUp() {
+        signIn('google');
+    }
+
+
     return (
         <>
-            <section className="bg-[#C7F2FE] py-0 md:py-10 ">
-                <div className="flex  flex-col items-center justify-center md:px-6 md:py-8 mx-auto md:h-screen lg:py-0">
-                    <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 ">
+            <section className="bg-[#C7F2FE] py-0 md:py-10  ">
+                <div className="flex  flex-col min-h-screen  items-center justify-center md:px-6 md:py-8 mx-auto md:h-screen lg:py-0">
+                    <div className="w-full bg-white  rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 ">
                         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                             <div className="p-6 space-y-4 md:space-y-6 sm:p-8 text-center">
 
@@ -60,15 +78,10 @@ export default function Login() {
                                 <p className="text-center font-semibold mx-4 mb-0">OR</p>
                             </div>
 
-                            <a className="pl-6 grid grid-cols-[20%_80%] py-3 text-dark font-medium  rounded shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out w-full flex justify-center items-center mb-3">
+                            <a onClick={clickGoogleSignUp}  className="pl-6 grid grid-cols-[20%_80%] py-3 text-dark font-medium  rounded shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out w-full flex justify-center items-center mb-3">
                                 <FcGoogle size="1.7rem" />
                                 Continue with Google</a>
 
-                            <a className="grid grid-cols-[20%_80%] px-7 py-3 text-dark font-medium  rounded shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out w-full flex justify-center items-center mb-3"
-                            >
-                                <img src="/ms.svg" alt="microsoft" className="w-5 h-5 " />
-                                Continue with Microsoft
-                            </a>
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 import React from 'react'
 interface Props {
     type?: 'submit' | 'button' | 'reset';
-    clickBack: () => void;
+    clickBack: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     clickNext?: () => void;
     text: string;
 }
