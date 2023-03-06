@@ -32,9 +32,11 @@ export default function Home({
   dataUntouched,
 }: any) {
   const [monthOne, setMonthOne] = useState<string>("January");
-  const [monthTwo, setMonthTwo] = useState<string>("February");
+  const [monthTwo, setMonthTwo] = useState<string>("January");
+  const [extraMonthsArray, setExtraMonthsArray] = useState<string[]>([]);
   const [yearOne, setYearOne] = useState<string>("2012");
   const [yearTwo, setYearTwo] = useState<string>("2012");
+  const [extraYearsArray, setExtraYearsArray] = useState<string[]>([]);
   const [firstYearSum, setFirstYearSum] = useState<number>(0);
   const [secondYearSum, setSecondYearSum] = useState<number>(0);
   const [chosenMaterial, setChosenMaterial] = useState<string[]>([]);
@@ -185,10 +187,10 @@ export default function Home({
       );
     }
   };
-  
+
   return (
     <>
-      {/* <MultipleYearCompare
+      <MultipleYearCompare
         setYearOne={setYearOne}
         year={year}
         setYearTwo={setYearTwo}
@@ -204,47 +206,8 @@ export default function Home({
         months={[...months]}
         onChange={handleMaterialChange}
         chosenArray={chosenMaterial}
-      /> */}
-      {!showGraph ? (
-        <MultipleYearCompare
-          setYearOne={setYearOne}
-          year={year}
-          setYearTwo={setYearTwo}
-          setMaterial={setMaterial}
-          material={material}
-          handleSubmit={handleSubmit}
-          setMonthTwo={setMonthTwo}
-          setMonthOne={setMonthOne}
-          yearOne={yearOne}
-          yearTwo={yearTwo}
-          monthOne={monthOne}
-          monthTwo={monthTwo}
-          months={[...months]}
-          onChange={handleMaterialChange}
-          chosenArray={chosenMaterial}
-        />
-      ) : (
-        <>
-          <MultipleYearCompare
-            setYearOne={setYearOne}
-            year={year}
-            setYearTwo={setYearTwo}
-            setMaterial={setMaterial}
-            material={material}
-            handleSubmit={handleSubmit}
-            setMonthTwo={setMonthTwo}
-            setMonthOne={setMonthOne}
-            yearOne={yearOne}
-            yearTwo={yearTwo}
-            monthOne={monthOne}
-            monthTwo={monthTwo}
-            months={[...months]}
-            onChange={handleMaterialChange}
-            chosenArray={chosenMaterial}
-          />
-          <BarChart chartData={dataState} />
-        </>
-      )}
+      />
+      {showGraph && <BarChart chartData={dataState} />}
     </>
   );
 }
