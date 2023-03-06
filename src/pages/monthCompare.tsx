@@ -5,16 +5,7 @@ import YearsLabel from "@/components/compareMonthComponents/YearLabels";
 import Button from "@/components/button/ButtonMap";
 import MultipleYearCompare from "@/components/compareMonthComponents/multipleYear";
 
-export interface ChartData {
-  labels: string[];
-  datasets: Datasets[];
-}
-export type Datasets = {
-  label: string;
-  data: string | number | number[];
-  borderColor: string;
-  backgroundColor: string;
-};
+import type { ChartData, Datasets } from "@/types/BarChart";
 
 type WasteData = {
   year: string;
@@ -53,7 +44,10 @@ export default function Home({
   const [year, setYear] = useState<number[]>(years);
   const [formData, setFormData] = useState<any>({});
   const [showGraph, setShowGraph] = useState<boolean>(false);
-  const [dataState, setDataState] = useState({} as ChartData);
+  const [dataState, setDataState] = useState<ChartData>({
+    labels: [],
+    datasets: [],
+  });
 
   useEffect(() => {
     const yearOneData = chosenMaterial.map((m) => {

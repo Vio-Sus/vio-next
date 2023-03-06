@@ -113,6 +113,7 @@ useEffect(() => {
     <div className="flex mb-12  flex-col mb-12">
       <label htmlFor="yearOne" className="mt-0">Year One</label>
       <select className="border-2 border-lime-600" name="yearOne" id="yearOne" onChange={(e) => {setYearOne(e.target.value)}}>
+      <option value="">Select a year</option>
         {year.map((year: number) => {
             return <option key={year} value={year}>{year}</option>;
         })}
@@ -123,6 +124,7 @@ useEffect(() => {
     <div className="flex mb-12  flex-col mb-12">
         <label htmlFor="yearTwo">Year Two</label>
       <select className="border-2 border-lime-600" name="yearTwo" id="yearTwo" onChange={(e) => {setYearTwo(e.target.value)}}>
+      <option value="">Select a year</option>
         {year.map((year: number) => {
             return <option key={year} value={year}>{year}</option>;
         })}
@@ -133,6 +135,7 @@ useEffect(() => {
     <div className="flex mb-12  flex-col mb-12">
         <label htmlFor="materials">Material</label>
       <select className="border-2 border-lime-600" name="materials" id="materials" onChange={(e) => {setMaterial([e.target.value])}}>
+      <option value="">Select material</option>
         {material.map((material: string) => {
             return <option key={material} value={material}>{material}</option>;
         })}
@@ -143,15 +146,27 @@ useEffect(() => {
 
 </div>
 
-
+{ yearOne == "" || yearTwo == "" || material[0] == undefined ? ( // material isnt working here for this conditional
+     <p>
+     <button 
+     disabled={true}
+     type="submit" 
+     onClick={handleSubmit}
+     className="inline-block px-7 py-3 bg-[#808080] text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full">
+     Compare
+     </button>
+    </p>
+    
+    ) : (
       <p>
-        <button 
-        type="submit" 
-        onClick={handleSubmit}
-        className="inline-block px-7 py-3 bg-[#80CF76] text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full">
-        Compare
-        </button>
-      </p>
+      <button 
+      type="submit" 
+      onClick={handleSubmit}
+      className="inline-block px-7 py-3 bg-[#80CF76] text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full">
+      Compare
+      </button>
+    </p>
+    )}
 
       </form>
     </div>
