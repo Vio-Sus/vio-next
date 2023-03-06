@@ -23,7 +23,6 @@ type WasteData = {
   weight: number;
 };
 
-type WasteDataArray = WasteData[];
 
 export default function Home({
   transformedData,
@@ -33,14 +32,16 @@ export default function Home({
 }: any) {
   const [monthOne, setMonthOne] = useState<string>("January");
   const [monthTwo, setMonthTwo] = useState<string>("January");
-  const [extraMonthsArray, setExtraMonthsArray] = useState<string[]>([]);
   const [yearOne, setYearOne] = useState<string>("2012");
   const [yearTwo, setYearTwo] = useState<string>("2012");
   const [extraYearsArray, setExtraYearsArray] = useState<string[]>([]);
+  const [extraMonthsArray, setExtraMonthsArray] = useState<string[]>([]);
+  const [howManyExtraDateInputs, setHowManyExtraDateInputs] = useState(0);
+  const [arrayOfExtraDateInputs, setArrayOfExtraDateInputs] = useState();
   const [firstYearSum, setFirstYearSum] = useState<number>(0);
   const [secondYearSum, setSecondYearSum] = useState<number>(0);
   const [chosenMaterial, setChosenMaterial] = useState<string[]>([]);
-
+  
   const [material, setMaterial] = useState<string[]>([
     "Containers",
     "Mixed Paper",
