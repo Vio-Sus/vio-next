@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "testingData" ADD COLUMN     "creationTime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;

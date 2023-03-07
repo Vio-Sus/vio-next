@@ -228,8 +228,6 @@ export async function getServerSideProps() {
     JSON.stringify(jsonArrayFromBackend)
   );
 
-  console.log("jsonArrayFromBackendJSON")
-
   
   const transformedData: transformedData[] = [];
   jsonArrayFromBackendJSON.jsonArray.forEach((m: any) => {

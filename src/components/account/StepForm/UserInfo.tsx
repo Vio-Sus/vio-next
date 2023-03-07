@@ -1,5 +1,5 @@
 import React from 'react'
-import LableInput from '../box/LableInput'
+import LableInput from '../../box/LableInput'
 interface Props {
     user: any;
     setUser: any;
