@@ -1,19 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
 import BarChart from "@/components/chart/BarChart";
 import { prisma } from "../../server/db/client";
-import YearsLabel from "@/components/chooseYears/YearLabels";
+import YearsLabel from "@/components/compareMonthComponents/YearLabels";
 import Button from "@/components/button/ButtonMap";
+import MultipleYearCompare from "@/components/compareMonthComponents/multipleYear";
 
-export interface ChartData {
-  labels: string[];
-  datasets: Datasets[];
-}
-export type Datasets = {
-  label: string;
-  data: string | number | number[];
-  borderColor: string;
-  backgroundColor: string;
+import type { ChartData, Datasets } from "@/types/BarChart";
+
+type WasteData = {
+  year: string;
+  monthName: string;
+  material: string;
+  weight: number;
 };
+
 
 export default function Home({
   transformedData,
@@ -22,13 +22,17 @@ export default function Home({
   dataUntouched,
 }: any) {
   const [monthOne, setMonthOne] = useState<string>("January");
-  const [monthTwo, setMonthTwo] = useState<string>("February");
+  const [monthTwo, setMonthTwo] = useState<string>("January");
   const [yearOne, setYearOne] = useState<string>("2012");
   const [yearTwo, setYearTwo] = useState<string>("2012");
+  const [extraYearsArray, setExtraYearsArray] = useState<string[]>([]);
+  const [extraMonthsArray, setExtraMonthsArray] = useState<string[]>([]);
+  const [howManyExtraDateInputs, setHowManyExtraDateInputs] = useState(0);
+  const [arrayOfExtraDateInputs, setArrayOfExtraDateInputs] = useState();
   const [firstYearSum, setFirstYearSum] = useState<number>(0);
   const [secondYearSum, setSecondYearSum] = useState<number>(0);
   const [chosenMaterial, setChosenMaterial] = useState<string[]>([]);
-
+  
   const [material, setMaterial] = useState<string[]>([
     "Containers",
     "Mixed Paper",
@@ -40,15 +44,12 @@ export default function Home({
   const [year, setYear] = useState<number[]>(years);
   const [formData, setFormData] = useState<any>({});
   const [showGraph, setShowGraph] = useState<boolean>(false);
-  const [dataState, setDataState] = useState({} as ChartData);
-
-  // function isWantedInData(inputUntouchedData) {
-  //   return (inputUntouchedData.year === yearOne && inputUntouchedData.month === monthOne && inputUntouchedData.material === );
-  // }
+  const [dataState, setDataState] = useState<ChartData>({
+    labels: [],
+    datasets: [],
+  });
 
   useEffect(() => {
-    let labels = [];
-    // console.log(chosenMaterial)
     const yearOneData = chosenMaterial.map((m) => {
       const dataFound = dataUntouched.find((inputUntouchedData: any) => {
         return (
@@ -59,7 +60,7 @@ export default function Home({
       });
       if (dataFound && dataFound.length > 1) {
         const totalWeight = dataFound.reduce(
-          (acc, item) => {
+          (acc: WasteData, item: WasteData) => {
             return {
               ...acc,
               weight: acc.weight + item.weight,
@@ -84,7 +85,7 @@ export default function Home({
       });
       if (dataFound && dataFound.length > 1) {
         const totalWeight = dataFound.reduce(
-          (acc, item) => {
+          (acc: WasteData, item: WasteData) => {
             return {
               ...acc,
               weight: acc.weight + item.weight,
@@ -99,11 +100,6 @@ export default function Home({
         return { year: yearTwo, monthName: monthTwo, material: m, weight: 0 };
       }
     });
-    // console.log(yearOneData)
-    // console.log(yearTwoData)
-    // chosenMaterial.map((m) => {
-
-    // })
 
     setDataState({
       labels: chosenMaterial,
@@ -186,62 +182,27 @@ export default function Home({
       );
     }
   };
+
   return (
     <>
-      {!showGraph ? (
-        <YearsLabel
-          setYearOne={setYearOne}
-          year={year}
-          setYearTwo={setYearTwo}
-          setMaterial={setMaterial}
-          material={[
-            "Containers",
-            "Mixed Paper",
-            "Office Paper",
-            "Refuse (ICI Waste)",
-            "Corrugated Cardboard",
-            "Transfer Station Landfill Garbage",
-          ]}
-          handleSubmit={handleSubmit}
-          setMonthTwo={setMonthTwo}
-          setMonthOne={setMonthOne}
-          yearOne={yearOne}
-          yearTwo={yearTwo}
-          monthOne={monthOne}
-          monthTwo={monthTwo}
-          months={[...months]}
-          onChange={handleMaterialChange}
-          chosenArray={chosenMaterial}
-        />
-      ) : (
-        <>
-          <YearsLabel
-            setYearOne={setYearOne}
-            year={year}
-            setYearTwo={setYearTwo}
-            setMaterial={setMaterial}
-            material={[
-              "Containers",
-              "Mixed Paper",
-              "Office Paper",
-              "Refuse (ICI Waste)",
-              "Corrugated Cardboard",
-              "Transfer Station Landfill Garbage",
-            ]}
-            handleSubmit={handleSubmit}
-            setMonthTwo={setMonthTwo}
-            setMonthOne={setMonthOne}
-            yearOne={yearOne}
-            yearTwo={yearTwo}
-            monthOne={monthOne}
-            monthTwo={monthTwo}
-            months={[...months]}
-            onChange={handleMaterialChange}
-            chosenArray={chosenMaterial}
-          />
-          <BarChart chartData={dataState} />
-        </>
-      )}
+      <MultipleYearCompare
+        setYearOne={setYearOne}
+        year={year}
+        setYearTwo={setYearTwo}
+        setMaterial={setMaterial}
+        material={material}
+        handleSubmit={handleSubmit}
+        setMonthTwo={setMonthTwo}
+        setMonthOne={setMonthOne}
+        yearOne={yearOne}
+        yearTwo={yearTwo}
+        monthOne={monthOne}
+        monthTwo={monthTwo}
+        months={[...months]}
+        onChange={handleMaterialChange}
+        chosenArray={chosenMaterial}
+      />
+      {showGraph && <BarChart chartData={dataState} />}
     </>
   );
 }
