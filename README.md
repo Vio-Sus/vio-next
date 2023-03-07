@@ -11,6 +11,11 @@ yarn dev
 # or
 pnpm dev
 ```
+get your database started:
+
+yarn migrate:dev --name init
+
+yarn db:seed    
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 

@@ -7,3 +7,21 @@
       font-family: 'Inter', sans-serif;
     }
   }
+  .absolute-center {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999; /* make sure it's above other content */
+   
+  }
+  
+  .alert-box {
+    display: inline-block;
+    text-align: left;
+  }
+  
+  .alert-show {
+    visibility: visible; /* show it when the alert is triggered */
+  }
+  
