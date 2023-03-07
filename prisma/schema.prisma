@@ -103,11 +103,7 @@ model City {
   city        String
   province    Province  @relation(fields: [province_id], references: [id])
   province_id Int
-<<<<<<< HEAD
-  site        Site[]
-=======
   Companies   Company[]
->>>>>>> AccontSetUpJane
 
   @@unique([city])
 }
@@ -148,16 +144,6 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-<<<<<<< HEAD
-model testingData {
-  id           Int      @id @default(autoincrement())
-  name         String?  @unique
-  creationTime DateTime @default(now())
-  jsonArray    Json?
-}
-
-=======
->>>>>>> AccontSetUpJane
 model VerificationToken {
   identifier String
   token      String   @unique
