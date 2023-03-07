@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import RedAlert from '../alerts/RedAlert'
 import axios from 'axios'
+import { useRouter } from 'next/router'
 
 
 export default function AccountSetUpForm() {
+  const router = useRouter()
   const [showAlert, setShowAlert] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
   const [companyCode, setCompanyCode] = useState('')
@@ -17,7 +19,15 @@ export default function AccountSetUpForm() {
     }else{
       axios.post('/api/account/role', {
         companyCode: companyCode
-      })
+      }).then((res) => {
+        if (res.status === 200) {
+          router.push('/account')
+        }
+      }
+      ).catch((err) => {
+        console.log(err)
+      }
+      )
     }
   }
 
