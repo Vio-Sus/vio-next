@@ -5,14 +5,9 @@ import { RootForm, AccountSetUpForm } from '@/components/account'
 
 export default function AccountSetting() {
     const [showAlert, setShowAlert] = useState(false)
-    const [showWorkerForm, setShowWorkerForm] = useState(false)
-    const [showRootForm, setShowRootForm] = useState(false)
-
-
-
     return (
         <>
-            <div className='' >
+            <div className='py-10' >
                 {showAlert &&
                     <RedAlert AletTitle="Note: " alertText='Please choose a role' showAlert={showAlert} setShowAlert={setShowAlert} />}
             </div>

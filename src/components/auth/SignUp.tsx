@@ -17,19 +17,25 @@ export default function SignUp() {
 
     const { data: session, status } = useSession()
 
-    if (status === "authenticated") {
-        const prismaUser = axios.get("/api/account/user")
-            .then((res) => {
-                console.log(res.data);
-                if(res.data.role === "TEMP_"){
-                    router.push("/AccountSetting")
-                }else{
-                    router.push("/")
-                }  
-            }).catch((err) => {
-                console.log(err);
-            })
-    }
+    useEffect(() => {
+        if (status === "authenticated") {
+          const fetchPrismaUser = async () => {
+            try {
+              const res = await axios.get("/api/account/check-temp-user");
+              console.log(res.data);
+              if (res.data.role === "TEMP_") {
+                router.push("/create-role");
+              } else {
+                router.push("/");
+              }
+            } catch (err) {
+              console.log(err);
+            }
+          };
+    
+          fetchPrismaUser();
+        }
+      }, [status]);
 
 
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {

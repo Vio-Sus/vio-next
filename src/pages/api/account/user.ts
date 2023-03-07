@@ -21,12 +21,40 @@ export default async function handler(
             name: true,
             email: true,
             role: true,
+            company_id: true,
         }
 
     })
+   
+    const company = await prisma.company.findUnique({
+        where: {
+            id: user?.company_id as number
+        },
+        select: {
+            id: true,
+            company: true,
+            address_line_1: true,
+            address_line_2: true,
+            city: true,
+            zip_code: true,
+            phone: true,
+            email: true,
+            company_type: true,
+            admin_code: true,
+            user_code: true,
+            users: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    role: true,
+                }
+            }
 
+        }
+    })
     if (req.method === "GET") {
-        res.status(200).json(user)
+         res.status(200).json({ user: user, company: company })
     }
 }
 

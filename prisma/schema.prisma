@@ -28,6 +28,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
   entries       Entry[]
+  company       Company?  @relation(fields: [company_id], references: [id])
+  company_id    Int?
 }
 
 model WasteType {
@@ -71,6 +73,7 @@ model Company {
   zip_code          String
   company_type      CompanyType
   sites             Site[]
+  users             User[]
   source_company    CompanyCollaboration[] @relation("company_collaborators")
   collector_company CompanyCollaboration[] @relation("company_collaborations")
 

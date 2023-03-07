@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import RedAlert from '../alerts/RedAlert'
+import axios from 'axios'
 
 
 export default function AccountSetUpForm() {
@@ -14,9 +15,9 @@ export default function AccountSetUpForm() {
     setShowAlert(true)
     setAlertMessage("Please enter a company code")
     }else{
-      console.log("submit form")
-      console.log(companyCode)
-      setCompanyCode("")
+      axios.post('/api/account/role', {
+        companyCode: companyCode
+      })
     }
   }
 
@@ -38,7 +39,7 @@ export default function AccountSetUpForm() {
         className="w-full max-w-sm">
         <div className="flex items-center border-b border-[#80CF76] py-2">
           <input 
-          value={companyCode}
+          defaultValue={companyCode}
           onChange={(e) => setCompanyCode(e.target.value)}
           className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="company code" aria-label="Full name" />
           <button className="flex-shrink-0 bg-[#80CF76] hover:bg-[#9FDF97] border-[#80CF76] hover:border-[#9FDF97] text-sm border-4 text-white py-1 px-2 rounded" type="submit">

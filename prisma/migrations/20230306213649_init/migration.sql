@@ -13,6 +13,7 @@ CREATE TABLE "User" (
     "password" TEXT,
     "image" TEXT,
     "role" "Role" NOT NULL DEFAULT 'TEMP_',
+    "company_id" INTEGER,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -157,6 +158,9 @@ CREATE UNIQUE INDEX "VerificationToken_token_key" ON "VerificationToken"("token"
 
 -- CreateIndex
 CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationToken"("identifier", "token");
+
+-- AddForeignKey
+ALTER TABLE "User" ADD CONSTRAINT "User_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Entry" ADD CONSTRAINT "Entry_waste_type_id_fkey" FOREIGN KEY ("waste_type_id") REFERENCES "WasteType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

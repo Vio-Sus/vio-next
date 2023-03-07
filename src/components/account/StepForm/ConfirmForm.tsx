@@ -1,35 +1,44 @@
 import React from 'react'
 interface Props {
-  company: any;
-  site: any;
-  headerCompany: boolean;
-  companyId: string;
+  companyType: any;
+  companyAddress: any;
+  siteList: any;
 }
 
 
-export default function ConfirmForm({ company, site, headerCompany, companyId }: Props) {
+export default function ConfirmForm({ companyType, companyAddress, siteList }: Props) {
+  console.log(siteList.length)
   return (
     <div className='w-80 flex flex-col'>
       <div className='text-lg my-3 font-bold mx-auto text-gray-700 '>Confirm Form</div>
+      <div>
+        <h3 className='text-lg my-3 font-bold mx-auto text-gray-700' >Company</h3>
+        <p className="m-2 text-gray-500">Company Name: {companyType.companyName}</p>
+        <p className="m-2 text-gray-500">Company Phone: {companyType.phone}</p>
+        <p className="m-2 text-gray-500">Company Email: {companyType.email}</p>
+        <p className="m-2 text-gray-500">Company Type: {companyType.companyType}</p>
+      </div>
+
 
       <div>
-        <h3 className='text-lg my-3 font-bold mx-auto text-gray-700' >Site Information</h3>
-        <p className="m-2 text-gray-500">Site Name: {site.siteName}</p>
-        <p className="m-2 text-gray-500">Site Type: {site.siteType}</p>
-        <p className="m-2 text-gray-500">Site Address: {site.siteAddress}</p>
-        <p className="m-2 text-gray-500">Site City: {site.siteCity}</p>
-        <p className="m-2 text-gray-500">Site Province: {site.siteProvince}</p>
-        <p className="m-2 text-gray-500">Site Zip Code: {site.siteZip}</p>
+        <h3 className='text-lg my-3 font-bold mx-auto text-gray-700' >Address</h3>
+        <p className="m-2 text-gray-500">ddress_line_1: {companyAddress.address_line_1}</p>
+        <p className="m-2 text-gray-500">Address_line_2: {companyAddress.address_line_2}</p>
+        <p className="m-2 text-gray-500">City: {companyAddress.city}</p>
+        <p className="m-2 text-gray-500">Zip: {companyAddress.zip}</p>
+        <p className="m-2 text-gray-500">Province: {companyAddress.province}</p>
       </div>
-  
-       <div>
-       <h3 className='text-lg my-3 font-bold mx-auto text-gray-700'>CompanyInformation </h3>
-        { headerCompany ? <p className="m-2 text-gray-500">Company Id: {companyId}</p> :
-          <>
-          <p className="m-2 text-gray-500">Company Name: {company.companyName}</p>
-          <p className="m-2 text-gray-500">Company Type: {company.companyType}</p>
-          </>}
-     </div>
+
+      {siteList.length>0 &&
+      <div>
+        <h3 className='text-lg my-3 font-bold mx-auto text-gray-700' >Sites</h3>
+        {Array.isArray(siteList) && siteList.map((site: any) => (
+          <div key={site.name}>
+            <p className="m-2 text-gray-500">Site Name: {site.name}</p>
+          </div>
+        ))}
+      </div>}
+
     </div>
   )
 }
