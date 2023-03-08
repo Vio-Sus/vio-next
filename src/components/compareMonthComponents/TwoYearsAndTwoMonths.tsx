@@ -1,6 +1,6 @@
-import PickYear from "@/components/input/PickYear";
-import PickMonth from "@/components/input/PickMonth";
 import PickMaterial from "@/components/input/PickMaterial";
+import CompareButton from "@/components/button/ButtonCompare";
+import PickYearAndMonth from "@/components/input/PickYearAndMonth";
 
 interface Props {
   setYearOne: (input: string) => void;
@@ -18,6 +18,7 @@ interface Props {
   monthTwo: string;
   handleSubmit: (input: React.MouseEvent<HTMLButtonElement>) => void;
   onChange: (input: React.ChangeEvent<HTMLInputElement>) => void;
+  arrayOfExtraInputs: React.ReactNode[];
 }
 
 export default function YearsLabel(props: Props) {
@@ -25,34 +26,35 @@ export default function YearsLabel(props: Props) {
     <div className="content-start m-12">
       <form action="#">
         <div className="flex  flex-col gap-3">
-          <PickYear
+          <PickYearAndMonth
             year={props.year}
             yearOne={props.yearOne}
             setYearOne={props.setYearOne}
-            idAndName="yearOne"
-            labelName="Year One"
-          />
-          <PickMonth
+            idAndNameYear="yearOne"
+            labelNameYear="Year One"
             months={props.months}
             monthOne={props.monthOne}
             setMonthOne={props.setMonthOne}
-            idAndName="monthOne"
-            labelName="The Month For Year One"
+            idAndNameMonth="monthOne"
+            labelNameMonth="The Month For Year One"
           />
-          <PickYear
+          <PickYearAndMonth
             year={props.year}
             yearOne={props.yearTwo}
             setYearOne={props.setYearTwo}
-            idAndName="yearTwo"
-            labelName="Year Two"
-          />
-          <PickMonth
+            idAndNameYear="yearTwo"
+            labelNameYear="Year Two"
             months={props.months}
             monthOne={props.monthTwo}
             setMonthOne={props.setMonthTwo}
-            idAndName="monthTwo"
-            labelName="The Month For Year Two"
+            idAndNameMonth="monthTwo"
+            labelNameMonth="The Month For Year Two"
           />
+          <>
+            {props.arrayOfExtraInputs?.map((m: React.ReactNode, i: number) => {
+              return <div key={i}>{m}</div>;
+            })}
+          </>
           <PickMaterial
             chosenArray={props.chosenArray}
             material={props.material}
@@ -61,15 +63,10 @@ export default function YearsLabel(props: Props) {
           />
         </div>
         <p>
-          {props.chosenArray.length > 0 && (
-            <button
-              type="submit"
-              onClick={props.handleSubmit}
-              className="inline-block px-7 py-3 bg-[#80CF76] text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
-            >
-              Compare
-            </button>
-          )}
+          <CompareButton
+            chosenArray={props.chosenArray}
+            handleSubmit={props.handleSubmit}
+          />
         </p>
       </form>
     </div>

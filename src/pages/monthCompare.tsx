@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import BarChart from "@/components/chart/BarChart";
 import { prisma } from "../../server/db/client";
-import YearsLabel from "@/components/compareMonthComponents/YearLabels";
-import Button from "@/components/button/ButtonMap";
-import MultipleYearCompare from "@/components/compareMonthComponents/multipleYear";
-
+import ButtonAddYearAndMonth from "@/components/button/ButtonPrimary";
+import MultipleYearCompare from "@/components/compareMonthComponents/TwoYearsAndTwoMonths";
+import PickYearAndMonth from "@/components/input/PickYearAndMonth";
 import type { ChartData, Datasets } from "@/types/BarChart";
 
 type WasteData = {
@@ -13,7 +12,6 @@ type WasteData = {
   material: string;
   weight: number;
 };
-
 
 export default function Home({
   transformedData,
@@ -27,12 +25,14 @@ export default function Home({
   const [yearTwo, setYearTwo] = useState<string>("2012");
   const [extraYearsArray, setExtraYearsArray] = useState<string[]>([]);
   const [extraMonthsArray, setExtraMonthsArray] = useState<string[]>([]);
-  const [howManyExtraDateInputs, setHowManyExtraDateInputs] = useState(0);
-  const [arrayOfExtraDateInputs, setArrayOfExtraDateInputs] = useState();
+  const [howManyExtraDateInputs, setHowManyExtraDateInputs] = useState(1);
+  const [arrayOfExtraDateInputs, setArrayOfExtraDateInputs] = useState<
+    React.ReactNode[]
+  >([]);
   const [firstYearSum, setFirstYearSum] = useState<number>(0);
   const [secondYearSum, setSecondYearSum] = useState<number>(0);
   const [chosenMaterial, setChosenMaterial] = useState<string[]>([]);
-  
+
   const [material, setMaterial] = useState<string[]>([
     "Containers",
     "Mixed Paper",
@@ -163,13 +163,11 @@ export default function Home({
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    // console.log(yearOne, yearTwo, material[0]);
     setFormData({
       yearOne: +yearOne,
       yearTwo: +yearTwo,
       material: material[0],
     });
-    // console.log("formData", formData);
     setShowGraph(true);
   };
   const handleMaterialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -182,6 +180,57 @@ export default function Home({
       );
     }
   };
+
+  async function handleAddYearAndMonthComponent() {
+    let valuesYearAndMonth = ["2012", "January"];
+    let howManyNewInputs = howManyExtraDateInputs;
+    const extraYearsArrayPlusOne = [...extraYearsArray, valuesYearAndMonth[0]];
+    const extraMonthsArrayPlusOne = [
+      ...extraMonthsArray,
+      valuesYearAndMonth[1],
+    ];
+    setExtraMonthsArray(extraMonthsArrayPlusOne);
+    setExtraYearsArray(extraYearsArrayPlusOne);
+    const indexOfThisYear = extraYearsArrayPlusOne.length - 1;
+    const indexOfThisMonth = extraMonthsArrayPlusOne.length - 1;
+    const allTheExistingExtraComponents = [
+      ...arrayOfExtraDateInputs,
+      <PickYearAndMonth
+        year={year}
+        yearOne={extraYearsArray[indexOfThisYear]}
+        setYearOne={(input) => {
+          setExtraYearsArray((extraYearsArrayPlusOne) =>
+            extraYearsArrayPlusOne.map((m, i) => {
+              if (i == indexOfThisMonth) {
+                m = input;
+              }
+              return m;
+            })
+          );
+        }}
+        idAndNameYear={"year" + (2 + howManyNewInputs)}
+        labelNameYear={"year " + (2 + howManyNewInputs)}
+        months={months}
+        monthOne={extraMonthsArray[indexOfThisMonth]}
+        setMonthOne={(input) => {
+          setExtraMonthsArray((extraMonthsArrayPlusOne) =>
+            extraMonthsArrayPlusOne.map((m, i) => {
+              if (i == indexOfThisMonth) {
+                m = input;
+              }
+              return m;
+            })
+          );
+        }}
+        idAndNameMonth={"month" + (2 + howManyNewInputs)}
+        labelNameMonth={"The Month For Year " + (2 + howManyNewInputs)}
+      />,
+    ];
+    setArrayOfExtraDateInputs(allTheExistingExtraComponents);
+    setHowManyExtraDateInputs(howManyNewInputs + 1);
+  }
+
+  console.log(extraMonthsArray, extraYearsArray, arrayOfExtraDateInputs);
 
   return (
     <>
@@ -201,6 +250,11 @@ export default function Home({
         months={[...months]}
         onChange={handleMaterialChange}
         chosenArray={chosenMaterial}
+        arrayOfExtraInputs={arrayOfExtraDateInputs}
+      />
+      <ButtonAddYearAndMonth
+        children="Add Year And Month"
+        onClick={handleAddYearAndMonthComponent}
       />
       {showGraph && <BarChart chartData={dataState} />}
     </>
@@ -258,7 +312,7 @@ export async function getServerSideProps() {
     return acc;
   }, new Set<number>());
 
-  console.log(dataUntouched);
+  // console.log(dataUntouched);
 
   return {
     props: {
