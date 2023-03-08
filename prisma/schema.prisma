@@ -165,6 +165,14 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model testingData {
+  id           Int      @id @default(autoincrement())
+  name         String?  @unique
+  creationTime DateTime @default(now())
+  jsonArray    Json?
+}
+
+
 model VerificationToken {
   identifier String
   token      String   @unique
