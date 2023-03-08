@@ -1,5 +1,4 @@
 import React from "react";
-import CSVUploader from "@/components/import/CsvUploader";
 import ImportXlsxCsv from "@/components/input/ImportXlsxCsv";
 import { useSession } from "next-auth/react";
 
