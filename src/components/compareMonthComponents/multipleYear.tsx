@@ -1,7 +1,8 @@
 import PickYear from "@/components/input/PickYear";
 import PickMonth from "@/components/input/PickMonth";
 import PickMaterial from "@/components/input/PickMaterial";
-import CompareButton from "@/components/button/ButtonCompare"
+import CompareButton from "@/components/button/ButtonCompare";
+import PickYearAndMonth from "@/components/input/PickYearAndMonth";
 
 interface Props {
   setYearOne: (input: string) => void;
@@ -26,33 +27,29 @@ export default function YearsLabel(props: Props) {
     <div className="content-start m-12">
       <form action="#">
         <div className="flex  flex-col gap-3">
-          <PickYear
+          <PickYearAndMonth
             year={props.year}
             yearOne={props.yearOne}
             setYearOne={props.setYearOne}
-            idAndName="yearOne"
-            labelName="Year One"
-          />
-          <PickMonth
+            idAndNameYear="yearOne"
+            labelNameYear="Year One"
             months={props.months}
             monthOne={props.monthOne}
             setMonthOne={props.setMonthOne}
-            idAndName="monthOne"
-            labelName="The Month For Year One"
+            idAndNameMonth="monthOne"
+            labelNameMonth="The Month For Year One"
           />
-          <PickYear
+          <PickYearAndMonth
             year={props.year}
             yearOne={props.yearTwo}
             setYearOne={props.setYearTwo}
-            idAndName="yearTwo"
-            labelName="Year Two"
-          />
-          <PickMonth
+            idAndNameYear="yearTwo"
+            labelNameYear="Year Two"
             months={props.months}
             monthOne={props.monthTwo}
             setMonthOne={props.setMonthTwo}
-            idAndName="monthTwo"
-            labelName="The Month For Year Two"
+            idAndNameMonth="monthTwo"
+            labelNameMonth="The Month For Year Two"
           />
           <PickMaterial
             chosenArray={props.chosenArray}
@@ -62,7 +59,10 @@ export default function YearsLabel(props: Props) {
           />
         </div>
         <p>
-          <CompareButton chosenArray={props.chosenArray} handleSubmit={props.handleSubmit}/>
+          <CompareButton
+            chosenArray={props.chosenArray}
+            handleSubmit={props.handleSubmit}
+          />
         </p>
       </form>
     </div>

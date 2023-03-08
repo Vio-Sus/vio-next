@@ -6,12 +6,12 @@ interface Props {
   setMonthOne: (input: string) => void;
   year: number[];
   months: string[];
-  setYearTwo: (input: string) => void;
-  setMonthTwo: (input: string) => void;
   yearOne: string;
-  yearTwo: string;
   monthOne: string;
-  monthTwo: string;
+  idAndNameYear: string;
+  labelNameYear: string;
+  idAndNameMonth: string;
+  labelNameMonth: string;
 }
 
 export default function YearsLabel(props: Props) {
@@ -21,15 +21,15 @@ export default function YearsLabel(props: Props) {
         year={props.year}
         yearOne={props.yearOne}
         setYearOne={props.setYearOne}
-        idAndName="yearOne"
-        labelName="Year One"
+        idAndName={props.idAndNameYear}
+        labelName={props.labelNameYear}
       />
       <PickMonth
         months={props.months}
         monthOne={props.monthOne}
         setMonthOne={props.setMonthOne}
-        idAndName="monthOne"
-        labelName="The Month For Year One"
+        idAndName={props.idAndNameMonth}
+        labelName={props.labelNameMonth}
       />
     </>
   );
