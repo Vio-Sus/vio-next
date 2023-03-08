@@ -172,7 +172,6 @@ model testingData {
   jsonArray    Json?
 }
 
-
 model VerificationToken {
   identifier String
   token      String   @unique

@@ -1,6 +1,6 @@
 import React from 'react'
 interface Props {
-  children: React.ReactNode;
+  children: string;
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 

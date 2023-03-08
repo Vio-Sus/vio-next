@@ -5,8 +5,8 @@ import { signOut } from 'next-auth/react'
 
 export default function Profile() {
   // query user data from api
-  const [user, setUser] = useState();
-  const [company, setCompany] = useState();
+  const [user, setUser] = useState<any>();
+  const [company, setCompany] = useState<any>();
 
   useEffect(() => {
     const fetchData = async () => {
