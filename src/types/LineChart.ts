@@ -6,10 +6,10 @@ export type ChartData = {
 export type Datasets = {
 label: string;
 data: string | number | number[];
-fill: boolean;
+fill?: boolean;
 borderColor: string;
-backgroundColor: string;
-tension: number;
+backgroundColor?: string;
+tension?: number;
 options?: {};
 };
 
