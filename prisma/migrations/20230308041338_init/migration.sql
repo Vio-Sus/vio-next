@@ -2,6 +2,9 @@
 CREATE TYPE "Role" AS ENUM ('ROOT', 'ADMIN', 'USER', 'TEMP_');
 
 -- CreateEnum
+CREATE TYPE "WasteType" AS ENUM ('GENERAL_GARBAGE', 'FOODWASTE', 'GREENWASTE', 'CARDBOARD', 'CLEAN_WOOD', 'MIXED_PAPER', 'MIXED_CONTAINERS', 'STYROFOAM', 'SOFT_PLASTICS', 'OFPP_', 'APPLIANCES', 'E_WASTE', 'LIGHTS', 'BATTERIES', 'MATTRESSES', 'GLASS', 'NEW_GYPSUM', 'METAL', 'CONCRETE');
+
+-- CreateEnum
 CREATE TYPE "CompanyType" AS ENUM ('COLLECTOR', 'SOURCE');
 
 -- CreateTable
@@ -19,24 +22,24 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
-CREATE TABLE "WasteType" (
+CREATE TABLE "Waste" (
     "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
+    "waste" TEXT NOT NULL,
+    "waste_type" "WasteType" NOT NULL,
 
-    CONSTRAINT "WasteType_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Waste_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Entry" (
     "id" SERIAL NOT NULL,
-    "waste" TEXT NOT NULL,
-    "site" TEXT NOT NULL,
     "collaborator" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "weight" DOUBLE PRECISION NOT NULL,
-    "waste_type_id" INTEGER NOT NULL,
+    "waste_id" INTEGER NOT NULL,
     "user_id" TEXT NOT NULL,
+    "site_id" INTEGER NOT NULL,
     "company_collaboration_id" INTEGER,
 
     CONSTRAINT "Entry_pkey" PRIMARY KEY ("id")
@@ -72,7 +75,6 @@ CREATE TABLE "company_collaborations" (
 CREATE TABLE "Site" (
     "id" SERIAL NOT NULL,
     "site" TEXT NOT NULL,
-    "company_id" INTEGER NOT NULL,
 
     CONSTRAINT "Site_pkey" PRIMARY KEY ("id")
 );
@@ -123,19 +125,6 @@ CREATE TABLE "Session" (
 );
 
 -- CreateTable
-<<<<<<<< HEAD:prisma/migrations/20230303191135_vio/migration.sql
-CREATE TABLE "testingData" (
-    "id" SERIAL NOT NULL,
-    "name" TEXT,
-    "creationTime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "jsonArray" JSONB,
-
-    CONSTRAINT "testingData_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-========
->>>>>>>> AccontSetUpJane:prisma/migrations/20230306213649_init/migration.sql
 CREATE TABLE "VerificationToken" (
     "identifier" TEXT NOT NULL,
     "token" TEXT NOT NULL,
@@ -144,9 +133,6 @@ CREATE TABLE "VerificationToken" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "WasteType_name_key" ON "WasteType"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "companies_company_key" ON "companies"("company");
@@ -167,9 +153,6 @@ CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provi
 CREATE UNIQUE INDEX "Session_sessionToken_key" ON "Session"("sessionToken");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "testingData_name_key" ON "testingData"("name");
-
--- CreateIndex
 CREATE UNIQUE INDEX "VerificationToken_token_key" ON "VerificationToken"("token");
 
 -- CreateIndex
@@ -179,10 +162,13 @@ CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationTok
 ALTER TABLE "User" ADD CONSTRAINT "User_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Entry" ADD CONSTRAINT "Entry_waste_type_id_fkey" FOREIGN KEY ("waste_type_id") REFERENCES "WasteType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Entry" ADD CONSTRAINT "Entry_waste_id_fkey" FOREIGN KEY ("waste_id") REFERENCES "Waste"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Entry" ADD CONSTRAINT "Entry_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Entry" ADD CONSTRAINT "Entry_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "Site"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Entry" ADD CONSTRAINT "Entry_company_collaboration_id_fkey" FOREIGN KEY ("company_collaboration_id") REFERENCES "company_collaborations"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -195,9 +181,6 @@ ALTER TABLE "company_collaborations" ADD CONSTRAINT "company_collaborations_sour
 
 -- AddForeignKey
 ALTER TABLE "company_collaborations" ADD CONSTRAINT "company_collaborations_collaborator_id_fkey" FOREIGN KEY ("collaborator_id") REFERENCES "companies"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Site" ADD CONSTRAINT "Site_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "City" ADD CONSTRAINT "City_province_id_fkey" FOREIGN KEY ("province_id") REFERENCES "Province"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

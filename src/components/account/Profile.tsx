@@ -3,8 +3,6 @@ import axios from 'axios'
 import ButtonShort from '../button/ButtonShort';
 import { signOut } from 'next-auth/react'
 
-
-
 export default function Profile() {
   // query user data from api
   const [user, setUser] = useState();
@@ -22,7 +20,6 @@ export default function Profile() {
     };
 
     fetchData();
-
     // Clean up function to cancel any outstanding requests
     return () => {
       axios.CancelToken.source().cancel('Request cancelled on unmount');
@@ -57,9 +54,12 @@ export default function Profile() {
                 <div className="w-full">
 
                   <div className="mt-5 w-full flex flex-col items-center overflow-hidden text-sm">
-                    <a className="w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 w-full block hover:bg-gray-100 transition duration-150">
+                    <div className="w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 w-full block hover:bg-gray-100 transition duration-150">
                       Company: <span className="font-bold">{company.company}</span>
-                    </a>
+                    </div>
+                    <div className="w-full border-t border-gray-100 text-gray-600 py-4 pl-6 pr-3 w-full block hover:bg-gray-100 transition duration-150">
+                      Company type: <span className="font-bold">{company.company_type}</span>
+                    </div>
 
                     <div className="w-full border-t border-gray`-100 text-gray-600 py-4 pl-6 pr-3 w-full block hover:bg-gray-100 transition duration-150">
                       Address: <p className="font-bold">{company.address_line_1}  </p>
