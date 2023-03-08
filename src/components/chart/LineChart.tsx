@@ -38,7 +38,8 @@ export const options: object = {
       },
       title: {
         display: true,
-        text: "Waste Items for UBCV",
+        text: "",
+
       },
     },
       scales: {
