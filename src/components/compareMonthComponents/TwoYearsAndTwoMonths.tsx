@@ -1,5 +1,3 @@
-import PickYear from "@/components/input/PickYear";
-import PickMonth from "@/components/input/PickMonth";
 import PickMaterial from "@/components/input/PickMaterial";
 import CompareButton from "@/components/button/ButtonCompare";
 import PickYearAndMonth from "@/components/input/PickYearAndMonth";
@@ -20,6 +18,7 @@ interface Props {
   monthTwo: string;
   handleSubmit: (input: React.MouseEvent<HTMLButtonElement>) => void;
   onChange: (input: React.ChangeEvent<HTMLInputElement>) => void;
+  arrayOfExtraInputs: React.ReactNode[];
 }
 
 export default function YearsLabel(props: Props) {
@@ -51,6 +50,11 @@ export default function YearsLabel(props: Props) {
             idAndNameMonth="monthTwo"
             labelNameMonth="The Month For Year Two"
           />
+          <>
+            {props.arrayOfExtraInputs?.map((m: React.ReactNode, i: number) => {
+              return <div key={i}>{m}</div>;
+            })}
+          </>
           <PickMaterial
             chosenArray={props.chosenArray}
             material={props.material}
