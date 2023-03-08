@@ -258,7 +258,7 @@ export async function getServerSideProps() {
     return acc;
   }, new Set<number>());
 
-  console.log(dataUntouched);
+  // console.log(dataUntouched);
 
   return {
     props: {
