@@ -5,7 +5,6 @@ import Input from '../box/Input'
 import { useState , useEffect} from 'react';
 import {useSession, signIn} from 'next-auth/react'
 import axios from 'axios';
-import { redirect } from 'next/dist/server/api-utils';
 import { useRouter } from 'next/router';
 export default function Login() {
     const router = useRouter();
