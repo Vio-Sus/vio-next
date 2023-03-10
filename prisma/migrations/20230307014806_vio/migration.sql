@@ -123,19 +123,6 @@ CREATE TABLE "Session" (
 );
 
 -- CreateTable
-<<<<<<<< HEAD:prisma/migrations/20230303191135_vio/migration.sql
-CREATE TABLE "testingData" (
-    "id" SERIAL NOT NULL,
-    "name" TEXT,
-    "creationTime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "jsonArray" JSONB,
-
-    CONSTRAINT "testingData_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-========
->>>>>>>> AccontSetUpJane:prisma/migrations/20230306213649_init/migration.sql
 CREATE TABLE "VerificationToken" (
     "identifier" TEXT NOT NULL,
     "token" TEXT NOT NULL,
@@ -165,9 +152,6 @@ CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provi
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Session_sessionToken_key" ON "Session"("sessionToken");
-
--- CreateIndex
-CREATE UNIQUE INDEX "testingData_name_key" ON "testingData"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "VerificationToken_token_key" ON "VerificationToken"("token");

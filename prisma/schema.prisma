@@ -24,7 +24,7 @@ model User {
   emailVerified DateTime?
   password      String?
   image         String?
-  role          Role     @default(TEMP_)
+  role          Role      @default(TEMP_)
   accounts      Account[]
   sessions      Session[]
   entries       Entry[]
@@ -39,18 +39,18 @@ model WasteType {
 }
 
 model Entry {
-  id            Int       @id @default(autoincrement())
-  waste         String
-  site          String
-  collaborator  String
-  created_at    DateTime  @default(now())
-  updated_at    DateTime  @updatedAt
-  weight        Float
-  waste_type    WasteType @relation(fields: [waste_type_id], references: [id])
-  waste_type_id Int
-  user          User      @relation(fields: [user_id], references: [id])
-  user_id       String
-  CompanyCollaboration CompanyCollaboration? @relation(fields: [company_collaboration_id], references: [id])
+  id                       Int                   @id @default(autoincrement())
+  waste                    String
+  site                     String
+  collaborator             String
+  created_at               DateTime              @default(now())
+  updated_at               DateTime              @updatedAt
+  weight                   Float
+  waste_type               WasteType             @relation(fields: [waste_type_id], references: [id])
+  waste_type_id            Int
+  user                     User                  @relation(fields: [user_id], references: [id])
+  user_id                  String
+  CompanyCollaboration     CompanyCollaboration? @relation(fields: [company_collaboration_id], references: [id])
   company_collaboration_id Int?
 }
 
@@ -87,6 +87,7 @@ model CompanyCollaboration {
   collaborator    Company @relation("company_collaborators", fields: [collaborator_id], references: [id])
   collaborator_id Int
   entries         Entry[]
+
   @@unique([source_id, collaborator_id])
   @@map(name: "company_collaborations")
 }
@@ -150,4 +151,9 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model testingData {
+  id        Int  @id @default(autoincrement())
+  jsonArray Json
 }
