@@ -100,28 +100,82 @@ export default function Home({
         return { year: yearTwo, monthName: monthTwo, material: m, weight: 0 };
       }
     });
+    const allYears = [yearOne, yearTwo, ...extraYearsArray]
+    const allMonths = [monthOne, monthTwo, ...extraMonthsArray]
+    const allYearsWithData = allYears.map((m: (string | string[]), i) => {
+      let dataForTheseMaterials 
+      dataForTheseMaterials = chosenMaterial.map((material) => {
+        const dataFound = dataUntouched.find((inputUntouchedData: any) => {
+          return (
+            inputUntouchedData.year === m &&
+            inputUntouchedData.monthName === allMonths[i] &&
+            inputUntouchedData.material === material
+          );
+        });
+        if (dataFound && dataFound.length > 1) {
+          const totalWeight = dataFound.reduce(
+            (acc: WasteData, item: WasteData) => {
+              return {
+                ...acc,
+                weight: acc.weight + item.weight,
+              };
+            },
+            { year: "", monthName: "", material: "", weight: 0 }
+          );
+          return totalWeight;
+        } else if (dataFound) {
+          return dataFound;
+        } else {
+          return { year: m, monthName: allMonths[i], material: material, weight: 0 };
+        }
+      });
 
-    setDataState({
-      labels: chosenMaterial,
-      datasets: [
-        {
-          label: "UBCV: " + yearOne + " " + monthOne,
-          data: yearOneData.map((m) => {
-            return m.weight;
-          }),
-          borderColor: "#4bc0c0",
-          backgroundColor: "#4bc0c0",
-        },
-        {
-          label: "UBCV: " + yearTwo + " " + monthTwo,
-          data: yearTwoData.map((m) => {
-            return m.weight;
-          }),
-          borderColor: "#cc65fe",
-          backgroundColor: "#cc65fe",
-        },
-      ],
-    });
+      return dataForTheseMaterials
+    })
+
+    console.log(allYearsWithData)
+    let dataSetsArray
+    if (allYearsWithData[0].length > 0) {
+      dataSetsArray = allYearsWithData.map((m, i) => {
+        // console.log(m)
+        let RanHexCol = (Math.random()*16777215).toString(16);
+        let randomColor = "#" + RanHexCol.slice(0, 6);
+          return {
+            label: "UBCV: " + m[0].year + " " +  m[0].monthName,
+            data: m.map((m) => {
+              return m.weight
+            }),
+            borderColor: randomColor,
+            backgroundColor: randomColor,
+          }
+      })
+  
+      console.log(dataSetsArray)
+      
+          setDataState({
+            labels: chosenMaterial,
+            datasets: [
+              ...dataSetsArray,
+              // {
+              //   label: "UBCV: " + yearOne + " " + monthOne,
+              //   data: yearOneData.map((m) => {
+              //     return m.weight;
+              //   }),
+              //   borderColor: "#4bc0c0",
+              //   backgroundColor: "#4bc0c0",
+              // },
+              // {
+              //   label: "UBCV: " + yearTwo + " " + monthTwo,
+              //   data: yearTwoData.map((m) => {
+              //     return m.weight;
+              //   }),
+              //   borderColor: "#cc65fe",
+              //   backgroundColor: "#cc65fe",
+              // },
+            ],
+          });
+    }
+
   }, [formData, firstYearSum, secondYearSum]);
 
   const firstYear = useMemo(() => {
@@ -230,7 +284,7 @@ export default function Home({
     setHowManyExtraDateInputs(howManyNewInputs + 1);
   }
 
-  console.log(extraMonthsArray, extraYearsArray, arrayOfExtraDateInputs);
+  // console.log(extraMonthsArray, extraYearsArray, arrayOfExtraDateInputs);
 
   return (
     <>

@@ -19,7 +19,7 @@ export default function Layout({ children }: Props) {
     {/* <SessionProvider session={session}> */}
       <Navbar links={[
         { label: 'Collection Summaries', href: '/' },
-        { label: 'Collection Details', href: '/details' },
+        { label: 'Collection Details', href: '/existing' },
         { label: 'New Entry', href: '/entry' },
         { label: 'Account', href: '/account' }
 
