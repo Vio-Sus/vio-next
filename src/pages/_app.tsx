@@ -13,11 +13,11 @@ export default function App({ Component, pageProps }: AppProps) {
     );
   } else {
     return (
-      // <SessionProvider session={pageProps.session} refetchInterval={0}>
-        // <Layout session={pageProps.session}>
+      <SessionProvider session={pageProps.session} refetchInterval={0}>
+        <Layout session={pageProps.session}>
           <Component {...pageProps} />
-        // </Layout>
-      // {/* </SessionProvider> */}
+        </Layout>
+      </SessionProvider>
     );
   }
 }
