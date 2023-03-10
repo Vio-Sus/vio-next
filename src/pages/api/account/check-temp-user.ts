@@ -10,24 +10,25 @@ export default async function handler(
     const session = await getSession({ req })
     if (!session) {
         res.status(401).json({ message: "Unauthorized" })
-    }
-    const email = session?.user?.email as string
-    const user = await prisma.user.findUnique({
-        where: {
-            email: email
-        },
-        select: {
-            id: true,
-            name: true,
-            email: true,
-            role: true,
-            company_id: true,
+    } else {
+        const email = session?.user?.email as string
+        const user = await prisma.user.findUnique({
+            where: {
+                email: email
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+                company_id: true,
+            }
+    
+        })
+      
+        if (req.method === "GET") {
+             res.status(200).json( user)
         }
-
-    })
-  
-    if (req.method === "GET") {
-         res.status(200).json( user)
     }
 }
 

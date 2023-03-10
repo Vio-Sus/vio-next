@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import BarChart from "@/components/chart/BarChart";
-import { prisma } from "../../server/db/client";
+import { prisma } from "../../../server/db/client";
 import ButtonAddYearAndMonth from "@/components/button/ButtonPrimary";
 import MultipleYearCompare from "@/components/compareMonthComponents/TwoYearsAndTwoMonths";
 import PickYearAndMonth from "@/components/input/PickYearAndMonth";
@@ -63,6 +63,7 @@ export default function Home({
           );
         });
         if (dataFound && dataFound.length > 1) {
+          // console.log(dataFound)
           const totalWeight = dataFound.reduce(
             (acc: WasteData, item: WasteData) => {
               return {
@@ -109,25 +110,7 @@ export default function Home({
 
       setDataState({
         labels: chosenMaterial,
-        datasets: [
-          ...dataSetsArray,
-          // {
-          //   label: "UBCV: " + yearOne + " " + monthOne,
-          //   data: yearOneData.map((m) => {
-          //     return m.weight;
-          //   }),
-          //   borderColor: "#4bc0c0",
-          //   backgroundColor: "#4bc0c0",
-          // },
-          // {
-          //   label: "UBCV: " + yearTwo + " " + monthTwo,
-          //   data: yearTwoData.map((m) => {
-          //     return m.weight;
-          //   }),
-          //   borderColor: "#cc65fe",
-          //   backgroundColor: "#cc65fe",
-          // },
-        ],
+        datasets: [...dataSetsArray],
       });
     }
   }, [formData, firstYearSum, secondYearSum]);
@@ -269,7 +252,23 @@ export default function Home({
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context: any) {
+  const id = JSON.parse(context.params.id);
+  const AllTheData = await Promise.all(
+    id.map(async (element: string) => {
+      const jsonArrayFromBackend = await prisma.testingData.findMany({
+        where: {
+          id: parseInt(element),
+        },
+      });
+      const jsonArrayFromBackendJSON = JSON.parse(
+        JSON.stringify(jsonArrayFromBackend)
+      );
+      return jsonArrayFromBackendJSON[0];
+    })
+  );
+  console.log(AllTheData);
+
   const jsonArrayFromBackend = await prisma.testingData.findUnique({
     where: {
       id: 1,
@@ -279,34 +278,38 @@ export async function getServerSideProps() {
     JSON.stringify(jsonArrayFromBackend)
   );
 
-  const transformedData: any = [];
-  jsonArrayFromBackendJSON.jsonArray.forEach((m: any) => {
-    const year = new Date(m.Date).getFullYear().toString();
-    Object.keys(m).forEach((key) => {
-      if (key !== "Date" && m[key] !== "NA") {
-        const material = key.replace(" (tonnes) (UBCV)", "");
-        const weight = m[key];
-        transformedData.push({ year, material, weight });
-      }
+  let transformedData: any = [];
+  AllTheData.map((m) => {
+    m.jsonArray.forEach((m: any) => {
+      const year = new Date(m.Date).getFullYear().toString();
+      Object.keys(m).forEach((key) => {
+        if (key !== "Date" && m[key] !== "NA") {
+          const material = key.replace(" (tonnes) (UBCV)", "");
+          const weight = m[key];
+          transformedData.push({ year, material, weight });
+        }
+      });
     });
   });
 
   let dataUntouched: (string | number | any)[] = [];
-  jsonArrayFromBackendJSON.jsonArray.forEach((m: any) => {
-    const month = new Date(m.Date).getUTCMonth().toString();
-    const year = new Date(m.Date).getFullYear().toString();
-    Object.keys(m).forEach((key) => {
-      // if (m[key] == "NA") m[key] = 0;
-      if (key !== "Date" && m[key] !== "NA") {
-        const material = key.replace(" (tonnes) (UBCV)", "");
-        const weight: number | string = m[key];
-        const monthName: string = new Date(
-          2000,
-          parseInt(month)
-        ).toLocaleString("default", { month: "long" });
-        // console.log(monthName, material, weight, year)
-        dataUntouched.push({ year, monthName, material, weight });
-      }
+  AllTheData.map((m) => {
+    m.jsonArray.forEach((m: any) => {
+      const month = new Date(m.Date).getUTCMonth().toString();
+      const year = new Date(m.Date).getFullYear().toString();
+      Object.keys(m).forEach((key) => {
+        // if (m[key] == "NA") m[key] = 0;
+        if (key !== "Date" && m[key] !== "NA") {
+          const material = key.replace(" (tonnes) (UBCV)", "");
+          const weight: number | string = m[key];
+          const monthName: string = new Date(
+            2000,
+            parseInt(month)
+          ).toLocaleString("default", { month: "long" });
+          // console.log(monthName, material, weight, year)
+          dataUntouched.push({ year, monthName, material, weight });
+        }
+      });
     });
   });
 
@@ -320,7 +323,7 @@ export async function getServerSideProps() {
     return acc;
   }, new Set<number>());
 
-  // console.log(dataUntouched);
+  console.log(dataUntouched);
 
   return {
     props: {
@@ -382,3 +385,20 @@ export async function getServerSideProps() {
 //     return { year: yearTwo, monthName: monthTwo, material: m, weight: 0 };
 //   }
 // });
+
+// {
+//   label: "UBCV: " + yearOne + " " + monthOne,
+//   data: yearOneData.map((m) => {
+//     return m.weight;
+//   }),
+//   borderColor: "#4bc0c0",
+//   backgroundColor: "#4bc0c0",
+// },
+// {
+//   label: "UBCV: " + yearTwo + " " + monthTwo,
+//   data: yearTwoData.map((m) => {
+//     return m.weight;
+//   }),
+//   borderColor: "#cc65fe",
+//   backgroundColor: "#cc65fe",
+// },
