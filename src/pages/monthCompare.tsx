@@ -50,60 +50,10 @@ export default function Home({
   });
 
   useEffect(() => {
-    const yearOneData = chosenMaterial.map((m) => {
-      const dataFound = dataUntouched.find((inputUntouchedData: any) => {
-        return (
-          inputUntouchedData.year === yearOne &&
-          inputUntouchedData.monthName === monthOne &&
-          inputUntouchedData.material === m
-        );
-      });
-      if (dataFound && dataFound.length > 1) {
-        const totalWeight = dataFound.reduce(
-          (acc: WasteData, item: WasteData) => {
-            return {
-              ...acc,
-              weight: acc.weight + item.weight,
-            };
-          },
-          { year: "", monthName: "", material: "", weight: 0 }
-        );
-        return totalWeight;
-      } else if (dataFound) {
-        return dataFound;
-      } else {
-        return { year: yearOne, monthName: monthOne, material: m, weight: 0 };
-      }
-    });
-    const yearTwoData = chosenMaterial.map((m) => {
-      const dataFound = dataUntouched.find((inputUntouchedData: any) => {
-        return (
-          inputUntouchedData.year === yearTwo &&
-          inputUntouchedData.monthName === monthTwo &&
-          inputUntouchedData.material === m
-        );
-      });
-      if (dataFound && dataFound.length > 1) {
-        const totalWeight = dataFound.reduce(
-          (acc: WasteData, item: WasteData) => {
-            return {
-              ...acc,
-              weight: acc.weight + item.weight,
-            };
-          },
-          { year: "", monthName: "", material: "", weight: 0 }
-        );
-        return totalWeight;
-      } else if (dataFound) {
-        return dataFound;
-      } else {
-        return { year: yearTwo, monthName: monthTwo, material: m, weight: 0 };
-      }
-    });
-    const allYears = [yearOne, yearTwo, ...extraYearsArray]
-    const allMonths = [monthOne, monthTwo, ...extraMonthsArray]
-    const allYearsWithData = allYears.map((m: (string | string[]), i) => {
-      let dataForTheseMaterials 
+    const allYears = [yearOne, yearTwo, ...extraYearsArray];
+    const allMonths = [monthOne, monthTwo, ...extraMonthsArray];
+    const allYearsWithData = allYears.map((m: string | string[], i) => {
+      let dataForTheseMaterials;
       dataForTheseMaterials = chosenMaterial.map((material) => {
         const dataFound = dataUntouched.find((inputUntouchedData: any) => {
           return (
@@ -126,56 +76,60 @@ export default function Home({
         } else if (dataFound) {
           return dataFound;
         } else {
-          return { year: m, monthName: allMonths[i], material: material, weight: 0 };
+          return {
+            year: m,
+            monthName: allMonths[i],
+            material: material,
+            weight: 0,
+          };
         }
       });
 
-      return dataForTheseMaterials
-    })
+      return dataForTheseMaterials;
+    });
 
-    console.log(allYearsWithData)
-    let dataSetsArray
+    console.log(allYearsWithData);
+    let dataSetsArray;
     if (allYearsWithData[0].length > 0) {
       dataSetsArray = allYearsWithData.map((m, i) => {
         // console.log(m)
-        let RanHexCol = (Math.random()*16777215).toString(16);
+        let RanHexCol = (Math.random() * 16777215).toString(16);
         let randomColor = "#" + RanHexCol.slice(0, 6);
-          return {
-            label: "UBCV: " + m[0].year + " " +  m[0].monthName,
-            data: m.map((m) => {
-              return m.weight
-            }),
-            borderColor: randomColor,
-            backgroundColor: randomColor,
-          }
-      })
-  
-      console.log(dataSetsArray)
-      
-          setDataState({
-            labels: chosenMaterial,
-            datasets: [
-              ...dataSetsArray,
-              // {
-              //   label: "UBCV: " + yearOne + " " + monthOne,
-              //   data: yearOneData.map((m) => {
-              //     return m.weight;
-              //   }),
-              //   borderColor: "#4bc0c0",
-              //   backgroundColor: "#4bc0c0",
-              // },
-              // {
-              //   label: "UBCV: " + yearTwo + " " + monthTwo,
-              //   data: yearTwoData.map((m) => {
-              //     return m.weight;
-              //   }),
-              //   borderColor: "#cc65fe",
-              //   backgroundColor: "#cc65fe",
-              // },
-            ],
-          });
-    }
+        return {
+          label: "UBCV: " + m[0].year + " " + m[0].monthName,
+          data: m.map((m) => {
+            return m.weight;
+          }),
+          borderColor: randomColor,
+          backgroundColor: randomColor,
+        };
+      });
 
+      console.log(dataSetsArray);
+
+      setDataState({
+        labels: chosenMaterial,
+        datasets: [
+          ...dataSetsArray,
+          // {
+          //   label: "UBCV: " + yearOne + " " + monthOne,
+          //   data: yearOneData.map((m) => {
+          //     return m.weight;
+          //   }),
+          //   borderColor: "#4bc0c0",
+          //   backgroundColor: "#4bc0c0",
+          // },
+          // {
+          //   label: "UBCV: " + yearTwo + " " + monthTwo,
+          //   data: yearTwoData.map((m) => {
+          //     return m.weight;
+          //   }),
+          //   borderColor: "#cc65fe",
+          //   backgroundColor: "#cc65fe",
+          // },
+        ],
+      });
+    }
   }, [formData, firstYearSum, secondYearSum]);
 
   const firstYear = useMemo(() => {
@@ -378,28 +332,53 @@ export async function getServerSideProps() {
   };
 }
 
-// let yearOneSum = [0]
-// let yearOneLabel = chosenMaterial.map((materialMap) => {
-//   yearOneSum = dataUntouched
-//   .filter(
-//     (m: any) =>
-//     yearOne == m.year &&
-//     materialMap == m.material
-//     ).map((m: any) => {
-//       return  m.weight;
-//     });
-//     return `${formData.yearOne} for ${materialMap}`
-//   })
-
-//   let yearTwoSum = [0]
-//   let yearTwoLabel = chosenMaterial.map((materialMap) => {
-//   yearTwoSum = dataUntouched
-//   .filter(
-//     (m: any) =>
-//     yearTwo == m.year &&
-//     materialMap == m.material
-//     ).map((m: any) => {
-//       return  m.weight;
-//     });
-//     return `${formData.yearTwo} for ${materialMap}`
-//   })
+// const yearOneData = chosenMaterial.map((m) => {
+//   const dataFound = dataUntouched.find((inputUntouchedData: any) => {
+//     return (
+//       inputUntouchedData.year === yearOne &&
+//       inputUntouchedData.monthName === monthOne &&
+//       inputUntouchedData.material === m
+//     );
+//   });
+//   if (dataFound && dataFound.length > 1) {
+//     const totalWeight = dataFound.reduce(
+//       (acc: WasteData, item: WasteData) => {
+//         return {
+//           ...acc,
+//           weight: acc.weight + item.weight,
+//         };
+//       },
+//       { year: "", monthName: "", material: "", weight: 0 }
+//     );
+//     return totalWeight;
+//   } else if (dataFound) {
+//     return dataFound;
+//   } else {
+//     return { year: yearOne, monthName: monthOne, material: m, weight: 0 };
+//   }
+// });
+// const yearTwoData = chosenMaterial.map((m) => {
+//   const dataFound = dataUntouched.find((inputUntouchedData: any) => {
+//     return (
+//       inputUntouchedData.year === yearTwo &&
+//       inputUntouchedData.monthName === monthTwo &&
+//       inputUntouchedData.material === m
+//     );
+//   });
+//   if (dataFound && dataFound.length > 1) {
+//     const totalWeight = dataFound.reduce(
+//       (acc: WasteData, item: WasteData) => {
+//         return {
+//           ...acc,
+//           weight: acc.weight + item.weight,
+//         };
+//       },
+//       { year: "", monthName: "", material: "", weight: 0 }
+//     );
+//     return totalWeight;
+//   } else if (dataFound) {
+//     return dataFound;
+//   } else {
+//     return { year: yearTwo, monthName: monthTwo, material: m, weight: 0 };
+//   }
+// });
