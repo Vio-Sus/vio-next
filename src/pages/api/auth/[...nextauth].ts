@@ -1,14 +1,19 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from 'next-auth/providers/google';
 import bcrypt from "bcrypt";
 // import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { prisma } from '../../../../server/db/client'
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+
 
 export const authOptions: NextAuthOptions = {
 
+  adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt"
   },
+  
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -17,7 +22,6 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials, req) {
-
         const { email, password } = credentials as { email: string, password: string }
         const prismaUser = await prisma.user.findUnique({
           where: {
@@ -25,29 +29,25 @@ export const authOptions: NextAuthOptions = {
           }
         })
         const isValid = await bcrypt.compare(password, prismaUser?.password || "")
-        if(email !== prismaUser?.email ) {
+        if (email !== prismaUser?.email) {
           console.log("wrong email")
           throw new Error("Invalid credentials")
         } else if (!isValid) {
           console.log("wrong password")
           throw new Error("Invalid credentials")
         }
-
-     
-
-        // if (email !== prismaUser?.email || !isValid) {
-        //   console.log("Invalid credentials")
-        //   throw new Error("Invalid credentials")
-        // }
-
-       
         console.log(email, password)
-        return { id: prismaUser.id, firstnName: prismaUser.first_name,lastName: prismaUser.last_name, email: prismaUser.email }
+        return { id: prismaUser.id, name:prismaUser.name, email: prismaUser.email }
       }
-    })
+    }),
+    GoogleProvider({
+      clientId: process.env.NEXTAUTH_GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.NEXTAUTH_GOOGLE_CLIENT_SECRET!
+    }),
   ],
   pages: {
     signIn: '/auth/login',
+    signOut: '/auth/logout',
   }
 }
 export default NextAuth(authOptions)

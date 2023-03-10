@@ -10,119 +10,131 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ROOT
+  ADMIN
+  USER
+  TEMP_
+}
+
 model User {
-  id            String      @id @default(cuid())
-  first_name    String?
-  last_name     String?
-  email         String?     @unique
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
   emailVerified DateTime?
   password      String?
   image         String?
-  role          User_Role[]
+  role          Role      @default(TEMP_)
   accounts      Account[]
   sessions      Session[]
+  entries       Entry[]
+  company       Company?  @relation(fields: [company_id], references: [id])
+  company_id    Int?
+}
+enum WasteType {
+  GENERAL_GARBAGE
+  FOODWASTE
+  GREENWASTE
+  CARDBOARD
+  CLEAN_WOOD
+  MIXED_PAPER
+  MIXED_CONTAINERS
+  STYROFOAM
+  SOFT_PLASTICS
+  OFPP_
+  APPLIANCES
+  E_WASTE
+  LIGHTS
+  BATTERIES
+  MATTRESSES
+  GLASS
+  NEW_GYPSUM
+  METAL
+  CONCRETE
 }
 
-model Role {
-  id   Int         @id @default(autoincrement())
-  role String
-  User User_Role[]
-
-  @@unique([role])
+model Waste {
+  id      Int     @id @default(autoincrement())
+  waste   String
+  waste_type WasteType
+  entries Entry[]
 }
 
-model User_Role {
-  user_role_id Int    @id @default(autoincrement())
-  role         Role   @relation(fields: [role_id], references: [id])
-  role_id      Int
-  user         User   @relation(fields: [user_id], references: [id])
-  user_id      String
+model Entry {
+  id                       Int                   @id @default(autoincrement())
+  collaborator             String
+  created_at               DateTime              @default(now())
+  updated_at               DateTime              @updatedAt
+  weight                   Float
+  waste                   Waste                 @relation(fields: [waste_id], references: [id])
+  waste_id                 Int
+  user                     User                  @relation(fields: [user_id], references: [id])
+  user_id                  String
+  site                     Site                  @relation(fields: [site_id], references: [id])
+  site_id                  Int
+  CompanyCollaboration     CompanyCollaboration? @relation(fields: [company_collaboration_id], references: [id])
+  company_collaboration_id Int?
+}
 
-  @@unique([role_id, user_id])
+enum CompanyType {
+  COLLECTOR
+  SOURCE
+}
+
+model Company {
+  id                Int                    @id @default(autoincrement())
+  company           String                 @unique
+  admin_code        String
+  user_code         String
+  address_line_1    String
+  address_line_2    String
+  email             String
+  phone             String
+  city              City                   @relation(fields: [city_id], references: [id])
+  city_id           Int
+  zip_code          String
+  company_type      CompanyType
+  users             User[]
+  source_company    CompanyCollaboration[] @relation("company_collaborators")
+  collector_company CompanyCollaboration[] @relation("company_collaborations")
+
+  @@map(name: "companies")
+}
+
+model CompanyCollaboration {
+  id              Int     @id @default(autoincrement())
+  company         Company @relation("company_collaborations", fields: [source_id], references: [id])
+  source_id       Int
+  collaborator    Company @relation("company_collaborators", fields: [collaborator_id], references: [id])
+  collaborator_id Int
+  entries         Entry[]
+
+  @@unique([source_id, collaborator_id])
+  @@map(name: "company_collaborations")
 }
 
 model Site {
-  id             Int     @id @default(autoincrement())
-  site_name      String
-  address_line_1 String
-  address_line_2 String
-  city           City    @relation(fields: [city_id], references: [id])
-  city_id        Int
-  company        Company @relation(fields: [company_id], references: [id])
-  company_id     Int
+  id      Int     @id @default(autoincrement())
+  site    String
+  entries Entry[]
 }
 
 model City {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   city        String
-  province    Province @relation(fields: [province_id], references: [id])
+  province    Province  @relation(fields: [province_id], references: [id])
   province_id Int
-  site        Site[]
+  Companies   Company[]
 
-  @@unique([city, province_id])
+  @@unique([city])
 }
 
 model Province {
   id       Int    @id @default(autoincrement())
   province String
-  City     City[]
+  cities   City[]
 
   @@unique([province])
-}
-
-model Company {
-  id              Int          @id @default(autoincrement())
-  company         String
-  Site            Site[]
-  Company_type    Company_type @relation(fields: [company_type_Id], references: [id])
-  company_type_Id Int
-
-  @@unique([company])
-}
-
-model Company_type {
-  id          Int       @id @default(autoincrement())
-  companyType String
-  Company     Company[]
-
-  @@unique([companyType])
-}
-
-model Entry {
-  id              Int          @id @default(autoincrement())
-  created_at      DateTime     @default(now())
-  updated_at      DateTime     @updatedAt
-  weight          Float
-  collaborator    collaborator @relation(fields: [collaborator_id], references: [id])
-  collaborator_id Int
-  waste           Waste        @relation(fields: [waste_id], references: [id])
-  waste_id        Int
-}
-
-model collaborator {
-  id           Int     @id @default(autoincrement())
-  collaborator String
-  Entry        Entry[]
-
-  @@unique([collaborator])
-}
-
-model Waste {
-  id            Int        @id @default(autoincrement())
-  waste         String
-  entry         Entry[]
-  waste_type    Waste_type @relation(fields: [waste_type_id], references: [id])
-  waste_type_id Int
-
-  @@unique([waste])
-}
-
-model Waste_type {
-  id         Int     @id @default(autoincrement())
-  waste_type String
-  Waste      Waste[]
-
-  @@unique([waste_type])
 }
 
 // Next Auth Models + user relation
