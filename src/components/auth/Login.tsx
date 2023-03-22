@@ -32,8 +32,13 @@ export default function Login() {
         }
       }, [status]);
 
+
+
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        if(!email || !password){
+            alert("Please fill in all fields");
+        }
         signIn('credentials', {
             email: email,
             password: password,

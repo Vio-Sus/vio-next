@@ -2,12 +2,12 @@ import React from 'react'
 interface Props {
   companyType: any;
   companyAddress: any;
-  siteList: any;
+
 }
 
 
-export default function ConfirmForm({ companyType, companyAddress, siteList }: Props) {
-  console.log(siteList.length)
+export default function ConfirmForm({ companyType, companyAddress }: Props) {
+
   return (
     <div className='w-80 flex flex-col'>
       <div className='text-lg my-3 font-bold mx-auto text-gray-700 '>Confirm Form</div>
@@ -28,16 +28,6 @@ export default function ConfirmForm({ companyType, companyAddress, siteList }: P
         <p className="m-2 text-gray-500">Zip: {companyAddress.zip}</p>
         <p className="m-2 text-gray-500">Province: {companyAddress.province}</p>
       </div>
-
-      {siteList.length>0 &&
-      <div>
-        <h3 className='text-lg my-3 font-bold mx-auto text-gray-700' >Sites</h3>
-        {Array.isArray(siteList) && siteList.map((site: any) => (
-          <div key={site.name}>
-            <p className="m-2 text-gray-500">Site Name: {site.name}</p>
-          </div>
-        ))}
-      </div>}
 
     </div>
   )

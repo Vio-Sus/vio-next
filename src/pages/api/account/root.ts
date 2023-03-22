@@ -24,7 +24,7 @@ export default async function handler(
         const companyAddress = req.body.companyAddress
         const company = await prisma.company.create({
             data: {
-                company: companyType.companyName,
+                company: companyType.company,
                 admin_code: generateHex(),
                 user_code: generateHex(),
                 address_line_1: companyAddress.address_line_1,
@@ -46,7 +46,7 @@ export default async function handler(
                     }
                 },
                 zip_code: companyAddress.zip,
-                company_type: companyType.companyType,           
+                company_type: companyType.companyType,
             }
         })
 
@@ -61,8 +61,69 @@ export default async function handler(
                 role: "ROOT"
             }
         })
-
-    
         res.status(200).json("success");
+    }
+    if (req.method === "PUT") {
+        console.log(req.body)
+        const { companyId, role } = req.body
+        console.log(companyId, role)
+        if (role === "ADMIN") {
+            const updateCompany = await prisma.company.update({
+                where: { id: companyId },
+                data: {
+                    admin_code: generateHex()
+                }
+            })
+            res.json(updateCompany.admin_code)
+        } else if (role === "USER") {
+            const updateCompany = await prisma.company.update({
+                where: { id: companyId },
+                data: {
+                    user_code: generateHex()
+                }
+            })
+            res.json(updateCompany.user_code)
+        }
+    }
+    // put company address
+    if (req.method === "PATCH") {
+        if (req.body.task === "address") {
+            const { companyId, companyAddress } = req.body
+            const updateCompany = await prisma.company.update({
+                where: { id: companyId },
+                data: {
+                    address_line_1: companyAddress.address_line_1,
+                    address_line_2: companyAddress.address_line_2,
+                    city: {
+                        connectOrCreate: {
+                            where: { city: companyAddress.city },
+                            create: {
+                                city: companyAddress.city,
+                                province: {
+                                    connectOrCreate: {
+                                        where: { province: companyAddress.province },
+                                        create: { province: companyAddress.province }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    zip_code: companyAddress.zip,
+                }
+            })
+            res.json(updateCompany)
+        } else if (req.body.task === "info") {
+            const { companyId, companyType } = req.body
+            const updateCompany = await prisma.company.update({
+                where: { id: companyId },
+                data: {
+                    company: companyType.company,
+                    phone: companyType.phone,
+                    email: companyType.email,
+                    company_type: companyType.companyType,
+                }
+            })
+            res.json(updateCompany)
+        }
     }
 }

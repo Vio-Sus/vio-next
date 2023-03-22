@@ -12,21 +12,15 @@ interface Props {
 export default function Layout({ children }: Props) {
   const { data: session, status } = useSession()
   const router = useRouter()
-  // if (status === "loading") return <div>loading</div>
-  // if (status === "unauthenticated") {
-  //   router.push("/auth/SignIn")
-  // }
-
   useEffect(() => {
     if (status === "authenticated") {
       const fetchPrismaUser = async () => {
         try {
           const res = await axios.get("/api/account/check-temp-user");
-          console.log(res.data);
           if (res.data.role === "TEMP_") {
             router.push("/create-role");
           } else {
-            router.push("/");
+           return
           }
         } catch (err) {
           console.log(err);
@@ -45,7 +39,6 @@ export default function Layout({ children }: Props) {
 
   return (
     <>
-      {/* <SessionProvider session={session}> */}
       <Navbar links={[
         { label: 'Collection Summaries', href: '/' },
         { label: 'Collection Details', href: '/details' },
@@ -59,7 +52,6 @@ export default function Layout({ children }: Props) {
         </div>
       </main>
       {/* <Footer /> */}
-      {/* </SessionProvider> */}
     </>
   );
 }
