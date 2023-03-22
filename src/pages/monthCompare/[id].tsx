@@ -254,11 +254,12 @@ export default function Home({
 
 export async function getServerSideProps(context: any) {
   const id = JSON.parse(context.params.id);
+  console.log(id)
   const AllTheData = await Promise.all(
     id.map(async (element: string) => {
       const jsonArrayFromBackend = await prisma.testingData.findMany({
         where: {
-          id: parseInt(element),
+          id: element,
         },
       });
       const jsonArrayFromBackendJSON = JSON.parse(
@@ -269,14 +270,14 @@ export async function getServerSideProps(context: any) {
   );
   // console.log(AllTheData[0].jsonArray.length);
   
-  const jsonArrayFromBackend = await prisma.testingData.findUnique({
-    where: {
-      id: 1,
-    },
-  });
-  const jsonArrayFromBackendJSON = JSON.parse(
-    JSON.stringify(jsonArrayFromBackend)
-    );
+  // const jsonArrayFromBackend = await prisma.testingData.findUnique({
+  //   where: {
+  //     id: 1,
+  //   },
+  // });
+  // const jsonArrayFromBackendJSON = JSON.parse(
+  //   JSON.stringify(jsonArrayFromBackend)
+  //   );
     
     let transformedData: any = [];
     AllTheData.map((m) => {
