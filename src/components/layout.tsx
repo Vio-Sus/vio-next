@@ -12,8 +12,8 @@ interface Props {
 
 export default function Layout({ children }: Props) {
   const router = useRouter()
-  const { data: session, status } = useSession()
-  const router = useRouter()
+  // const { data: session, status } = useSession()
+  let status: any;
   useEffect(() => {
     if (status === "authenticated") {
       const fetchPrismaUser = async () => {
