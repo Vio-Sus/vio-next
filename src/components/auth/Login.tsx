@@ -15,7 +15,7 @@ export default function Login() {
 
     useEffect(() => {
         if (status === "authenticated") {
-          const fetchPrismaUser = async () => {
+             (async () => {
             try {
               const res = await axios.get("/api/account/check-temp-user");
               console.log(res.data);
@@ -27,9 +27,7 @@ export default function Login() {
             } catch (err) {
               console.log(err);
             }
-          };
-    
-          fetchPrismaUser();
+          })()
         }
       }, [status]);
 
