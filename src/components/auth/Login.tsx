@@ -10,7 +10,7 @@ export default function Login() {
     const router = useRouter();
     let [email, setEmail] = useState("");
     let [password, setPassword] = useState("");
-    // const { data: session, status } = useSession()
+    const { data: session, status } = useSession()
 
     useEffect(() => {
         if (status === "authenticated") {
