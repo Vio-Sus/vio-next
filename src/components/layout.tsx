@@ -4,7 +4,6 @@ import { Navbar } from './header';
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router';
 import axios from 'axios';
-
 interface Props {
   children: React.ReactNode;
   session: any;
@@ -12,8 +11,9 @@ interface Props {
 
 export default function Layout({ children }: Props) {
   const router = useRouter()
-  // const { data: session, status } = useSession()
-  let status: any;
+  const { data: session, status } = useSession()
+
+
   useEffect(() => {
     if (status === "authenticated") {
       const fetchPrismaUser = async () => {
@@ -37,6 +37,7 @@ export default function Layout({ children }: Props) {
       <div>loading</div>
     }
   }, [status]);
+
 
   return (
     <>

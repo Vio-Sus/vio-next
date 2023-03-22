@@ -168,7 +168,7 @@ model Session {
 
 model testingData {
   id           Int      @id @default(autoincrement())
-  name         String  
+  name         String
   creationTime DateTime @default(now())
   jsonArray    Json?
 }

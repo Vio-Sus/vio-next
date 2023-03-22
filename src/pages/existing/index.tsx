@@ -1,6 +1,4 @@
 import React, { useMemo, useState } from "react";
-import ImportXlsxCsv from "@/components/input/ImportXlsxCsv";
-import { useSession } from "next-auth/react";
 import { prisma } from "../../../server/db/client";
 import DataTable from "react-data-table-component";
 import ButtonGoToCompare from "@/components/button/ButtonPrimary";
@@ -100,8 +98,10 @@ export default function entry({ allTheData }: any) {
 }
 
 export async function getServerSideProps() {
+  console.log("bow");
   const jsonArrayFromBackend = await prisma.testingData.findMany({});
-
+  console.log(jsonArrayFromBackend);
+  
   const listOfAllDataJSON = JSON.parse(JSON.stringify(jsonArrayFromBackend));
 
   listOfAllDataJSON.map((m: EntriesType) => {
@@ -119,6 +119,8 @@ export async function getServerSideProps() {
 
   const returnArrayJson = JSON.parse(JSON.stringify(returnArray));
 
+  console.log(returnArrayJson);
+  
   return {
     props: {
       allTheData: listOfAllDataJSON,

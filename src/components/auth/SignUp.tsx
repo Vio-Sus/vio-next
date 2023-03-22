@@ -15,7 +15,7 @@ export default function SignUp() {
     let [password, setPassword] = useState("");
     let [confirmPassword, setconfirmPassword] = useState("");
 
-    const { data: session, status } = useSession()
+    // const { data: session, status } = useSession()
 
     useEffect(() => {
         if (status === "authenticated") {

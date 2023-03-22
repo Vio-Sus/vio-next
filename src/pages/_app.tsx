@@ -8,17 +8,17 @@ export default function App({ Component, pageProps }: AppProps) {
   // login page no need layout
   if (Component.name === "SignIn" || Component.name === "SignUp") {
     return (
-      // <SessionProvider session={pageProps.session} >
+      <SessionProvider session={pageProps.session} >
         <Component {...pageProps} />
-      /* </SessionProvider> */
+      </SessionProvider> 
     );
   } else {
     return (
-      // <SessionProvider session={pageProps.session}>
+      <SessionProvider session={pageProps.session}>
         <Layout session={pageProps.session}>
           <Component {...pageProps} />
         </Layout>
-      /* </SessionProvider> */
+      </SessionProvider>
     );
   }
   return (
