@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import RedAlert from '@/components/alerts/RedAlert'
 import { RootForm, AccountSetUpForm } from '@/components/account'
+import Link from 'next/link'
 
 
 export default function AccountSetting() {
@@ -13,7 +14,7 @@ export default function AccountSetting() {
             </div>
             <AccountSetUpForm />
             <p className="text-sm text-center pt-8 font-light text-gray-900">
-                Do not have a company code? <a href="/create-root-account" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Create a root account</a>
+                Do not have a company code? <Link href="/create-root-account" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Create a root account</Link>
             </p>
         </>
 

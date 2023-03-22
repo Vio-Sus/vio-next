@@ -31,6 +31,7 @@ model User {
   company       Company?  @relation(fields: [company_id], references: [id])
   company_id    Int?
 }
+
 enum WasteType {
   GENERAL_GARBAGE
   FOODWASTE
@@ -54,10 +55,10 @@ enum WasteType {
 }
 
 model Waste {
-  id      Int     @id @default(autoincrement())
-  waste   String
+  id         Int       @id @default(autoincrement())
+  waste      String
   waste_type WasteType
-  entries Entry[]
+  entries    Entry[]
 }
 
 model Entry {
@@ -66,7 +67,7 @@ model Entry {
   created_at               DateTime              @default(now())
   updated_at               DateTime              @updatedAt
   weight                   Float
-  waste                   Waste                 @relation(fields: [waste_id], references: [id])
+  waste                    Waste                 @relation(fields: [waste_id], references: [id])
   waste_id                 Int
   user                     User                  @relation(fields: [user_id], references: [id])
   user_id                  String

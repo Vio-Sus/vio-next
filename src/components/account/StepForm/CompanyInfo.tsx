@@ -10,7 +10,7 @@ export default function CompanyInfo({ companyType, setCompanyType }: Props) {
   return (
     <div className='w-80 flex flex-col'>
       <div className='text-lg my-3 font-bold mx-auto text-gray-700'>Company InfohtmlFmation</div>
-      <LableInput label="Company Name" name="companyName" value={companyType.companyName} onChange={(e) => setCompanyType({ ...companyType, companyName: e.target.value })} />
+      <LableInput label="Company Name" name="companyName" value={companyType.company} onChange={(e) => setCompanyType({ ...companyType, company: e.target.value })} />
       <LableInput label="Company Phone" name="companyPhone" value={companyType.phone} onChange={(e) => setCompanyType({ ...companyType, phone: e.target.value })} />
       <LableInput label="Company Email" name="companyEmail" value={companyType.email} onChange={(e) => setCompanyType({ ...companyType, email: e.target.value })} />
 

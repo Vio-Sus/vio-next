@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import SiteInfo from './StepForm/CompanyAddress'
+import CompanyAddress from './StepForm/CompanyAddress'
 import CompanyInfo from './StepForm/CompanyInfo'
 import ConfirmForm from './StepForm/ConfirmForm'
 import ButtonBackAndNext from '../button/ButtonBackAndNext'
@@ -21,16 +21,14 @@ export default function RootForm() {
 
   const [companyType, setCompanyType] = useState({
     companyType: '',
-    companyName: '',
+    company: '',
     phone: '',
     email: '',
-  }
-  )
+  })
+  
   const [showAlert, setShowAlert] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
-  const [siteList, setSiteList] = useState({
-    name: ''
-  })
+
 
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -63,7 +61,7 @@ export default function RootForm() {
 
   const clickNext = () => {
     if (step === 1) {
-      if (companyType.companyName === '' || companyType.phone === '  ' || companyType.email === '' || companyType.companyType === '') {
+      if (companyType.company === '' || companyType.phone === '  ' || companyType.email === '' || companyType.companyType === '') {
         setShowAlert(true)
         setAlertMessage('Please fill out all fields')
       } else {
@@ -87,9 +85,9 @@ export default function RootForm() {
       case 1:
         return <CompanyInfo companyType={companyType} setCompanyType={setCompanyType} />
       case 2:
-        return <SiteInfo companyAddress={companyAddress} setCompanyAddress={setCompanyAddress} />
+        return <CompanyAddress companyAddress={companyAddress} setCompanyAddress={setCompanyAddress} />
       case 3:
-        return <ConfirmForm companyAddress={companyAddress} companyType={companyType} siteList={siteList} />
+        return <ConfirmForm companyAddress={companyAddress} companyType={companyType}  />
       default:
         return <CompanyInfo companyType={companyType} setCompanyType={setCompanyType} />
     }
@@ -109,7 +107,7 @@ export default function RootForm() {
           Create a root account
         </h1>
       </div>
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md ">
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
         <div className="mb-4">
           {conditionalComponent()}
           {step === 3 ? <div className='flex flow-row space-x-36 '> <ButtonSecondary

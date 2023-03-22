@@ -1,9 +1,9 @@
-import React from 'react';
-import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
 import { Navbar } from './header';
 // import Footer from './footer'
 import { useSession } from 'next-auth/react'
-import axios from 'axios'
+import { useRouter } from 'next/router';
+import axios from 'axios';
 
 interface Props {
   children: React.ReactNode;
@@ -13,15 +13,33 @@ interface Props {
 export default function Layout({ children }: Props) {
   const router = useRouter()
   const { data: session, status } = useSession()
-  if (status === "loading") {
-    return <div>loading</div>
-  } else if (status === "unauthenticated") {
-    // window.location.href = "/auth/SignIn"
-    router.push("/auth/SignIn")
-  }
+  const router = useRouter()
+  useEffect(() => {
+    if (status === "authenticated") {
+      const fetchPrismaUser = async () => {
+        try {
+          const res = await axios.get("/api/account/check-temp-user");
+          if (res.data.role === "TEMP_") {
+            router.push("/create-role");
+          } else {
+           return
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+      fetchPrismaUser();
+    } else if (status === "unauthenticated") {
+      router.push("/auth/SignIn")
+    } else if (status === "loading") return
+    {
+      <div>loading</div>
+    }
+  }, [status]);
+
   return (
     <>
-    {/* <SessionProvider session={session}> */}
       <Navbar links={[
         { label: 'Collection Summaries', href: '/' },
         { label: 'Collection Details', href: '/existing' },
@@ -35,7 +53,6 @@ export default function Layout({ children }: Props) {
         </div>
       </main>
       {/* <Footer /> */}
-      {/* </SessionProvider> */}
     </>
   );
 }
