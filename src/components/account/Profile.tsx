@@ -50,6 +50,7 @@ export default function Profile() {
     province: '',
   })
 
+
   useEffect(() => {
     const fetchData = async () => {
       try {

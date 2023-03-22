@@ -14,7 +14,7 @@ export default function Login() {
 
     useEffect(() => {
         if (status === "authenticated") {
-          const fetchPrismaUser = async () => {
+             (async () => {
             try {
               const res = await axios.get("/api/account/check-temp-user");
               console.log(res.data);
@@ -26,9 +26,7 @@ export default function Login() {
             } catch (err) {
               console.log(err);
             }
-          };
-    
-          fetchPrismaUser();
+          })()
         }
       }, [status]);
 
@@ -69,10 +67,11 @@ export default function Login() {
                                 </h1>
                                 <div className='mx-2.5 text-center'> Log in to Vio Sustainability to continue to Waste Tracking App</div>
                             </div>
+                         
                             <form className="md:space-y-6" action="#">
-
                                 <Input type='email' onChange={(e) => { setEmail(e.target.value) }} placeholder='Your Email' />
                                 <Input type='password' onChange={(e) => { setPassword(e.target.value) }} placeholder='Password' />
+
                                 <div className="flex items-between relative">
                                     <div className="flex items-center h-5">
                                         <input id="saveAccount" aria-describedby="saveAccount" type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" />
@@ -83,7 +82,8 @@ export default function Login() {
                                     <a className="font-medium text-blue-600 hover:underline absolute right-0 " href="#">Forgot Password?</a>
                                 </div>
 
-                                <ButtonPrimary onClick={handleSubmit} children='Log In' />
+
+                                <ButtonPrimary onClick={handleSubmit} children={'Log In' } />
 
                                 <p className="text-sm text-center font-light text-gray-500 dark:text-gray-400">
                                     Do not have an account? <a href="/auth/SignUp" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up here</a>
@@ -91,6 +91,7 @@ export default function Login() {
                             </form>
                             <div
                                 className="flex items-center my-4 before:flex-1 before:border-t before:border-gray-300 before:mt-0.5 after:flex-1 after:border-t after:border-gray-300 after:mt-0.5">
+                        
                                 <p className="text-center font-semibold mx-4 mb-0">OR</p>
                             </div>
 
