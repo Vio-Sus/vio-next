@@ -4,14 +4,12 @@ import { Navbar } from './header';
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router';
 import axios from 'axios';
-
 interface Props {
   children: React.ReactNode;
   session: any;
 }
 
 export default function Layout({ children }: Props) {
-  const router = useRouter()
   const { data: session, status } = useSession()
   const router = useRouter()
   useEffect(() => {
@@ -37,6 +35,7 @@ export default function Layout({ children }: Props) {
       <div>loading</div>
     }
   }, [status]);
+
 
   return (
     <>
