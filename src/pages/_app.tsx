@@ -9,7 +9,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <SessionProvider session={pageProps.session}>
-      {router.pathname === '/auth/SignIn' || router.pathname ==='/auth/SignUp' ? (
+      {router.pathname === '/auth/signin' || router.pathname ==='/auth/signup' ? (
         <Component {...pageProps} />
       ) : (
         <Layout session={pageProps.session}>

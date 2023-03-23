@@ -100,7 +100,7 @@ export default function SignUp() {
                                 <ButtonPrimary onClick={handleSubmit} children='Create an account' />
 
                                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                                    Already have an account? <a href="/auth/SignIn" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
+                                    Already have an account? <a href="/auth/signin" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
                                 </p>
                             </form>
                             <div
@@ -108,9 +108,9 @@ export default function SignUp() {
                                 <p className="text-center font-semibold mx-4 mb-0">OR</p>
                             </div>
 
-                            <a onClick={clickGoogleSignUp} className="pl-6 grid grid-cols-[20%_80%] py-3 text-dark font-medium rounded shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out w-full flex justify-center items-center mb-3">
+                            <div onClick={clickGoogleSignUp} className="pl-6 grid grid-cols-[20%_80%] py-3 text-dark font-medium rounded shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out w-full flex justify-center items-center mb-3">
                                 <FcGoogle size="1.7rem" />
-                                Continue with Google</a>
+                                Continue with Google</div>
 
                         </div>
                     </div>

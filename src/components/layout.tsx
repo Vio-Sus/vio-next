@@ -29,7 +29,7 @@ export default function Layout({ children }: Props) {
 
       fetchPrismaUser();
     } else if (status === "unauthenticated") {
-      router.push("/auth/SignIn")
+      router.push("/auth/signin")
     } else if (status === "loading") return
     {
       <div>loading</div>

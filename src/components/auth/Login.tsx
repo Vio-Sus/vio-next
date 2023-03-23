@@ -90,7 +90,7 @@ export default function Login() {
                                 <ButtonPrimary onClick={handleSubmit} children={'Log In' } />
 
                                 <p className="text-sm text-center font-light text-gray-500 dark:text-gray-400">
-                                    Do not have an account? <Link href="/auth/SignUp" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up here</Link>
+                                    Do not have an account? <Link href="/auth/signup" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up here</Link>
                                 </p>
                             </form>
                             <div
