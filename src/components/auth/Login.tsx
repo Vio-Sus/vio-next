@@ -62,7 +62,7 @@ export default function Login() {
                                 <Image
                                     width={100}
                                     height={100}
-                                    src="/logo.png"
+                                    src="/Logo.png"
                                     className="w-36 mx-auto"
                                     alt="logo image" />
 

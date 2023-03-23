@@ -45,7 +45,7 @@ export default function Layout({ children }: Props) {
         { label: 'New Entry', href: '/entry' },
         { label: 'Account', href: '/account' }
 
-      ]} logoSrc="/logo.png" username="username" />
+      ]} logoSrc="/Logo.png" username="username" />
       <main className="flex justify-center">
         <div className="w-3/4">
           {children}
