@@ -21,12 +21,5 @@ export default function App({ Component, pageProps }: AppProps) {
       </SessionProvider>
     );
   }
-  return (
-    <SessionProvider session={pageProps.session} refetchInterval={0}>
-
-      <Layout session={pageProps.session} ><Component {...pageProps} /></Layout>;
-     
-    </SessionProvider>
-  )
 
 }
