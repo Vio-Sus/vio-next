@@ -13,6 +13,7 @@ export default function Login() {
     const { data: session, status } = useSession()
 
     useEffect(() => {
+        if(status === undefined || null) return
         if (status === "authenticated") {
              (async () => {
             try {
