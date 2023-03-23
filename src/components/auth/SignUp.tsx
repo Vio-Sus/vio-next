@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { useSession, signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import Image from 'next/image';
 
 export default function SignUp() {
     const router = useRouter();
@@ -72,7 +73,9 @@ export default function SignUp() {
                 <div className="flex flex-col min-h-screen items-center justify-center md:px-6 md:py-8 mx-auto md:h-screen lg:py-0">
                     <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 ">
                         <div className="p-6 space-y-4 md:space-y-6 sm:p-8 text-center">
-                            <img
+                            <Image
+                                width={100}
+                                height={100}
                                 src="/logo.png"
                                 className="w-36 mx-auto"
                                 alt="logo image" />

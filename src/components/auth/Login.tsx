@@ -7,6 +7,7 @@ import {useSession, signIn} from 'next-auth/react'
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import Image from 'next/image';
 export default function Login() {
     const router = useRouter();
     let [email, setEmail] = useState("");
@@ -58,7 +59,9 @@ export default function Login() {
                         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                             <div className="p-6 space-y-4 md:space-y-6 sm:p-8 text-center">
 
-                                <img
+                                <Image
+                                    width={100}
+                                    height={100}
                                     src="/logo.png"
                                     className="w-36 mx-auto"
                                     alt="logo image" />

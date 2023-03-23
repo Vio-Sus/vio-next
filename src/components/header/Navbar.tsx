@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { usePathname } from 'next/navigation';
 import React from 'react';
+import Image from 'next/image';
 
 interface Props {
     links: { label: string; href: string }[];
@@ -46,9 +47,15 @@ const Navbar: React.FC<Props> = ({ links, logoSrc }) => {
                         <div className="flex flex-1 items-center justify-center md:items-stretch md:justify-start">
                             <div className="flex flex-shrink-0 items-center">
                                 <a href="/">
-                                    <img className="hidden h-8 w-auto lg:block" src={logoSrc} alt="Your Company" />
+                                    <Image
+                                    width={100}
+                                    height={100}
+                                    className="hidden h-8 w-auto lg:block" src={logoSrc} alt="Your Company" />
                                 </a>
-                                <img className="block h-8 w-auto lg:hidden " src={logoSrc} alt="Your Company" />
+                                <Image
+                                    width={100}
+                                    height={100}
+                                    className="block h-8 w-auto lg:hidden " src={logoSrc} alt="Your Company" />
                             </div>
                             <div className="hidden md:ml-6 md:block">
                                 <div className="flex space-x-4">
