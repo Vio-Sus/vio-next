@@ -50,18 +50,18 @@ const ImportXlsxCsv: React.FC = () => {
 
     async function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent> ) {
         event.preventDefault();
-        // console.log(sheetData)
-        try {
-            console.log(fileName)
-            const response = await axios.post('/api/csv', {sheetData: sheetData, fileName: fileName});
-            console.log(response.data);
-          } catch (error) {
-            console.error(error);
-          }
-          setShowSuccessAlert(true)
-          setTimeout(() => {
-            setShowSuccessAlert(false);
-          }, 3000);
+        console.log(sheetData)
+        // try {
+        //     console.log(fileName)
+        //     const response = await axios.post('/api/csv', {sheetData: sheetData, fileName: fileName});
+        //     console.log(response.data);
+        //   } catch (error) {
+        //     console.error(error);
+        //   }
+        //   setShowSuccessAlert(true)
+        //   setTimeout(() => {
+        //     setShowSuccessAlert(false);
+        //   }, 3000);
     }
 
     return (<>
@@ -80,7 +80,7 @@ const ImportXlsxCsv: React.FC = () => {
                 />
                 {sheetData.length > 0 && <Button text="Submit" type="submit" onClick={handleSubmit} />}
             </form>
-            {/* <table>
+            <table>
                 <thead>
                     <tr>
                         {sheetData.length > 0 && Object.keys(sheetData[0]).map((key) => {
@@ -104,7 +104,7 @@ const ImportXlsxCsv: React.FC = () => {
                     )}
                 </tbody>
 
-            </table> */}
+            </table>
         </div>
     </>
 
