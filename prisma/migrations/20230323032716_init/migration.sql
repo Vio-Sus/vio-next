@@ -125,6 +125,16 @@ CREATE TABLE "Session" (
 );
 
 -- CreateTable
+CREATE TABLE "testingData" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "creationTime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "jsonArray" JSONB,
+
+    CONSTRAINT "testingData_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "VerificationToken" (
     "identifier" TEXT NOT NULL,
     "token" TEXT NOT NULL,

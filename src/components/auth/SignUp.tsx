@@ -18,7 +18,6 @@ export default function SignUp() {
     const { data: session, status } = useSession()
 
     useEffect(() => {
-        if(status === undefined || null) return
         if (status === "authenticated") {
           const fetchPrismaUser = async () => {
             try {
