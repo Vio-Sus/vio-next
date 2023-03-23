@@ -13,6 +13,7 @@ export default function Layout({ children }: Props) {
   const { data: session, status } = useSession()
   const router = useRouter()
   useEffect(() => {
+    if(status === undefined || null) return
     if (status === "authenticated") {
       const fetchPrismaUser = async () => {
         try {
