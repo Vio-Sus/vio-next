@@ -13,7 +13,6 @@ interface Props {
 export default function Layout({ children }: Props) {
   const router = useRouter()
   const { data: session, status } = useSession()
-  const router = useRouter()
   useEffect(() => {
     if(status === undefined || null) return
     if (status === "authenticated") {
