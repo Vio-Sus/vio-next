@@ -73,8 +73,8 @@ model Entry {
   user_id                  String
   site                     Site                  @relation(fields: [site_id], references: [id])
   site_id                  Int
-  CompanyCollaboration     CompanyCollaboration? @relation(fields: [company_collaboration_id], references: [id])
-  company_collaboration_id Int?
+  company                  Company               @relation(fields: [company_id], references: [id])
+  company_id               Int
 }
 
 enum CompanyType {
@@ -98,7 +98,7 @@ model Company {
   users             User[]
   source_company    CompanyCollaboration[] @relation("company_collaborators")
   collector_company CompanyCollaboration[] @relation("company_collaborations")
-
+  entries           Entry[]
   @@map(name: "companies")
 }
 
@@ -108,8 +108,6 @@ model CompanyCollaboration {
   source_id       Int
   collaborator    Company @relation("company_collaborators", fields: [collaborator_id], references: [id])
   collaborator_id Int
-  entries         Entry[]
-
   @@unique([source_id, collaborator_id])
   @@map(name: "company_collaborations")
 }

@@ -1,6 +1,5 @@
 import {prisma} from "../../../server/db/client"
 import bcrypt from "bcrypt";
-import axios from "axios"
 
 export default async function handler(req: any, res: any) {
  let {method} = req
