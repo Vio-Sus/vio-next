@@ -4,6 +4,7 @@ import ButtonPrimary from '../button/ButtonPrimary';
 import * as XLSX from "xlsx"
 import axios from "axios";
 import UploadSuccess from "@/components/box/UploadSuccess"
+import {useSession} from 'next-auth/react';
 
 interface SheetData {
     [key: string]: any;
@@ -62,6 +63,9 @@ const ImportXlsxCsv: React.FC = () => {
     const [sheetData, setSheetdata] = useState<SheetData[]>([]);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [fileName, setFileName] = useState("")
+    const user = useSession()
+    console.log("user", user)
+    
 
     const readExcel = (file: File) => {
         const promise = new Promise<SheetData[]>((resolve, reject) => {
@@ -80,12 +84,13 @@ const ImportXlsxCsv: React.FC = () => {
                     const data = XLSX.utils.sheet_to_json(workSheet) as SheetData[]
                     resolve(data)
 
-                    const array: { accountCode: any; weight: any; weste: any; }[] = []
+                    const array: { accountCode: any; weight: any; waste: any; }[] = []
                     for (let i = 0; i < data.length; i++) {
                         const obj = {
                             accountCode: data[i]["ARAccount Code"],
                             weight: data[i]["Weighing Quantity (mt)"],
-                            weste: data[i]["Weighing Material Profile"],
+                            waste: data[i]["Weighing Material"].replace(/[\r\n]+/g, ""),
+                            id: data[i]["Ticket No"]
                         }
                         array.push(obj)
                     }
@@ -112,7 +117,8 @@ const ImportXlsxCsv: React.FC = () => {
     async function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
         axios.post("/api/entry", {
-            data: sheetData
+            data: sheetData,
+            user
         }).then((res) => {
             console.log(res)
             setShowSuccessAlert(true)
