@@ -38,6 +38,7 @@ CREATE TABLE "Entry" (
     "updated_at" TIMESTAMP(3) NOT NULL,
     "weight" DOUBLE PRECISION NOT NULL,
     "waste" TEXT NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL,
     "user_id" TEXT NOT NULL,
     "company_id" INTEGER NOT NULL,
     "site" TEXT NOT NULL,

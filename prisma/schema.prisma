@@ -68,6 +68,7 @@ model Entry {
   updated_at   DateTime @updatedAt
   weight       Float
   waste        String
+  date         DateTime
   // waste        Waste    @relation(fields: [waste_id], references: [id])
   // waste_id     Int
   user         User     @relation(fields: [user_id], references: [id])

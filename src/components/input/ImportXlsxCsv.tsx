@@ -90,7 +90,8 @@ const ImportXlsxCsv: React.FC = () => {
                             accountCode: data[i]["ARAccount Code"],
                             weight: data[i]["Weighing Quantity (mt)"],
                             waste: data[i]["Weighing Material"].replace(/[\r\n]+/g, ""),
-                            id: data[i]["Ticket No"]
+                            id: data[i]["Ticket No"],
+                            transactionDate: data[i]["Transaction Date"],
                         }
                         array.push(obj)
                     }

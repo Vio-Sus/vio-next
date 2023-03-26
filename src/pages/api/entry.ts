@@ -7,7 +7,7 @@ export default async function handler(req: any, res: any) {
     case 'POST':
       try {
         const sheetData = req.body
-        // console.log('sheetData: ', sheetData.data)
+        console.log('sheetData: ', sheetData.data)
 
         let userFromDb = await prisma.user.findUnique({
             where: {
@@ -25,7 +25,8 @@ export default async function handler(req: any, res: any) {
             user_id: userFromDb?.id,
             company_id: 1,
             site: data.site,
-            waste: data.waste
+            waste: data.waste,
+            date: data.transactionDate
             })),
         })
     

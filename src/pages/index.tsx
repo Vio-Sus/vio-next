@@ -14,7 +14,7 @@ export default function Home() {
         onClick={() => console.log("clicked")}
         redirect="/materialSelection"
       >
-        MaterialSelection
+        Material Selection
       </RedirectButton>
 
       <RedirectButton
