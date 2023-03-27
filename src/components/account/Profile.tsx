@@ -7,6 +7,7 @@ import CompanyInfo from './StepForm/CompanyInfo'
 import { Prisma } from '@prisma/client';
 import { CiEdit } from 'react-icons/ci'
 import { RxUpdate } from 'react-icons/rx'
+import Loader from '../loader/Loader';
 
 
 
@@ -156,6 +157,8 @@ export default function Profile() {
 
   return (
     <div>
+      {user && company ? (
+        <>
       {editCompany &&
         <form className="p-6 rounded-lg shadow-md  flex flex-col items-center justify-center flex-wrap">
           <CompanyInfo companyType={companyType} setCompanyType={setCompanyType} />
@@ -250,7 +253,8 @@ export default function Profile() {
         </div>
 
       </div>}
-
+      </>
+      ) : <Loader /> }
 
     </div>
 
