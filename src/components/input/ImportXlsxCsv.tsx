@@ -83,6 +83,7 @@ const ImportXlsxCsv: React.FC = () => {
                     const workSheet = workBook.Sheets[workSheetName]
                     const data = XLSX.utils.sheet_to_json(workSheet) as SheetData[]
                     resolve(data)
+                    console.log(data)
 
                     const array: { accountCode: any; weight: any; waste: any; }[] = []
                     for (let i = 0; i < data.length; i++) {
