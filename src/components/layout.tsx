@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState} from 'react';
 import { Navbar } from './header';
+import Loader from './loader/Loader';
 // import Footer from './footer'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router';
@@ -36,6 +37,16 @@ export default function Layout({ children }: Props) {
     }
   }, [status]);
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [showChildren, setShowChildren] = useState(false);
+
+  useEffect(() => {
+    // Simulate loading time
+    setTimeout(() => {
+      setIsLoading(false);
+      setShowChildren(true);
+    }, 0);
+  }, []);
 
   return (
     <>
@@ -44,13 +55,21 @@ export default function Layout({ children }: Props) {
         { label: 'Collection Details', href: '/existing' },
         { label: 'New Entry', href: '/entry' },
         { label: 'Account', href: '/account' }
-
       ]} logoSrc="/Logo.png" username="username" />
-      <main className="flex justify-center">
-        <div className="w-3/4">
-          {children}
-        </div>
-      </main>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <main className="flex justify-center">
+          <div className="w-3/4">
+            {showChildren ? (
+             children
+            ) : (
+              // Placeholder content while loading
+              <h1>Loading children...</h1>
+            )}
+          </div>
+        </main>
+      )}
       {/* <Footer /> */}
     </>
   );
