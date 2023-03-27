@@ -45,7 +45,7 @@ export default function Layout({ children }: Props) {
     setTimeout(() => {
       setIsLoading(false);
       setShowChildren(true);
-    }, 0);
+    }, 2000);
   }, []);
 
   return (
