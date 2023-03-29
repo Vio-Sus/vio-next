@@ -84,9 +84,10 @@ const ImportXlsxCsv: React.FC = () => {
                     const data = XLSX.utils.sheet_to_json(workSheet) as SheetData[]
                     resolve(data)
                     console.log(data)
-
+                    // console.log(data[1]["Transaction Date"])
                     const array: { accountCode: any; weight: any; waste: any; }[] = []
                     for (let i = 0; i < data.length; i++) {
+                        console.log(data[i]["Weighing Material ↵Profile"])
                         const obj = {
                             accountCode: data[i]["ARAccount Code"],
                             weight: data[i]["Weighing Quantity (mt)"],
@@ -120,7 +121,7 @@ const ImportXlsxCsv: React.FC = () => {
         event.preventDefault();
         axios.post("/api/entry", {
             data: sheetData,
-            user
+            user,
         }).then((res) => {
             console.log(res)
             setShowSuccessAlert(true)
