@@ -167,7 +167,7 @@ export default function Home({
   };
 
   async function handleAddYearAndMonthComponent() {
-    let valuesYearAndMonth = ["2012", "January"];
+    let valuesYearAndMonth = [years[0], months[0]];
     let howManyNewInputs = howManyExtraDateInputs;
     const extraYearsArrayPlusOne = [...extraYearsArray, valuesYearAndMonth[0]];
     const extraMonthsArrayPlusOne = [
