@@ -37,6 +37,13 @@ export default function Home() {
       >
         Monthly Breakdown
       </RedirectButton>
+
+      <RedirectButton
+        onClick={() => console.log("clicked")}
+        redirect="/monthCompare"
+      >
+        Monthly Compare
+      </RedirectButton>
     </>
   );
 }

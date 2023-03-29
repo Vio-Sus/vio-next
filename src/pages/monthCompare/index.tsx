@@ -18,11 +18,12 @@ export default function Home({
   years,
   months,
   dataUntouched,
+  materials
 }: any) {
-  const [monthOne, setMonthOne] = useState<string>("January");
-  const [monthTwo, setMonthTwo] = useState<string>("January");
-  const [yearOne, setYearOne] = useState<string>("2012");
-  const [yearTwo, setYearTwo] = useState<string>("2012");
+  const [monthOne, setMonthOne] = useState<string>(months[0]);
+  const [monthTwo, setMonthTwo] = useState<string>(months[0]);
+  const [yearOne, setYearOne] = useState<string>(years[0]);
+  const [yearTwo, setYearTwo] = useState<string>(years[0]);
   const [extraYearsArray, setExtraYearsArray] = useState<string[]>([]);
   const [extraMonthsArray, setExtraMonthsArray] = useState<string[]>([]);
   const [howManyExtraDateInputs, setHowManyExtraDateInputs] = useState(1);
@@ -33,14 +34,7 @@ export default function Home({
   const [secondYearSum, setSecondYearSum] = useState<number>(0);
   const [chosenMaterial, setChosenMaterial] = useState<string[]>([]);
 
-  const [material, setMaterial] = useState<string[]>([
-    "Containers",
-    "Mixed Paper",
-    "Office Paper",
-    "Refuse (ICI Waste)",
-    "Corrugated Cardboard",
-    "Transfer Station Landfill Garbage",
-  ]);
+  const [material, setMaterial] = useState<string[]>(materials);
   const [year, setYear] = useState<number[]>(years);
   const [formData, setFormData] = useState<any>({});
   const [showGraph, setShowGraph] = useState<boolean>(false);
@@ -253,57 +247,36 @@ export default function Home({
 }
 
 export async function getServerSideProps(context: any) {
-  const id = JSON.parse(context.params.id);
-  console.log(id)
-  const AllTheData = await Promise.all(
-    id.map(async (element: string) => {
-      const jsonArrayFromBackend = await prisma.testingData.findMany({
-        where: {
-          id: 1,
-        },
-      });
-      const jsonArrayFromBackendJSON = JSON.parse(
-        JSON.stringify(jsonArrayFromBackend)
-      );
-      return jsonArrayFromBackendJSON[0];
-    })
-  );
-  // console.log(AllTheData[0].jsonArray.length);
-  
-  // const jsonArrayFromBackend = await prisma.testingData.findUnique({
-  //   where: {
-  //     id: 1,
-  //   },
-  // });
-  // const jsonArrayFromBackendJSON = JSON.parse(
-  //   JSON.stringify(jsonArrayFromBackend)
-  //   );
+
+
+  const allEntries = await prisma.entry.findMany({})
+
+  // console.log(allEntries)
+
     
     let transformedData: any = [];
-    AllTheData.map((m) => {
-      m.jsonArray.forEach((m: any) => {
-        const year = new Date(m.Date).getFullYear().toString();
+    allEntries.map((m) => {
+        const year = new Date(m.date).getFullYear().toString();
         Object.keys(m).forEach((key) => {
-          if (key !== "Date" && m[key] !== "NA") {
-            const material = key.replace(" (tonnes) (UBCV)", "");
-            const weight = m[key];
+          // console.log(key)
+          if (key !== "Date") {
+            const material = m.waste;
+            const weight = m.weight * 1000;
             transformedData.push({ year, material, weight });
           }
         });
-      });
     });
     // console.log(transformedData);
     
     let dataUntouched: (string | number | any)[] = [];
-    AllTheData.map((m) => {
-      m.jsonArray.forEach((m: any) => {
-        const month = new Date(m.Date).getUTCMonth().toString();
-        const year = new Date(m.Date).getFullYear().toString();
+    allEntries.map((m) => {  
+        const month = new Date(m.date).getUTCMonth().toString();
+        const year = new Date(m.date).getFullYear().toString();
         Object.keys(m).forEach((key) => {
           // if (m[key] == "NA") m[key] = 0;
-          if (key !== "Date" && m[key] !== "NA") {
-            const material = key.replace(" (tonnes) (UBCV)", "");
-            const weight: number | string = m[key];
+          if (key !== "Date") {
+            const material = m.waste;
+            const weight: number | string = m.weight * 1000;
             const monthName: string = new Date(
               2000,
               parseInt(month)
@@ -312,10 +285,17 @@ export async function getServerSideProps(context: any) {
               dataUntouched.push({ year, monthName, material, weight });
             }
           });
-        });
       });
-      // console.log(AllTheData);
+      // console.log(dataUntouched);
       
+  
+  
+
+  const materials = transformedData.reduce((acc: Set<number>, category: any) => {
+    acc.add(category.material);
+    return acc;
+  }, new Set<number>());
+
   const years = transformedData.reduce((acc: Set<number>, category: any) => {
     acc.add(category.year);
     return acc;
@@ -334,74 +314,7 @@ export async function getServerSideProps(context: any) {
       transformedData: transformedData,
       years: Array.from(years),
       months: Array.from(months),
+      materials: Array.from(materials)
     },
   };
 }
-
-// const yearOneData = chosenMaterial.map((m) => {
-//   const dataFound = dataUntouched.find((inputUntouchedData: any) => {
-//     return (
-//       inputUntouchedData.year === yearOne &&
-//       inputUntouchedData.monthName === monthOne &&
-//       inputUntouchedData.material === m
-//     );
-//   });
-//   if (dataFound && dataFound.length > 1) {
-//     const totalWeight = dataFound.reduce(
-//       (acc: WasteData, item: WasteData) => {
-//         return {
-//           ...acc,
-//           weight: acc.weight + item.weight,
-//         };
-//       },
-//       { year: "", monthName: "", material: "", weight: 0 }
-//     );
-//     return totalWeight;
-//   } else if (dataFound) {
-//     return dataFound;
-//   } else {
-//     return { year: yearOne, monthName: monthOne, material: m, weight: 0 };
-//   }
-// });
-// const yearTwoData = chosenMaterial.map((m) => {
-//   const dataFound = dataUntouched.find((inputUntouchedData: any) => {
-//     return (
-//       inputUntouchedData.year === yearTwo &&
-//       inputUntouchedData.monthName === monthTwo &&
-//       inputUntouchedData.material === m
-//     );
-//   });
-//   if (dataFound && dataFound.length > 1) {
-//     const totalWeight = dataFound.reduce(
-//       (acc: WasteData, item: WasteData) => {
-//         return {
-//           ...acc,
-//           weight: acc.weight + item.weight,
-//         };
-//       },
-//       { year: "", monthName: "", material: "", weight: 0 }
-//     );
-//     return totalWeight;
-//   } else if (dataFound) {
-//     return dataFound;
-//   } else {
-//     return { year: yearTwo, monthName: monthTwo, material: m, weight: 0 };
-//   }
-// });
-
-// {
-//   label: "UBCV: " + yearOne + " " + monthOne,
-//   data: yearOneData.map((m) => {
-//     return m.weight;
-//   }),
-//   borderColor: "#4bc0c0",
-//   backgroundColor: "#4bc0c0",
-// },
-// {
-//   label: "UBCV: " + yearTwo + " " + monthTwo,
-//   data: yearTwoData.map((m) => {
-//     return m.weight;
-//   }),
-//   borderColor: "#cc65fe",
-//   backgroundColor: "#cc65fe",
-// },

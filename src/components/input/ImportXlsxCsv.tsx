@@ -87,7 +87,6 @@ const ImportXlsxCsv: React.FC = () => {
                     // console.log(data[1]["Transaction Date"])
                     const array: { accountCode: any; weight: any; waste: any; }[] = []
                     for (let i = 0; i < data.length; i++) {
-                        console.log(data[i]["Weighing Material ↵Profile"])
                         const obj = {
                             accountCode: data[i]["ARAccount Code"],
                             weight: data[i]["Weighing Quantity (mt)"],
