@@ -37,10 +37,11 @@ CREATE TABLE "Entry" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "weight" DOUBLE PRECISION NOT NULL,
-    "waste_id" INTEGER NOT NULL,
+    "waste" TEXT NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL,
     "user_id" TEXT NOT NULL,
-    "site_id" INTEGER NOT NULL,
-    "company_collaboration_id" INTEGER,
+    "company_id" INTEGER NOT NULL,
+    "site" TEXT NOT NULL,
 
     CONSTRAINT "Entry_pkey" PRIMARY KEY ("id")
 );
@@ -172,16 +173,10 @@ CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationTok
 ALTER TABLE "User" ADD CONSTRAINT "User_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Entry" ADD CONSTRAINT "Entry_waste_id_fkey" FOREIGN KEY ("waste_id") REFERENCES "Waste"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "Entry" ADD CONSTRAINT "Entry_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Entry" ADD CONSTRAINT "Entry_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "Site"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Entry" ADD CONSTRAINT "Entry_company_collaboration_id_fkey" FOREIGN KEY ("company_collaboration_id") REFERENCES "company_collaborations"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Entry" ADD CONSTRAINT "Entry_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "companies" ADD CONSTRAINT "companies_city_id_fkey" FOREIGN KEY ("city_id") REFERENCES "City"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
