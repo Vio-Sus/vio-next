@@ -5,10 +5,11 @@ export type ChartData = {
   }
 export type Datasets = {
 label: string;
-data: number[];
-fill: boolean;
+data: string | number | number[];
+fill?: boolean;
 borderColor: string;
-tension: number;
+backgroundColor?: string;
+tension?: number;
 options?: {};
 };
 

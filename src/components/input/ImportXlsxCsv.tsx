@@ -4,17 +4,69 @@ import ButtonPrimary from '../button/ButtonPrimary';
 import * as XLSX from "xlsx"
 import axios from "axios";
 import UploadSuccess from "@/components/box/UploadSuccess"
+import {useSession} from 'next-auth/react';
 
 interface SheetData {
     [key: string]: any;
 }
 
+
+
 const ImportXlsxCsv: React.FC = () => {
+    const WasteType =
+        ["GENERAL_GARBAGE",
+            "FOODWASTE",
+            "GREENWASTE",
+            "CARDBOARD",
+            "CLEAN_WOOD",
+            "MIXED_PAPER",
+            "MIXED_CONTAINERS",
+            "STYROFOAM",
+            "SOFT_PLASTICS",
+            "OFPP_",
+            "APPLIANCES",
+            "E_WASTE",
+            " LIGHTS",
+            "BATTERIES",
+            "MATTRESSES",
+            "GLASS",
+            "NEW_GYPSUM",
+            "METAL",
+            "CONCRETE"]
+
+    const Sites = [
+        "SITE_1",
+        "SITE_2",
+        "SITE_3",
+        "SITE_4",
+        "SITE_5",
+        "SITE_6",
+        "SITE_7",
+        "SITE_8",
+        "SITE_9",
+        "SITE_10",
+    ]
+
+    const Collaborators = [
+        "company_1",
+        "company_2",
+        "company_3",
+        "company_4",
+        "company_5",
+        "company_6",
+        "company_7",
+        "company_8",
+        "company_9",
+        "company_10",
+    ]
 
     const [sheetData, setSheetdata] = useState<SheetData[]>([]);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [fileName, setFileName] = useState("")
+    const user = useSession()
+    console.log("user", user)
     
+
     const readExcel = (file: File) => {
         const promise = new Promise<SheetData[]>((resolve, reject) => {
             const fileReader = new FileReader()
@@ -24,14 +76,29 @@ const ImportXlsxCsv: React.FC = () => {
                 fileReader.readAsArrayBuffer(file)
                 // fileReader.readAsBinaryString(file)
 
-                fileReader.onload = (e) => { 
+                fileReader.onload = (e) => {
                     const bufferArray = e.target?.result
                     const workBook = XLSX.read(bufferArray, { type: 'buffer' })
                     const workSheetName = workBook.SheetNames[0]
                     const workSheet = workBook.Sheets[workSheetName]
                     const data = XLSX.utils.sheet_to_json(workSheet) as SheetData[]
                     resolve(data)
-                    setSheetdata(data)
+                    console.log(data)
+                    // console.log(data[1]["Transaction Date"])
+                    const array: { accountCode: any; weight: any; waste: any; }[] = []
+                    for (let i = 0; i < data.length; i++) {
+                        console.log(data[i]["Weighing Material ↵Profile"])
+                        const obj = {
+                            accountCode: data[i]["ARAccount Code"],
+                            weight: data[i]["Weighing Quantity (mt)"],
+                            waste: data[i]["Weighing Material"].replace(/[\r\n]+/g, ""),
+                            id: data[i]["Ticket No"],
+                            transactionDate: data[i]["Transaction Date"],
+                        }
+                        array.push(obj)
+                    }
+                    console.log("array", array)
+                    setSheetdata(array)
                 }
             }
             fileReader.onerror = ((err) => {
@@ -48,24 +115,24 @@ const ImportXlsxCsv: React.FC = () => {
         document.getElementById("file")!.click()
     }
 
-    async function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent> ) {
+    console.log(fileName)
+
+    async function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         event.preventDefault();
-        // console.log(sheetData)
-        try {
-            console.log(fileName)
-            const response = await axios.post('/api/csv', {sheetData: sheetData, fileName: fileName});
-            console.log(response.data);
-          } catch (error) {
-            console.error(error);
-          }
-          setShowSuccessAlert(true)
-          setTimeout(() => {
-            setShowSuccessAlert(false);
-          }, 3000);
+        axios.post("/api/entry", {
+            data: sheetData,
+            user,
+        }).then((res) => {
+            console.log(res)
+            setShowSuccessAlert(true)
+        }
+        ).catch((err) => {
+            console.log(err)
+        })
     }
 
     return (<>
-    {showSuccessAlert && <UploadSuccess/>}
+        {showSuccessAlert && <UploadSuccess />}
         <div>
             <form >
                 <label htmlFor="file">
@@ -75,27 +142,94 @@ const ImportXlsxCsv: React.FC = () => {
                 <input onChange={(e) => {
                     const file = e.target.files![0]
                     readExcel(file)
-                }} name="file" type="file" id="file" 
-                style={{ display: 'none' }}
+                }} name="file" type="file" id="file"
+                    style={{ display: 'none' }}
                 />
                 {sheetData.length > 0 && <Button text="Submit" type="submit" onClick={handleSubmit} />}
             </form>
-            {/* <table>
+
+            {sheetData.length > 0 && 
+            <div  className='flex justify-between gap-2'>
+            <form>
+                <label htmlFor="countries" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an option</label>
+                <select
+                    onChange={(e) => {
+                        const value = e.target.value
+                        console.log(sheetData)
+                        setSheetdata(sheetData.map((item) => {
+                            return {
+                                ...item,
+                                site: value
+                            }
+                        }))
+                    }}
+                    id="countries" className="inline-block px-7 py-3 bg-[#80CF76] text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-[#9FDF97]">
+                    <option value="0">Select your Site</option>
+                    {Sites.map((site) => {
+                        return <option key={site} value={site}>{site}</option>
+                    })}
+                </select>
+            </form>
+            <form>
+                <label htmlFor="countries" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an option</label>
+                <select
+                    onChange={(e) => {
+                        const value = e.target.value
+                        console.log(sheetData)
+                        setSheetdata(sheetData.map((item) => {
+                            return {
+                                ...item,
+                                waste_type: value
+                            }
+                        }))
+                    }}
+                    id="countries" className="inline-block px-7 py-3 bg-[#80CF76] text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-[#9FDF97]">
+                    <option value="0">Select a waste type</option>
+                    {WasteType.map((waste) => {
+                        return <option key={waste} value={waste}>{waste}</option>
+                    })}
+                </select>
+            </form>
+            <form>
+                <label htmlFor="countries" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an option</label>
+                <select
+                    onChange={(e) => {
+                        const value = e.target.value
+                        console.log(sheetData)
+                        setSheetdata(sheetData.map((item) => {
+                            return {
+                                ...item,
+                                collaborator: value
+                            }
+                        }))
+                    }}
+                    id="countries" className="inline-block px-7 py-3 bg-[#80CF76] text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-[#9FDF97]">
+                    <option value="0">Select Collaborator</option>
+                    {Collaborators.map((c) => {
+                        return <option key={c} value={c}>{c}</option>
+                    })}
+                </select>
+            </form>
+            </div>
+            }
+            <table>
                 <thead>
-                    <tr>
+                    <tr className='px-2 m-4'>
                         {sheetData.length > 0 && Object.keys(sheetData[0]).map((key) => {
                             return <th key={self.crypto.randomUUID()}>{key.toUpperCase()}</th>
                         }
                         )}
                     </tr>
                 </thead>
-                <tbody>
+                <tbody >
                     {sheetData.length > 0 && sheetData.map((row) => {
                         return (
-                            <tr key={self.crypto.randomUUID()}>
+                            <tr
+                             key={self.crypto.randomUUID()}>
                                 {Object.keys(row).map((key) => {
-                                    
-                                    return <td key={self.crypto.randomUUID()}>{row[key]}</td>
+                                    return <td 
+                                    className='px-4'
+                                    key={self.crypto.randomUUID()}>{row[key]}</td>
                                 }
                                 )}
                             </tr>
@@ -104,7 +238,7 @@ const ImportXlsxCsv: React.FC = () => {
                     )}
                 </tbody>
 
-            </table> */}
+            </table>
         </div>
     </>
 

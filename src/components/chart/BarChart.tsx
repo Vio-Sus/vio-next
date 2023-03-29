@@ -15,6 +15,7 @@ export interface Props {
     chartData: ChartData;
 }
 
+
 import { Bar } from 'react-chartjs-2';
 
 ChartJS.register(
@@ -34,14 +35,18 @@ export const options = {
     },
     title: {
       display: true,
-      text: "Waste Items for UBCV",
+      text: "",
+
     },
     scales: {
       y: {
-        // beginAtZero: true,
-        suggestedMin: 0
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Total Weight (tonnes)' // i feel like this should be done in the "monthlybreakdown.tsx" file. need to update the config there.
+        }
       }
-    }
+    } 
   },
 };
 

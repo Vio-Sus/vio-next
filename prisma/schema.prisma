@@ -32,26 +32,52 @@ model User {
   company_id    Int?
 }
 
-model WasteType {
-  id      Int     @id @default(autoincrement())
-  name    String  @unique
-  entries Entry[]
+enum WasteType {
+  GENERAL_GARBAGE
+  FOODWASTE
+  GREENWASTE
+  CARDBOARD
+  CLEAN_WOOD
+  MIXED_PAPER
+  MIXED_CONTAINERS
+  STYROFOAM
+  SOFT_PLASTICS
+  OFPP_
+  APPLIANCES
+  E_WASTE
+  LIGHTS
+  BATTERIES
+  MATTRESSES
+  GLASS
+  NEW_GYPSUM
+  METAL
+  CONCRETE
+}
+
+model Waste {
+  id         Int       @id @default(autoincrement())
+  waste      String
+  waste_type WasteType
+  // entries    Entry[]
 }
 
 model Entry {
-  id                       Int                   @id @default(autoincrement())
-  waste                    String
-  site                     String
-  collaborator             String
-  created_at               DateTime              @default(now())
-  updated_at               DateTime              @updatedAt
-  weight                   Float
-  waste_type               WasteType             @relation(fields: [waste_type_id], references: [id])
-  waste_type_id            Int
-  user                     User                  @relation(fields: [user_id], references: [id])
-  user_id                  String
-  CompanyCollaboration     CompanyCollaboration? @relation(fields: [company_collaboration_id], references: [id])
-  company_collaboration_id Int?
+  id           Int      @id @default(autoincrement())
+  collaborator String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  weight       Float
+  waste        String
+  date         DateTime
+  // waste        Waste    @relation(fields: [waste_id], references: [id])
+  // waste_id     Int
+  user         User     @relation(fields: [user_id], references: [id])
+  user_id      String
+  // site         Site     @relation(fields: [site_id], references: [id])
+  // site_id      Int
+  company      Company  @relation(fields: [company_id], references: [id])
+  company_id   Int
+  site         String // added
 }
 
 enum CompanyType {
@@ -72,10 +98,11 @@ model Company {
   city_id           Int
   zip_code          String
   company_type      CompanyType
-  sites             Site[]
   users             User[]
   source_company    CompanyCollaboration[] @relation("company_collaborators")
   collector_company CompanyCollaboration[] @relation("company_collaborations")
+
+  entries Entry[]
 
   @@map(name: "companies")
 }
@@ -86,17 +113,16 @@ model CompanyCollaboration {
   source_id       Int
   collaborator    Company @relation("company_collaborators", fields: [collaborator_id], references: [id])
   collaborator_id Int
-  entries         Entry[]
+  // entries         Entry[]
 
   @@unique([source_id, collaborator_id])
   @@map(name: "company_collaborations")
 }
 
 model Site {
-  id         Int     @id @default(autoincrement())
-  site       String
-  company    Company @relation(fields: [company_id], references: [id])
-  company_id Int
+  id   Int    @id @default(autoincrement())
+  site String
+  // entries Entry[]
 }
 
 model City {
@@ -145,6 +171,13 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model testingData {
+  id           Int      @id @default(autoincrement())
+  name         String
+  creationTime DateTime @default(now())
+  jsonArray    Json?
+}
+
 model VerificationToken {
   identifier String
   token      String   @unique
@@ -153,7 +186,3 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model testingData {
-  id        Int  @id @default(autoincrement())
-  jsonArray Json
-}

@@ -1,21 +1,22 @@
-import '@/styles/globals.css';
-import type { AppProps } from 'next/app';
-import Layout from '@/components/layout';
-import { SessionProvider } from "next-auth/react"
+import "@/styles/globals.css";
+import type { AppProps } from "next/app";
+import Layout from "@/components/layout";
+import { SessionProvider } from "next-auth/react";
+import { useRouter } from 'next/router';
 
 export default function App({ Component, pageProps }: AppProps) {
+ const router = useRouter()
 
-  // login page no need layout
-  if (Component.name === 'SignIn' || Component.name === 'SignUp') {
-    return (
-      <SessionProvider session={pageProps.session} refetchInterval={0}>
-        <Component {...pageProps} />
-      </SessionProvider>
-    )
-  }
   return (
-    <SessionProvider session={pageProps.session} refetchInterval={0}>
-      <Layout session={pageProps.session} ><Component {...pageProps} /></Layout>;
+    <SessionProvider session={pageProps.session}>
+      {router.pathname === '/auth/signin' || router.pathname ==='/auth/signup' ? (
+        <Component {...pageProps} />
+      ) : (
+        <Layout session={pageProps.session}>
+          <Component {...pageProps} />
+        </Layout>
+      )}
     </SessionProvider>
-  )
+  );
+  
 }
