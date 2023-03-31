@@ -1,8 +1,9 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from 'next-auth/providers/google';
+import AzureADProvider from "next-auth/providers/azure-ad";
+
 import bcrypt from "bcrypt";
-// import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { prisma } from '../../../../server/db/client'
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
@@ -44,6 +45,20 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.NEXTAUTH_GOOGLE_CLIENT_ID!,
       clientSecret: process.env.NEXTAUTH_GOOGLE_CLIENT_SECRET!
     }),
+    AzureADProvider({
+      clientId: process.env.AZURE_AD_CLIENT_ID!,
+      clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
+      tenantId: process.env.AZURE_AD_TENANT_ID,
+      idToken: true,
+      profile(profile) {
+        return {
+          id: profile.oid,
+          name: profile.name,
+          email: profile.email,
+        }
+      },
+    }),
+    
   ],
   pages: {
     signIn: '/auth/login',
