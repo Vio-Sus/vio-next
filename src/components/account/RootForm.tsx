@@ -99,7 +99,7 @@ export default function RootForm() {
     <div className=' flex flex-col items-center justify-center py-8 flex-wrap'>
       <div className="p-6 space-y-4 md:space-y-6 sm:p-8 text-center ">
         <img
-          src="/logo.png"
+          src="/Logo.png"
           className="w-36 mx-auto"
           alt="logo image" />
 
