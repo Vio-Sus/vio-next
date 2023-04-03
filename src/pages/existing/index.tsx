@@ -93,21 +93,21 @@ export default function entry({ allTheData }: any) {
 
 export async function getServerSideProps() {
   console.log("bow");
-  // const jsonArrayFromBackend = await prisma.entryFile.findMany({
-  //   include: {
-  //     user: {
-  //       select: {
-  //         email: true
-  //       }
-  //     }
-  //   }
-  // });
+  const jsonArrayFromBackend = await prisma.entryFile.findMany({
+    include: {
+      user: {
+        select: {
+          email: true
+        }
+      }
+    }
+  });
 
-  // const listOfAllDataJSON = JSON.parse(JSON.stringify(jsonArrayFromBackend));
+  const listOfAllDataJSON = JSON.parse(JSON.stringify(jsonArrayFromBackend));
 
   return {
     props: {
-      // allTheData: listOfAllDataJSON,
+      allTheData: listOfAllDataJSON,
     },
   };
 }
