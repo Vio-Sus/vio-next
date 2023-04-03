@@ -16,7 +16,7 @@ interface Props {
 
 export default function YearsLabel(props: Props) {
   return (
-    <>
+    <div className="flex flex-wrap flex-grow justify-start mx-10 flex-row">
       <PickYear
         year={props.year}
         yearOne={props.yearOne}
@@ -31,6 +31,6 @@ export default function YearsLabel(props: Props) {
         idAndName={props.idAndNameMonth}
         labelName={props.labelNameMonth}
       />
-    </>
+    </div>
   );
 }

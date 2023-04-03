@@ -9,7 +9,9 @@ export default function Home() {
   return (
     <>
       <div className="flex flex-wrap justify-center gap-8 pt-12 mb-4">
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+
           <GoalSection
             redirect="/materialSelection"
             ActionName="Material Selection"
