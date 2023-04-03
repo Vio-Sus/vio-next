@@ -1,4 +1,4 @@
-import GoalSection from "@/components/goal/GoalSection";
+import GoalSection from "@/components/goal/GoalSection2";
 import MaterialSelection from "../../public/materialSelection.png";
 import Compare from "../../public/Compare.png";
 import monthlyBreakdown from "../../public/monthlyBreakdown.png";
@@ -8,9 +8,9 @@ import twoYears from "../../public/2years.png";
 export default function Home() {
   return (
     <>
-      <div className="flex flex-wrap justify-center gap-8 pt-12 mb-4">
+      <div className="">
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        <div className="flex flex-wrap justify-evenly pt-6 mb-4 gap-8">
 
           <GoalSection
             redirect="/materialSelection"
