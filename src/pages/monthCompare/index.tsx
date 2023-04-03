@@ -5,6 +5,7 @@ import ButtonAddYearAndMonth from "@/components/button/ButtonPrimary";
 import MultipleYearCompare from "@/components/compareMonthComponents/TwoYearsAndTwoMonths";
 import PickYearAndMonth from "@/components/input/PickYearAndMonth";
 import type { ChartData, Datasets } from "@/types/BarChart";
+import { useSession } from 'next-auth/react'
 
 type WasteData = {
   year: string;
@@ -18,8 +19,10 @@ export default function Home({
   years,
   months,
   dataUntouched,
-  materials
+  materials,
+  scaleOfData,
 }: any) {
+  const user = useSession()
   const [monthOne, setMonthOne] = useState<string>(months[0]);
   const [monthTwo, setMonthTwo] = useState<string>(months[0]);
   const [yearOne, setYearOne] = useState<string>(years[0]);
@@ -44,6 +47,9 @@ export default function Home({
   });
 
   useEffect(() => {
+    dataUntouched = dataUntouched.filter((m: any) => m.userEmail = user.data?.user?.email)
+    console.log(dataUntouched);
+    
     const allYears = [yearOne, yearTwo, ...extraYearsArray];
     const allMonths = [monthOne, monthTwo, ...extraMonthsArray];
     const allYearsWithData = allYears.map((m: string | string[], i) => {
@@ -56,7 +62,7 @@ export default function Home({
             inputUntouchedData.material === material
           );
         });
-        console.log(dataFound)
+        console.log(dataFound);
         if (dataFound && dataFound.length > 1) {
           const totalWeight = dataFound.reduce(
             (acc: WasteData, item: WasteData) => {
@@ -219,6 +225,12 @@ export default function Home({
 
   return (
     <>
+      <div className="flex justify-center m-10 ">
+        <ButtonAddYearAndMonth
+          children="Add Year And Month"
+          onClick={handleAddYearAndMonthComponent}
+        />
+      </div>
       <MultipleYearCompare
         setYearOne={setYearOne}
         year={year}
@@ -236,65 +248,66 @@ export default function Home({
         onChange={handleMaterialChange}
         chosenArray={chosenMaterial}
         arrayOfExtraInputs={arrayOfExtraDateInputs}
+        onAddYearAndMonth={handleAddYearAndMonthComponent}
       />
-      <ButtonAddYearAndMonth
-        children="Add Year And Month"
-        onClick={handleAddYearAndMonthComponent}
-      />
-      {showGraph && <BarChart chartData={dataState} />}
+      {showGraph && <BarChart chartData={dataState} scale={scaleOfData} />}
     </>
   );
 }
 
 export async function getServerSideProps(context: any) {
+  const allEntries = await prisma.entry.findMany({
+    include: {
+      user: {
+        select: {
+          email: true
+        }
+      }
+    }
+  });
 
-
-  const allEntries = await prisma.entry.findMany({})
-
-  // console.log(allEntries)
-
-    
-    let transformedData: any = [];
-    allEntries.map((m) => {
-        const year = new Date(m.date).getFullYear().toString();
-        Object.keys(m).forEach((key) => {
-          // console.log(key)
-          if (key !== "Date") {
-            const material = m.waste;
-            const weight = m.weight * 1000;
-            transformedData.push({ year, material, weight });
-          }
-        });
+  let transformedData: any = [];
+  allEntries.map((m) => {
+    const year = new Date(m.date).getFullYear().toString();
+    Object.keys(m).forEach((key) => {
+      // console.log(key)
+      if (key !== "Date") {
+        const material = m.waste;
+        const weight = m.weight * 1000;
+        transformedData.push({ year, material, weight });
+      }
     });
-    // console.log(transformedData);
-    
-    let dataUntouched: (string | number | any)[] = [];
-    allEntries.map((m) => {  
-        const month = new Date(m.date).getUTCMonth().toString();
-        const year = new Date(m.date).getFullYear().toString();
-        Object.keys(m).forEach((key) => {
-          // if (m[key] == "NA") m[key] = 0;
-          if (key !== "Date") {
-            const material = m.waste;
-            const weight: number | string = m.weight * 1000;
-            const monthName: string = new Date(
-              2000,
-              parseInt(month)
-              ).toLocaleString("default", { month: "long" });
-              // console.log(monthName, material, weight, year)
-              dataUntouched.push({ year, monthName, material, weight });
-            }
-          });
-      });
-      // console.log(dataUntouched);
-      
-  
-  
+  });
+  // console.log(transformedData);
 
-  const materials = transformedData.reduce((acc: Set<number>, category: any) => {
-    acc.add(category.material);
-    return acc;
-  }, new Set<number>());
+  let dataUntouched: (string | number | any)[] = [];
+  allEntries.map((m) => {
+    // console.log(m)
+    const month = new Date(m.date).getUTCMonth().toString();
+    const year = new Date(m.date).getFullYear().toString();
+    Object.keys(m).forEach((key) => {
+      // if (m[key] == "NA") m[key] = 0;
+      if (key !== "Date") {
+        const material = m.waste;
+        const weight: number | string = m.weight * 1000;
+        const monthName: string = new Date(
+          2000,
+          parseInt(month)
+        ).toLocaleString("default", { month: "long" });
+        // console.log(monthName, material, weight, year)
+        dataUntouched.push({ year, monthName, material, weight, userEmail: m.user.email });
+      }
+    });
+  });
+  // console.log(dataUntouched);
+
+  const materials = transformedData.reduce(
+    (acc: Set<number>, category: any) => {
+      acc.add(category.material);
+      return acc;
+    },
+    new Set<number>()
+  );
 
   const years = transformedData.reduce((acc: Set<number>, category: any) => {
     acc.add(category.year);
@@ -314,7 +327,8 @@ export async function getServerSideProps(context: any) {
       transformedData: transformedData,
       years: Array.from(years),
       months: Array.from(months),
-      materials: Array.from(materials)
+      materials: Array.from(materials),
+      scaleOfData: "Kg",
     },
   };
 }

@@ -23,6 +23,7 @@ export default function Layout({ children }: Props) {
            return
           }
         } catch (err) {
+          console.log("error on layout.tsx line 26")
           console.log(err);
         }
       };
@@ -30,7 +31,7 @@ export default function Layout({ children }: Props) {
       fetchPrismaUser();
     } else if (status === "unauthenticated") {
       router.push("/auth/signin")
-    } else if (status === "loading") return
+    } else if (status === "loading") 
     {
       <div>loading</div>
     }

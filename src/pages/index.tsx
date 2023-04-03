@@ -57,6 +57,7 @@ export default function Home() {
             decisions about material management.
           </GoalSection>
 
+
           <GoalSection
             redirect="/monthCompare"
             ActionName="Monthly Compare"

@@ -34,7 +34,9 @@ export default async function handler(req: any, res: any) {
         const sheetData = req.body;
         // console.log('sheetData: ', sheetData.data)
 
-        let userFromDb = await prisma.user.findUnique({
+
+        let userFromDb = await prisma.user.findUniqueOrThrow({
+
           where: {
             email: sheetData.user.data.user.email,
           },
@@ -43,6 +45,15 @@ export default async function handler(req: any, res: any) {
         //   should be used as the id but we cant here becasuse they are not unique in the data set provided by enzo
         //  id: 'VAPST- 15153'
         // console.log(ExcelDateToJSDate(data[1]["Transaction Date"]))
+
+        const fileEntry = await prisma.entryFile.create({
+          data: {
+            name: req.body.fileName,
+            user_id: userFromDb.id,
+          },
+        });
+
+        console.log(fileEntry);
 
         const entries = await prisma.entry.createMany({
           data: sheetData.data.map((data: any) => ({
@@ -53,6 +64,8 @@ export default async function handler(req: any, res: any) {
             site: data.site,
             waste: data.waste,
             date: ExcelDateToJSDate(data.transactionDate),
+            entryFileId: fileEntry.id
+
           })),
         });
 
