@@ -5,7 +5,7 @@ interface Props {
 
 export default function YearsLabel(props: Props) {
   return (
-    <div className="object-center flex justify-center m-10">
+    <div className="">
       <a
         className="text-lg flex rounded justify-center group relative  overflow-hidden border w-full border-[#80CF76] px-8 py-3 focus:outline-none focus:ring"
         href={props.link}
