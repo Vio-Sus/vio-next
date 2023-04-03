@@ -14,22 +14,20 @@ export default async function handler(
     const selectedData = req.body;
     console.log(selectedData);
     selectedData.map(async (m: number) => {
-      await prisma.entry.deleteMany({
-        where: {
-          entryFileId: m,
-        },
-      });
-
-      await prisma.entryFile.deleteMany({
-        where: {
-          id: m,
-        },
-      });
+      // await prisma.entry.deleteMany({
+      //   where: {
+      //     entryFileId: m,
+      //   },
+      // });
+      // await prisma.entryFile.deleteMany({
+      //   where: {
+      //     id: m,
+      //   },
+      // });
     });
     res.status(200).json(selectedData);
   } catch (error) {
     res.status(500);
-    console.log(error)
+    console.log(error);
   }
-
 }

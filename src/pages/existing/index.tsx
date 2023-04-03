@@ -5,9 +5,8 @@ import ButtonGoToCompare from "@/components/button/ButtonPrimary";
 import { useRouter } from "next/router";
 import ButtonPrimary from "@/components/button/ButtonPrimary";
 import axios from "axios";
-import Banner from "@/components/box/Banner"
-import { useSession } from 'next-auth/react'
-
+import Banner from "@/components/box/Banner";
+import { useSession } from "next-auth/react";
 
 export type EntriesType = {
   id: string;
@@ -31,17 +30,18 @@ const columns2 = [
     name: "creationTime",
     selector: (row: any) => row.created_at,
     sortable: true,
-  }
+  },
 ];
 
 export default function entry({ allTheData }: any) {
-  const user = useSession()
+  const user = useSession();
 
   useEffect(() => {
-    allTheData = allTheData.filter((m: any) => m.userEmail = user.data?.user?.email)
+    allTheData = allTheData.filter(
+      (m: any) => (m.userEmail = user.data?.user?.email)
+    );
     console.log(allTheData);
-  }, [])
-
+  }, []);
 
   const router = useRouter();
 
@@ -59,32 +59,33 @@ export default function entry({ allTheData }: any) {
     setSelectedData(arrayOfIds);
   };
 
-
   async function handleDelete() {
-    await axios.post("/api/deleteFileEntry", selectedData)
-      router.push("/");
+    await axios.post("/api/deleteFileEntry", selectedData);
+    router.push("/");
   }
 
   return (
     <>
-    {allTheData.length > 0 ?
-    
-      <DataTable
-        columns={columns2}
-        data={allTheData}
-        striped
-        highlightOnHover
-        noDataComponent
-        selectableRows
-        onSelectedRowsChange={theSelectCallBack}
-      />
-      :
-      <Banner text={"No Input available"} color={"red"} />
-      // <p>You need to input something</p>
-    }
-      {selectedData.length > 0 && (<div className="mt-10">
-        <ButtonPrimary onClick={handleDelete} children="Delete" />
-      </div>
+      {
+        allTheData.length > 0 ? (
+          <DataTable
+            columns={columns2}
+            data={allTheData}
+            striped
+            highlightOnHover
+            noDataComponent
+            selectableRows
+            onSelectedRowsChange={theSelectCallBack}
+          />
+        ) : (
+          <Banner text={"No Input available"} color={"red"} />
+        )
+        // <p>You need to input something</p>
+      }
+      {selectedData.length > 0 && (
+        <div className="mt-10">
+          <ButtonPrimary onClick={handleDelete} children="Delete" />
+        </div>
       )}
     </>
   );
@@ -92,21 +93,21 @@ export default function entry({ allTheData }: any) {
 
 export async function getServerSideProps() {
   console.log("bow");
-  const jsonArrayFromBackend = await prisma.entryFile.findMany({
-    include: {
-      user: {
-        select: {
-          email: true
-        }
-      }
-    }
-  });
+  // const jsonArrayFromBackend = await prisma.entryFile.findMany({
+  //   include: {
+  //     user: {
+  //       select: {
+  //         email: true
+  //       }
+  //     }
+  //   }
+  // });
 
-  const listOfAllDataJSON = JSON.parse(JSON.stringify(jsonArrayFromBackend));
+  // const listOfAllDataJSON = JSON.parse(JSON.stringify(jsonArrayFromBackend));
 
   return {
     props: {
-      allTheData: listOfAllDataJSON,
+      // allTheData: listOfAllDataJSON,
     },
   };
 }
