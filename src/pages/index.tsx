@@ -1,6 +1,6 @@
 import GoalSection from "@/components/goal/GoalSection";
 import MaterialSelection from "../../public/materialSelection.png";
-import Compare from "../../public/Compare.png";
+import Compare from "../../public/compare.png";
 import monthlyBreakdown from "../../public/monthlyBreakdown.png";
 import monthCompare from "../../public/monthCompare.png";
 import twoYears from "../../public/2years.png";
