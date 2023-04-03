@@ -5,365 +5,442 @@ import { prisma } from "../../server/db/client";
 import type { ChartData, Datasets } from "@/types/BarChart";
 
 type data = {
-  Date: Date
-  'Transfer Station Landfill Garbage (tonnes) (UBCV)': string
-  'Containers (tonnes) (UBCV)': string
-  'Corrugated Cardboard (tonnes) (UBCV)': string
-  'Mixed Paper (tonnes) (UBCV)': string
-  'Office Paper (tonnes) (UBCV)': string
-  'Moisture Correction (tonnes) (UBCV)': string
-  'Refuse (ICI Waste) (tonnes) (UBCV)': string
-}
-
+  id: Number;
+  collaborator: string;
+  created_at: Date;
+  updated_at: Date;
+  weight: Number;
+  waste: string;
+  date: Date;
+  user_id: String;
+  company_id: Number;
+  site: String;
+};
 type FormData = {
-  yearOne: string
-  yearTwo: string
-  material: string
-}
+  yearOne: string;
+  yearTwo: string;
+  material: string;
+};
 
 type transformedData = {
-  year: string
-  material: string
-  weight: number 
- }
+  year: string;
+  material: string;
+  weight: number;
+};
 
-  
+export default function Home({
+  data,
+  years,
+  months,
+  materials,
+}: {
+  data: data[];
+  years: number[];
+  materials: string[];
+  months: string[];
+}) {
+  const [yearOne, setYearOne] = useState("");
+  const [yearTwo, setYearTwo] = useState("");
+  const [firstYearTotals, setFirstYearTotals] = useState<number[]>([]);
+  const [secondYearTotals, setSecondYearTotals] = useState<number[]>([]);
+  const [material, setMaterial] = useState<string[]>(materials);
+  const [chosenMaterial, setChosenMaterial] = useState<any>([]);
+  const [year, setYear] = useState<number[]>(years);
+  const [formData, setFormData] = useState<FormData>({
+    yearOne: "",
+    yearTwo: "",
+    material: "",
+  });
+  const [showGraph, setShowGraph] = useState<boolean>(false);
+  const [chosenMaterialsSum, setChosenMaterialsSum] = useState<any>([]);
+  const [dataStateForYearOne, setDataStateForYearOne] = useState<ChartData>({
+    labels: [],
+    datasets: [],
+  });
 
-export default function Home({ data, years }: {data: data[], years: number[]}) {
-    const [yearOne, setYearOne] = useState("");
-    const [yearTwo, setYearTwo] = useState("");
-    const [firstYearTotals, setFirstYearTotals] = useState<number[]>([]);
-    const [secondYearTotals, setSecondYearTotals] = useState<number[]>([]);
-    const [material, setMaterial] = useState<string[]>(["Containers (tonnes) (UBCV)", "Mixed Paper (tonnes) (UBCV)", "Office Paper (tonnes) (UBCV)", "Refuse (ICI Waste) (tonnes) (UBCV)", "Corrugated Cardboard (tonnes) (UBCV)", "Transfer Station Landfill Garbage (tonnes) (UBCV)"]);
-    const [chosenMaterial, setChosenMaterial] = useState<any>([])
-    const [year, setYear] = useState<number[]>(years) 
-    const [formData, setFormData] = useState<FormData>({
-      yearOne: "",
-      yearTwo: "",
-      material: ""
-    })
-    const [showGraph, setShowGraph] = useState<boolean>(false)
-    const [chosenMaterialsSum, setChosenMaterialsSum] = useState<any>([])
-    const [dataStateForYearOne, setDataStateForYearOne] = useState<ChartData>({
-      labels: [],
-      datasets: []
+  const [dataStateForYearTwo, setDataStateForYearTwo] = useState<ChartData>({
+    labels: [],
+    datasets: [],
+  });
+
+  useEffect(() => {
+    setDataStateForYearOne({
+      labels: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ],
+      datasets: chosenMaterial.map((material: string, index: number) => {
+        const colors = ["#ff6384", "#36a2eb", "#cc65fe", "#ffce56", "#4bc0c0"];
+        return {
+          label: "UBCV: " + material,
+          data: getMonthlyBreakdown(formData.yearOne, material),
+          borderColor: colors[index % colors.length],
+          backgroundColor: colors[index % colors.length],
+        };
+      }),
     });
 
-    const [dataStateForYearTwo, setDataStateForYearTwo] = useState<ChartData>({
-        labels: [],
-        datasets: []
-      });
-  
-    
-    useEffect(() => {
-        setDataStateForYearOne({
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        datasets: chosenMaterial.map((material: string, index: number) => {
-        const colors = ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#4bc0c0']
-          return {
-                    label: "UBCV: " + material,
-                    data: getMonthlyBreakdown(formData.yearOne, material),
-                    borderColor: colors[index % colors.length],
-                    backgroundColor: colors[index % colors.length],
-            };
-            }),
-        }
-      )
+    setDataStateForYearTwo({
+      labels: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ],
+      datasets: chosenMaterial.map((material: string, index: number) => {
+        const colors = ["#ff6384", "#36a2eb", "#cc65fe", "#ffce56", "#4bc0c0"];
+        return {
+          label: "UBCV: " + material,
+          data: getMonthlyBreakdown(formData.yearTwo, material),
+          borderColor: colors[index % colors.length],
+          backgroundColor: colors[index % colors.length],
+        };
+      }),
+    });
+  }, [formData, firstYearTotals, secondYearTotals]);
 
-        setDataStateForYearTwo({
-            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-            datasets: chosenMaterial.map((material: string, index: number) => {
-            const colors = ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#4bc0c0']
-              return {
-                        label: "UBCV: " + material,
-                        data: getMonthlyBreakdown(formData.yearTwo, material),
-                        borderColor: colors[index % colors.length],
-                        backgroundColor: colors[index % colors.length],
-                };
-                }
-            )
-        }
-        )
-  }, [formData, firstYearTotals, secondYearTotals])
-
-
-function getMonthlyBreakdown(year: string, material: string) {
+  function getMonthlyBreakdown(year: string, material: string) {
     let monthsOfYear: any = {
-      "01": 0,
-      "02": 0,
-      "03": 0,
-      "04": 0,
-      "05": 0,
-      "06": 0,
-      "07": 0,
-      "08": 0,
-      "09": 0,
-      "10": 0,
-      "11": 0,
-      "12": 0,
-    }
-      
+      January: 0,
+      February: 0,
+      March: 0,
+      April: 0,
+      May: 0,
+      June: 0,
+      July: 0,
+      August: 0,
+      September: 0,
+      October: 0,
+      November: 0,
+      December: 0,
+    };
+
     data.map((m: any) => {
-        if(m.Date.startsWith(year)){
-        let month = m.Date.substring(5, 7);
-        let weight = m[material];
-        if(weight !== "NA" || weight < 0) {
-            monthsOfYear[month] += weight;
-          }
+      if (m.year == year && m.material == material) {
+        let month = m.monthName;
+        let weight = m.weight;
+        if (weight !== "NA" || weight < 0) {
+          monthsOfYear[month] += m.weight / 10000; // convert to tonnes
         }
-     });
-
-    let sortedMonths = Object.entries(monthsOfYear).map(([month, total]) => ({month,total}))
-    .sort((a, b) => a.month.localeCompare(b.month)).map((element) => {
-        return element.total
+      }
     });
-    return sortedMonths
-}
 
+    let sortedMonths = Object.entries(monthsOfYear)
+      .map(([month, total]) => ({ month, total }))
+      .sort((a, b) => a.month.localeCompare(b.month))
+      .map((element) => {
+        return element.total;
+      });
+    return sortedMonths;
+  }
 
+  useEffect(() => {
+    let materialsSum = chosenMaterial.map((material: string) => {
+      console.log("material", material);
+      return getMonthlyBreakdown(formData.yearOne, material);
+    });
+    setChosenMaterialsSum(materialsSum);
+  }, [formData]);
 
-
-
-
-useEffect(() => {
-   let materialsSum =  chosenMaterial.map((material: string) => {
-        console.log("material", material)
-        return getMonthlyBreakdown(formData.yearOne, material)
-    })    
-    setChosenMaterialsSum(materialsSum)
-}, [formData])
-        
-
-
-
-const handleMaterialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMaterialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
       setChosenMaterial([...chosenMaterial, e.target.value]);
     } else {
-        setChosenMaterial((prevMaterials: string[]) => prevMaterials.filter(m => m !== e.target.value));
+      setChosenMaterial((prevMaterials: string[]) =>
+        prevMaterials.filter((m) => m !== e.target.value)
+      );
     }
   };
-      
-    
 
-const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    console.log(yearOne, yearTwo, material[0])
+  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    console.log(yearOne, yearTwo, material[0]);
     setFormData({
-    yearOne: +yearOne + "",
-    yearTwo: +yearTwo + "",
-    material: chosenMaterial
-    })
-    setShowGraph(true)
-}
-
-
-
-
+      yearOne: +yearOne + "",
+      yearTwo: +yearTwo + "",
+      material: chosenMaterial,
+    });
+    setShowGraph(true);
+  };
 
   return (
-    <>     
-    {!showGraph ? (
+    <>
+      {!showGraph ? (
+        <div className="content-start m-12">
+          <form action="#">
+            <div className="flex  flex-col gap-3">
+              <div className="flex mb-12  flex-col mb-12">
+                <label htmlFor="yearOne" className="mt-0">
+                  Year One
+                </label>
+                <select
+                  className="border-2 border-lime-600"
+                  name="yearOne"
+                  id="yearOne"
+                  onChange={(e) => {
+                    setYearOne(e.target.value);
+                  }}
+                >
+                  <option value="">Select a year</option>
+                  {year.map((year: number) => {
+                    return (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
 
+              <div className="flex mb-12  flex-col mb-12">
+                <label htmlFor="yearTwo">Year Two</label>
+                <select
+                  className="border-2 border-lime-600"
+                  name="yearTwo"
+                  id="yearTwo"
+                  onChange={(e) => {
+                    setYearTwo(e.target.value);
+                  }}
+                >
+                  <option value="">Select a year</option>
+                  {year.map((year: number) => {
+                    return (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
 
-<div className="content-start m-12">
-        
-        <form action="#">
-        
-        <div className="flex  flex-col gap-3">
-        
-        <div className="flex mb-12  flex-col mb-12">
-      <label htmlFor="yearOne" className="mt-0">Year One</label>
-      <select className="border-2 border-lime-600" name="yearOne" id="yearOne" onChange={(e) => {setYearOne(e.target.value)}}>
-      <option value="">Select a year</option>
-        {year.map((year: number) => {
-            return <option key={year} value={year}>{year}</option>;
-        })}
-      </select>
-    </div>
+              <div className="flex mb-12  flex-col mb-12">
+                <span>Material</span>
+                {material.map((material: string) => (
+                  <div key={material} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="materials"
+                      id={material}
+                      value={material}
+                      onChange={handleMaterialChange}
+                    />
+                    <label htmlFor={material} className="ml-2">
+                      {material}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-
-    <div className="flex mb-12  flex-col mb-12">
-        <label htmlFor="yearTwo">Year Two</label>
-      <select className="border-2 border-lime-600" name="yearTwo" id="yearTwo" onChange={(e) => {setYearTwo(e.target.value)}}>
-      <option value="">Select a year</option>
-        {year.map((year: number) => {
-            return <option key={year} value={year}>{year}</option>;
-        })}
-      </select>
-    </div>
-        
-        
-        
-        <div className="flex mb-12  flex-col mb-12">
-        <span>Material</span>
-        {material.map((material: string) => (
-        <div key={material} className="flex items-center">
-          <input
-            type="checkbox"
-            name="materials"
-            id={material}
-            value={material}
-            onChange={handleMaterialChange}        
-          />
-          <label htmlFor={material} className="ml-2">{material}</label>
-        </div>
-        ))}
-        </div>
-        
-        
-        </div>
-        
-        
-        {chosenMaterial == "" || yearOne == "" || yearTwo == "" ? (
-     <p>
-     <button 
-     disabled={true}
-     type="submit" 
-     onClick={handleSubmit}
-     className="inline-block px-7 py-3 bg-[#808080] text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full">
-     Compare
-     </button>
-    </p>
-    
-    ) : (
-      <p>
-      <button 
-      type="submit" 
-      onClick={handleSubmit}
-      className="inline-block px-7 py-3 bg-[#80CF76] text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full">
-      Compare
-      </button>
-    </p>
-    )}
-        
+            {chosenMaterial == "" || yearOne == "" || yearTwo == "" ? (
+              <p>
+                <button
+                  disabled={true}
+                  type="submit"
+                  onClick={handleSubmit}
+                  className="inline-block px-7 py-3 bg-[#808080] text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
+                >
+                  Compare
+                </button>
+              </p>
+            ) : (
+              <p>
+                <button
+                  type="submit"
+                  onClick={handleSubmit}
+                  className="inline-block px-7 py-3 bg-[#80CF76] text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
+                >
+                  Compare
+                </button>
+              </p>
+            )}
           </form>
         </div>
+      ) : (
+        <>
+          <div className="content-start m-12">
+            <form action="#">
+              <div className="flex  flex-col gap-3">
+                <div className="flex mb-12  flex-col mb-12">
+                  <label htmlFor="yearOne" className="mt-0">
+                    Year One
+                  </label>
+                  <select
+                    value={yearOne}
+                    className="border-2 border-lime-600"
+                    name="yearOne"
+                    id="yearOne"
+                    onChange={(e) => {
+                      setYearOne(e.target.value);
+                    }}
+                  >
+                    {year.map((year: number) => {
+                      return (
+                        <option key={year} value={year}>
+                          {year}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
 
+                <div className="flex mb-12  flex-col mb-12">
+                  <label htmlFor="yearTwo" className="mt-0">
+                    Pick second year
+                  </label>
+                  <select
+                    className="border-2 border-lime-600"
+                    name="yearTwo"
+                    id="yearTwo"
+                    onChange={(e) => {
+                      setYearTwo(e.target.value);
+                    }}
+                  >
+                    {year.map((year: number) => {
+                      return (
+                        <option key={year} value={year}>
+                          {year}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
 
-    ) : (
-<> 
-        <div className="content-start m-12">
-        
-    <form action="#">
+                <div className="flex mb-12  flex-col mb-12">
+                  <span>Material</span>
+                  {material.map((material: string) => (
+                    <div key={material} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        name="materials"
+                        id={material}
+                        defaultChecked={chosenMaterial.includes(material)}
+                        onChange={handleMaterialChange}
+                      />
+                      <label htmlFor={material} className="ml-2">
+                        {material}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-<div className="flex  flex-col gap-3">
+              <p>
+                <button
+                  type="submit"
+                  onClick={handleSubmit}
+                  className="inline-block px-7 py-3 bg-[#80CF76] text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
+                >
+                  Compare
+                </button>
+              </p>
+            </form>
+          </div>
 
-    <div className="flex mb-12  flex-col mb-12">
-      <label htmlFor="yearOne" className="mt-0">Year One</label>
-      <select value={yearOne} className="border-2 border-lime-600" name="yearOne" id="yearOne" onChange={(e) => {setYearOne(e.target.value)}}>
-        {year.map((year: number) => {
-            return <option key={year} value={year}>{year}</option>;
-        })}
-      </select>
-    </div>
-
-    <div className="flex mb-12  flex-col mb-12">
-      <label htmlFor="yearTwo" className="mt-0">Pick second year</label>
-      <select className="border-2 border-lime-600" name="yearTwo" id="yearTwo" onChange={(e) => {setYearTwo(e.target.value)}}>
-        {year.map((year: number) => {
-            return <option key={year} value={year}>{year}</option>;
-        })}
-      </select>
-    </div>
-    
-
-    <div className="flex mb-12  flex-col mb-12">
-  <span>Material</span>
-  {material.map((material: string) => (
-    <div key={material} className="flex items-center">
-      <input
-        type="checkbox"
-        name="materials"
-
-        id={material}
-        defaultChecked={chosenMaterial.includes(material)}
-        onChange={handleMaterialChange}    
-      />
-      <label htmlFor={material} className="ml-2">{material}</label>
-    </div>
-  ))}
-</div>
-
-
-</div>
-
-
-      <p>
-        <button 
-        type="submit" 
-        onClick={handleSubmit}
-        className="inline-block px-7 py-3 bg-[#80CF76] text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full">
-        Compare
-        </button>
-      </p>
-
-      </form>
-    </div>
-
-
-
-    <div className="flex flex-col md:flex-row md:space-x-4 h-96">
-        <div className="flex-1 h-full">
-            <h2>{formData.yearOne}</h2>
-            <BarChart chartData={dataStateForYearOne} />
-         </div>
-    <div className="flex-1 justify-center items-center">
-            <h2>{formData.yearTwo}</h2>
-             <BarChart chartData={dataStateForYearTwo} />
-         </div>
-    </div>
-
-
-
-
-
+          <div className="flex flex-col md:flex-row md:space-x-4 h-96">
+            <div className="flex-1 h-full">
+              <h2>{formData.yearOne}</h2>
+              <BarChart chartData={dataStateForYearOne} />
+            </div>
+            <div className="flex-1 justify-center items-center">
+              <h2>{formData.yearTwo}</h2>
+              <BarChart chartData={dataStateForYearTwo} />
+            </div>
+          </div>
+        </>
+      )}
     </>
-    )}
-    </>
-  )
+  );
 }
 
+export async function getServerSideProps(context: any) {
+  const allEntries = await prisma.entry.findMany({});
 
+  // console.log(allEntries)
 
-export async function getServerSideProps() {
-
-  const jsonArrayFromBackend = await prisma.testingData.findUnique({
-  where: {
-    id: 1,
-  },
-  });
-  const jsonArrayFromBackendJSON = JSON.parse(
-    JSON.stringify(jsonArrayFromBackend)
-  );
-
-  console.log("jsonArrayFromBackendJSON",  jsonArrayFromBackendJSON.jsonArray)
-
-
-  const transformedData: transformedData[] = [];
-  jsonArrayFromBackendJSON.jsonArray.forEach((m: any) => {
-    const year = new Date(m.Date).getFullYear().toString();
+  let transformedData: any = [];
+  allEntries.map((m) => {
+    const year = new Date(m.date).getFullYear().toString();
     Object.keys(m).forEach((key) => {
-    if (key !== 'Date' && m[key] !== 'NA') {
-      const material = key.replace(' (tonnes) (UBCV)', '');
-      const weight = m[key];
-      transformedData.push({ year, material, weight });
-    }
+      // console.log(key)
+      if (key !== "Date") {
+        const material = m.waste;
+        const weight = m.weight * 1000;
+        transformedData.push({ year, material, weight });
+      }
+    });
   });
-});
+  // console.log(transformedData);
+
+  let dataUntouched: (string | number | any)[] = [];
+  allEntries.map((m) => {
+    const month = new Date(m.date).getUTCMonth().toString();
+    const year = new Date(m.date).getFullYear().toString();
+    Object.keys(m).forEach((key) => {
+      // if (m[key] == "NA") m[key] = 0;
+      if (key !== "Date") {
+        const material = m.waste;
+        const weight: number | string = m.weight * 1000;
+        const monthName: string = new Date(
+          2000,
+          parseInt(month)
+        ).toLocaleString("default", { month: "long" });
+        // console.log(monthName, material, weight, year)
+        dataUntouched.push({ year, monthName, material, weight });
+      }
+    });
+  });
+  // console.log(dataUntouched);
+
+  const materials = transformedData.reduce(
+    (acc: Set<number>, category: any) => {
+      acc.add(category.material);
+      return acc;
+    },
+    new Set<number>()
+  );
+  console.log("materials", materials);
 
   const years = transformedData.reduce((acc: Set<number>, category: any) => {
-    acc.add(category.year)
-    return acc
-    }, new Set<number>())
+    acc.add(category.year);
+    return acc;
+  }, new Set<number>());
+  console.log("years", years);
 
-    
+  const months = dataUntouched.reduce((acc: Set<number>, category: any) => {
+    acc.add(category.monthName);
+    return acc;
+  }, new Set<number>());
+
+  console.log("months", months);
+  console.log("dataUntouched", dataUntouched);
+  console.log("transformedData", transformedData);
+
   return {
     props: {
-      transformedData: transformedData,
+      data: dataUntouched,
+      // data: transformedData,
       years: Array.from(years),
-      data: jsonArrayFromBackendJSON.jsonArray,
+      months: Array.from(months),
+      materials: Array.from(materials),
     },
   };
 }
-

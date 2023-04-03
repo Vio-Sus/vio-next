@@ -5,19 +5,19 @@ import * as XLSX from "xlsx";
 import axios from "axios";
 import UploadSuccess from "@/components/box/UploadSuccess";
 import { useSession } from "next-auth/react";
-
+import RedirectButton from "../button/RedirectButton";
 interface SheetData {
   [key: string]: any;
 }
 
 const ImportXlsxCsv: React.FC = () => {
   const WasteType = [
+    "MIXED_PAPER",
     "GENERAL_GARBAGE",
     "FOODWASTE",
     "GREENWASTE",
     "CARDBOARD",
     "CLEAN_WOOD",
-    "MIXED_PAPER",
     "MIXED_CONTAINERS",
     "STYROFOAM",
     "SOFT_PLASTICS",
@@ -34,16 +34,12 @@ const ImportXlsxCsv: React.FC = () => {
   ];
 
   const Sites = [
-    "SITE_1",
-    "SITE_2",
-    "SITE_3",
-    "SITE_4",
-    "SITE_5",
-    "SITE_6",
-    "SITE_7",
-    "SITE_8",
-    "SITE_9",
-    "SITE_10",
+    "Vancouver Site",
+    "Richmond Site",
+    "Delta Site",
+    "Langley Site",
+    "North Vancouver Site",
+    "West Vancouver Site",
   ];
 
   const Collaborators = [
@@ -85,12 +81,15 @@ const ImportXlsxCsv: React.FC = () => {
           // console.log(data[1]["Transaction Date"])
           const array: { accountCode: any; weight: any; waste: any }[] = [];
           for (let i = 0; i < data.length; i++) {
-            console.log(data[i]["Weighing Material ↵Profile"]);
             const obj = {
               accountCode: data[i]["ARAccount Code"],
-              weight: data[i]["Weighing Quantity (MT)"],
-              waste: data[i]["Weighing Material"].replace(/[\r\n]+/g, ""),
-              id: data[i]["Weighing Ticket No"],
+              weight: data[i]["Weighing Quantity (mt)"],
+              waste: data[i]["Weighing Material"]
+                .replace("Loose", "")
+                .replace(/[\r\n]+/g, "")
+                // slice the last character not the first
+                .slice(0, -1),
+              id: data[i]["Ticket No"],
               transactionDate: data[i]["Transaction Date"],
             };
             array.push(obj);
@@ -155,7 +154,17 @@ const ImportXlsxCsv: React.FC = () => {
             style={{ display: "none" }}
           />
           {sheetData.length > 0 && (
-            <Button text="Submit" type="submit" onClick={handleSubmit} />
+            <>
+              <Button text="Submit" type="submit" onClick={handleSubmit} />
+              <div className="w-1/3">
+                <RedirectButton
+                  onClick={() => console.log("clicked")}
+                  redirect="/entry"
+                >
+                  Upload new sheet
+                </RedirectButton>
+              </div>
+            </>
           )}
         </form>
 
@@ -296,3 +305,11 @@ const ImportXlsxCsv: React.FC = () => {
 };
 
 export default ImportXlsxCsv;
+
+// {uniqueSites.map((site: string) => {
+//   return (
+//     <option key={site} value={site}>
+//       {year}
+//     </option>
+//   );
+// })}
