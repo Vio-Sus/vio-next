@@ -1,5 +1,5 @@
 import PickMaterial from "@/components/input/PickMaterial";
-import CompareButton from "@/components/button/ButtonCompare";
+import CompareButton from "@/components/button/ButtonCompareColorChange";
 import PickYearAndMonth from "@/components/input/PickYearAndMonth";
 
 interface Props {
