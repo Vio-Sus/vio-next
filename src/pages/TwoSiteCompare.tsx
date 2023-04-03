@@ -6,6 +6,7 @@ import { utils } from "xlsx";
 import { json } from "stream/consumers";
 
 import type { ChartData, Datasets } from "@/types/LineChart";
+import { SiteListForm } from "@/components/account";
 
 type data = {
   id: Number;
@@ -21,8 +22,8 @@ type data = {
 };
 
 type FormData = {
-  yearOne: string;
-  yearTwo: string;
+  siteOne: string;
+  siteTwo: string;
   material: string;
 };
 
@@ -31,22 +32,28 @@ export default function Home({
   years,
   // months,
   materials,
+  uniqueSites,
+  waste,
+  uniqueWaste,
 }: {
   data: data[];
   years: number[];
   materials: string[];
   months: string[];
+  uniqueSites: string[];
+  waste: any;
+  uniqueWaste: any;
 }) {
-  const [yearOne, setYearOne] = useState("");
-  const [yearTwo, setYearTwo] = useState("");
-  const [firstYearTotals, setFirstYearTotals] = useState<number[]>([]);
-  const [secondYearTotals, setSecondYearTotals] = useState<number[]>([]);
+  const [siteOne, setSiteOne] = useState("");
+  const [siteTwo, setSiteTwo] = useState("");
+  const [materialForSiteOne, setMaterialForSiteOne] = useState<any>([]);
+  const [materialForSiteTwo, setMaterialForSiteTwo] = useState<any>([]);
   const [material, setMaterial] = useState(materials);
   const [chosenMaterial, setChosenMaterial] = useState<string>("");
   const [year, setYear] = useState<number[]>(years);
   const [formData, setFormData] = useState<FormData>({
-    yearOne: "",
-    yearTwo: "",
+    siteOne: "",
+    siteTwo: "",
     material: "",
   });
   const [showGraph, setShowGraph] = useState(false);
@@ -55,50 +62,38 @@ export default function Home({
     datasets: [],
   });
 
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
+  console.log("MATERAL FOR SITE ONE", materialForSiteOne);
+  console.log("MATERAL FOR SITE TWO", materialForSiteTwo);
 
   useEffect(() => {
     setDataState({
-      labels: months,
+      labels: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ],
       datasets: [
         // FIRST DATASET
         {
-          label: formData.yearOne,
-          data: Object.entries(firstYearTotals)
-            .map(([month, total]) => ({
-              month,
-              total,
-            }))
-            .sort((a, b) => a.month.localeCompare(b.month))
-            .map((element) => {
-              return element.total;
-            }),
+          label: formData.siteOne,
+          data: materialForSiteOne,
           fill: false,
           borderColor: "rgb(75, 192, 192)",
           tension: 0.1,
         },
         // SECOND DATASET
         {
-          label: formData.yearTwo,
-          data: Object.entries(secondYearTotals)
-            .map(([month, total]) => ({ month, total }))
-            .sort((a, b) => a.month.localeCompare(b.month))
-            .map((element) => {
-              return element.total;
-            }),
+          label: formData.siteTwo,
+          data: materialForSiteTwo,
           fill: false,
           borderColor: "rgb(335, 2, 192)",
           tension: 0.1,
@@ -116,70 +111,47 @@ export default function Home({
         },
       },
     });
-  }, [formData, firstYearTotals, secondYearTotals]);
+  }, [materialForSiteOne, materialForSiteTwo]);
 
   useEffect(() => {
-    // this useEffect is kinda ugly and im repeating myself and i kinda only wanna do the logic once but i dont know how to do that right now...
-    console.log("FORM DATA: ", formData);
-    let firstMonthlyTotals: any = {
-      January: 0,
-      February: 0,
-      March: 0,
-      April: 0,
-      May: 0,
-      June: 0,
-      July: 0,
-      August: 0,
-      September: 0,
-      October: 0,
-      November: 0,
-      December: 0,
-    };
+    if (formData.siteOne && formData.siteTwo && formData.material) {
+      const materialForSite = (site: string) =>
+        data.filter(
+          (item: any) => item.site === site && item.waste === formData.material
+        );
 
-    data.map((m: any) => {
-      if (m.year == year && m.material == material) {
-        let month = m.monthName;
-        let weight = m.weight;
-        if (weight !== "NA" || weight < 0) {
-          firstMonthlyTotals[month] += m.weight / 10000; // convert to tonnes
-        }
-      }
-    });
-    setFirstYearTotals(firstMonthlyTotals);
+      const materialForFirstSite = materialForSite(formData.siteOne);
+      const materialForSecondSite = materialForSite(formData.siteTwo);
 
-    let secondMonthlyTotals: any = {
-      January: 0,
-      February: 0,
-      March: 0,
-      April: 0,
-      May: 0,
-      June: 0,
-      July: 0,
-      August: 0,
-      September: 0,
-      October: 0,
-      November: 0,
-      December: 0,
-    };
+      // reduce the data to get the total weight for each month i should get an array of 12 numbers
+      const totalWeightForSite = (site: any) => {
+        const totalWeight = site.reduce((acc: any, item: any) => {
+          const month = new Date(item.date).getMonth();
+          acc[month] = acc[month] ? acc[month] + item.weight : item.weight;
+          return acc;
+        }, Array(12).fill(0)); // initialize the accumulator as an array of 12 zeros
+        return totalWeight;
+      };
 
-    data.map((m: any) => {
-      if (m.year == year && m.material == material) {
-        let month = m.monthName;
-        let weight = m.weight;
-        if (weight !== "NA" || weight < 0) {
-          secondMonthlyTotals[month] += m.weight / 10000; // convert to tonnes
-        }
-      }
-    });
-    setSecondYearTotals(secondMonthlyTotals);
+      const totalWeightForFirstSite = totalWeightForSite(materialForFirstSite);
+      const totalWeightForSecondSite = totalWeightForSite(
+        materialForSecondSite
+      );
+
+      setMaterialForSiteOne(totalWeightForFirstSite);
+      setMaterialForSiteTwo(totalWeightForSecondSite);
+
+      console.log("materialForFirstSite", materialForFirstSite);
+      console.log("materialForSecondSite", materialForSecondSite);
+    }
   }, [formData]);
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log(yearOne, yearTwo, chosenMaterial);
+    console.log(siteOne, siteTwo, chosenMaterial);
     setFormData({
-      yearOne: +yearOne + "",
-      yearTwo: +yearTwo + "",
+      siteOne: siteOne,
+      siteTwo: siteTwo,
       material: chosenMaterial,
     });
     setShowGraph(true);
@@ -192,22 +164,23 @@ export default function Home({
           <form action="#">
             <div className="flex  flex-col gap-3">
               <div className="flex mb-12  flex-col mb-12">
-                <label htmlFor="yearOne" className="mt-0">
-                  Year One
+                <label htmlFor="siteOne" className="mt-0">
+                  Site One
                 </label>
                 <select
                   className="border-2 border-lime-600"
-                  name="yearOne"
-                  id="yearOne"
+                  name="siteOne"
+                  id="siteOne"
                   onChange={(e) => {
-                    setYearOne(e.target.value);
+                    setSiteOne(e.target.value);
                   }}
                 >
-                  <option value="">Select a year</option>
-                  {year.map((year: number) => {
+                  <option value="">Select a Site</option>
+
+                  {uniqueSites.map((site: string) => {
                     return (
-                      <option key={year} value={year}>
-                        {year}
+                      <option key={site} value={site}>
+                        {site}
                       </option>
                     );
                   })}
@@ -215,20 +188,20 @@ export default function Home({
               </div>
 
               <div className="flex mb-12  flex-col mb-12">
-                <label htmlFor="yearTwo">Year Two</label>
+                <label htmlFor="siteTwo">Site Two</label>
                 <select
                   className="border-2 border-lime-600"
-                  name="yearTwo"
-                  id="yearTwo"
+                  name="siteTwo"
+                  id="siteTwo"
                   onChange={(e) => {
-                    setYearTwo(e.target.value);
+                    setSiteTwo(e.target.value);
                   }}
                 >
-                  <option value="">Select a year</option>
-                  {year.map((year: number) => {
+                  <option value="">Select a Site</option>
+                  {uniqueSites.map((site: string) => {
                     return (
-                      <option key={year} value={year}>
-                        {year}
+                      <option key={site} value={site}>
+                        {site}
                       </option>
                     );
                   })}
@@ -246,7 +219,7 @@ export default function Home({
                   }}
                 >
                   <option value="">Select material</option>
-                  {material.map((material: string) => {
+                  {uniqueWaste.map((material: string) => {
                     return (
                       <option key={material} value={material}>
                         {material}
@@ -257,7 +230,7 @@ export default function Home({
               </div>
             </div>
 
-            {chosenMaterial == "" || yearOne == "" || yearTwo == "" ? (
+            {chosenMaterial == "" || siteOne == "" || siteTwo == "" ? (
               <p>
                 <button
                   disabled={true}
@@ -287,22 +260,22 @@ export default function Home({
             <form action="#">
               <div className="flex  flex-col gap-3">
                 <div className="flex mb-12  flex-col mb-12">
-                  <label htmlFor="yearOne" className="mt-0">
-                    Year One
+                  <label htmlFor="siteOne" className="mt-0">
+                    Site One
                   </label>
                   <select
-                    value={yearOne}
+                    value={siteOne}
                     className="border-2 border-lime-600"
-                    name="yearOne"
-                    id="yearOne"
+                    name="siteOne"
+                    id="siteOne"
                     onChange={(e) => {
-                      setYearOne(e.target.value);
+                      setSiteOne(e.target.value);
                     }}
                   >
-                    {year.map((year: number) => {
+                    {uniqueSites.map((site: string) => {
                       return (
-                        <option key={year} value={year}>
-                          {year}
+                        <option key={site} value={site}>
+                          {site}
                         </option>
                       );
                     })}
@@ -310,20 +283,20 @@ export default function Home({
                 </div>
 
                 <div className="flex mb-12  flex-col mb-12">
-                  <label htmlFor="yearTwo">Year Two</label>
+                  <label htmlFor="siteTwo">Site Two</label>
                   <select
-                    value={yearTwo}
+                    value={siteTwo}
                     className="border-2 border-lime-600"
-                    name="yearTwo"
-                    id="yearTwo"
+                    name="siteTwo"
+                    id="siteTwo"
                     onChange={(e) => {
-                      setYearTwo(e.target.value);
+                      setSiteTwo(e.target.value);
                     }}
                   >
-                    {year.map((year: number) => {
+                    {uniqueSites.map((site: string) => {
                       return (
-                        <option key={year} value={year}>
-                          {year}
+                        <option key={site} value={site}>
+                          {site}
                         </option>
                       );
                     })}
@@ -341,7 +314,7 @@ export default function Home({
                       setChosenMaterial(e.target.value);
                     }}
                   >
-                    {material.map((material: string) => {
+                    {uniqueWaste.map((material: string) => {
                       return (
                         <option key={material} value={material}>
                           {material}
@@ -371,74 +344,41 @@ export default function Home({
 }
 export async function getServerSideProps(context: any) {
   const allEntries = await prisma.entry.findMany({});
+  console.log("ALL ENTRIES: ", allEntries);
 
-  // console.log(allEntries)
+  let waste = allEntries.map((entry) => entry.waste);
+  console.log("WASTE: ", waste);
 
-  let transformedData: any = [];
-  allEntries.map((m) => {
-    const year = new Date(m.date).getFullYear().toString();
-    Object.keys(m).forEach((key) => {
-      // console.log(key)
-      if (key !== "Date") {
-        const material = m.waste;
-        const weight = m.weight * 1000;
-        transformedData.push({ year, material, weight });
-      }
-    });
+  let uniqueSites: string[] = [];
+  const sites = allEntries.map((entry) => entry.site);
+  sites.forEach((site) => {
+    if (!uniqueSites.includes(site)) {
+      uniqueSites.push(site);
+    }
   });
-  // console.log(transformedData);
 
-  let dataUntouched: (string | number | any)[] = [];
-  allEntries.map((m) => {
-    const month = new Date(m.date).getUTCMonth().toString();
-    const year = new Date(m.date).getFullYear().toString();
-    Object.keys(m).forEach((key) => {
-      // if (m[key] == "NA") m[key] = 0;
-      if (key !== "Date") {
-        const material = m.waste;
-        const weight: number | string = m.weight * 1000;
-        const monthName: string = new Date(
-          2000,
-          parseInt(month)
-        ).toLocaleString("default", { month: "long" });
-        // console.log(monthName, material, weight, year)
-        dataUntouched.push({ year, monthName, material, weight });
-      }
-    });
+  let uniqueWaste: string[] = [];
+  waste.forEach((waste) => {
+    if (!uniqueWaste.includes(waste)) {
+      uniqueWaste.push(waste);
+    }
   });
-  // console.log(dataUntouched);
 
-  const materials = transformedData.reduce(
-    (acc: Set<number>, category: any) => {
-      acc.add(category.material);
-      return acc;
-    },
-    new Set<number>()
-  );
-  console.log("materials", materials);
-
-  const years = transformedData.reduce((acc: Set<number>, category: any) => {
-    acc.add(category.year);
-    return acc;
-  }, new Set<number>());
-  console.log("years", years);
-
-  const months = dataUntouched.reduce((acc: Set<number>, category: any) => {
-    acc.add(category.monthName);
-    return acc;
-  }, new Set<number>());
-
-  console.log("months", months);
-  console.log("dataUntouched", dataUntouched);
-  console.log("transformedData", transformedData);
+  const data = allEntries.map((entry) => {
+    return {
+      ...entry,
+      created_at: entry.created_at.toISOString(),
+      updated_at: entry.updated_at.toISOString(),
+      date: entry.date.toISOString(),
+    };
+  });
 
   return {
     props: {
-      data: dataUntouched,
-      // data: transformedData,
-      years: Array.from(years),
-      months: Array.from(months),
-      materials: Array.from(materials),
+      uniqueSites,
+      waste,
+      uniqueWaste,
+      data,
     },
   };
 }

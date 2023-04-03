@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface Props {
   children: string;
@@ -6,7 +6,7 @@ interface Props {
   redirect: string;
 }
 
-export default function RedirectButton({children, onClick, redirect}: Props) {
+export default function RedirectButton({ children, onClick, redirect }: Props) {
   const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     window.location.href = redirect;
@@ -17,10 +17,11 @@ export default function RedirectButton({children, onClick, redirect}: Props) {
     <button
       type="button"
       onClick={handleButtonClick}
-      className="inline-block px-7 py-3 bg-[#80CF76] text-white font-medium text-sm leading-snug uppercase rounded shadow-md w-full hover:bg-[#6dbb5f] mt-8"
+      className="inline-block px-7 py-3 bg-[#80CF76] text-white font-medium text-sm leading-snug uppercase rounded shadow-md w-[50%] hover:bg-[#6dbb5f] mt-2"
       data-mdb-ripple="true"
-      data-mdb-ripple-color="light">
-     {children}
+      data-mdb-ripple-color="light"
+    >
+      {children}
     </button>
   );
 }
