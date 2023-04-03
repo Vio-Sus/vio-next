@@ -126,6 +126,7 @@ model CompanyCollaboration {
   source_id       Int
   collaborator    Company @relation("company_collaborators", fields: [collaborator_id], references: [id])
   collaborator_id Int
+  // entries         Entry[]
 
   @@unique([source_id, collaborator_id])
   @@map(name: "company_collaborations")
@@ -197,3 +198,4 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+

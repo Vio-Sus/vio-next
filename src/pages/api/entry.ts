@@ -34,7 +34,9 @@ export default async function handler(req: any, res: any) {
         const sheetData = req.body;
         // console.log('sheetData: ', sheetData.data)
 
+
         let userFromDb = await prisma.user.findUniqueOrThrow({
+
           where: {
             email: sheetData.user.data.user.email,
           },
@@ -55,7 +57,7 @@ export default async function handler(req: any, res: any) {
 
         const entries = await prisma.entry.createMany({
           data: sheetData.data.map((data: any) => ({
-            collaborator: data.collaborator,
+            collaborator: "company_1", //data.collaborator,
             weight: data.weight,
             user_id: userFromDb?.id,
             company_id: 1,
@@ -63,6 +65,7 @@ export default async function handler(req: any, res: any) {
             waste: data.waste,
             date: ExcelDateToJSDate(data.transactionDate),
             entryFileId: fileEntry.id
+
           })),
         });
 
