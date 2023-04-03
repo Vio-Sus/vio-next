@@ -30,12 +30,6 @@ export default function GoalSection({
 
       <section className="mt-auto pt-4">
         <div className="flex justify-center pb-2">
-          {/* <RedirectButton
-            onClick={() => console.log("clicked")}
-            redirect={redirect}
-          >
-            Render Graph
-          </RedirectButton> */}
           <ButtonColorChange link={redirect} text="Render Graph"/>
         </div>
       </section>

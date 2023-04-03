@@ -8,7 +8,7 @@ interface Props {
 
 export default function YearsLabel(props: Props) {
   return (
-    <div className="flex mb-12  flex-col">
+    <div className="flex mb-12  flex-col mx-10">
       <label htmlFor={props.idAndName} className="mt-0">
         {props.labelName}
       </label>
