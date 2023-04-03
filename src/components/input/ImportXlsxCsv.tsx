@@ -121,6 +121,7 @@ const ImportXlsxCsv: React.FC = () => {
         axios.post("/api/entry", {
             data: sheetData,
             user,
+            fileName
         }).then((res) => {
             console.log(res)
             setShowSuccessAlert(true)

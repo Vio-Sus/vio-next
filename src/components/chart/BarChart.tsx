@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -7,16 +7,16 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js';
+} from "chart.js";
 
 import type { ChartData, Datasets } from "@/types/BarChart";
 
 export interface Props {
-    chartData: ChartData;
+  chartData: ChartData;
+  scale?: string;
 }
 
-
-import { Bar } from 'react-chartjs-2';
+import { Bar } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -31,29 +31,51 @@ export const options = {
   responsive: true,
   plugins: {
     legend: {
-      position: 'top' as const,
+      position: "top" as const,
     },
     title: {
       display: true,
       text: "",
-
     },
     scales: {
       y: {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Total Weight (tonnes)' // i feel like this should be done in the "monthlybreakdown.tsx" file. need to update the config there.
-        }
-      }
-    } 
+          text: "Total Weight (tonnes)", // i feel like this should be done in the "monthlybreakdown.tsx" file. need to update the config there.
+        },
+      },
+    },
   },
 };
 
+export default function App({ chartData, scale }: Props) {
+  const options = useMemo(() => {
+    const options = {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: "top" as const,
+        },
+        title: {
+          display: true,
+          text: `The unit of mass is: ` + scale,
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: scale,
+            },
+          },
+        },
+      },
+    };
+    return options
+  }, [scale]);
 
-export default function App({chartData}: Props) {
 
-    return <Bar options={options} data={chartData} />;
 
+  return <Bar options={options} data={chartData} />;
 }
-  

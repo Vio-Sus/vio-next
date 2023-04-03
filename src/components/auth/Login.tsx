@@ -16,7 +16,7 @@ export default function Login() {
 
   if(session){
     console.log(session)
-  }else {
+  } else {
     console.log("no session")
   }
 

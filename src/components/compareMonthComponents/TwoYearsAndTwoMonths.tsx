@@ -18,6 +18,7 @@ interface Props {
   monthTwo: string;
   handleSubmit: (input: React.MouseEvent<HTMLButtonElement>) => void;
   onChange: (input: React.ChangeEvent<HTMLInputElement>) => void;
+  onAddYearAndMonth: (e: React.MouseEvent<HTMLButtonElement>) => void;
   arrayOfExtraInputs: React.ReactNode[];
 }
 

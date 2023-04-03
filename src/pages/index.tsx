@@ -1,6 +1,6 @@
 import React from "react";
 import RedirectButton from "../components/button/RedirectButton";
-
+import ButtonClickChange from "@/components/button/ButtonColorChange"
 export default function Home() {
 
   return (
@@ -33,7 +33,7 @@ export default function Home() {
 
       <RedirectButton
         onClick={() => console.log("clicked")}
-        redirect="/monthlyBreakdown"
+        redirect="/Monthly Breakdown"
       >
         Monthly Breakdown
       </RedirectButton>
@@ -44,6 +44,14 @@ export default function Home() {
       >
         Monthly Compare
       </RedirectButton>
+
+      <ButtonClickChange text="Material Selection" link="/materialSelection"/>
+      <ButtonClickChange text="Compare" link="/compare"/>
+      <ButtonClickChange text="Select & Compare Material for 2 years" link="/materialSelectionForTwoyears"/>
+      <ButtonClickChange text="Monthly Breakdown" link="/Monthly Breakdown"/>
+      <ButtonClickChange text="Monthly Compare" link="/monthCompare"/>
+      
+
     </>
   );
 }
