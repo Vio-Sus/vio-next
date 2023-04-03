@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Navbar } from './header';
 // import Footer from './footer'
-import { useSession } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router';
 import axios from 'axios';
 interface Props {
@@ -20,7 +20,7 @@ export default function Layout({ children }: Props) {
           if (res.data.role === "TEMP_") {
             router.push("/create-role");
           } else {
-           return
+           return 
           }
         } catch (err) {
           console.log(err);
@@ -30,6 +30,7 @@ export default function Layout({ children }: Props) {
       fetchPrismaUser();
     } else if (status === "unauthenticated") {
       router.push("/auth/signin")
+      // signIn()
     } else if (status === "loading") return
     {
       <div>loading</div>

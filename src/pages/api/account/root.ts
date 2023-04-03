@@ -18,6 +18,8 @@ export default async function handler(
     }
     const email = session?.user?.email as string
     console.log(email)
+    console.log(req.body)
+    console.log("*8888*******************")
 
     if (req.method === "POST") {
         const companyType = req.body.companyType
