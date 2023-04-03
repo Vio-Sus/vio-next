@@ -4,14 +4,13 @@ import Compare from "../../public/Compare.png";
 import monthlyBreakdown from "../../public/monthlyBreakdown.png";
 import monthCompare from "../../public/monthCompare.png";
 import twoYears from "../../public/2years.png";
+import twoSites from "../../public/2sites.png";
 
 export default function Home() {
   return (
     <>
       <div className="flex flex-wrap justify-center gap-8 pt-12 mb-4">
-
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-
           <GoalSection
             redirect="/materialSelection"
             ActionName="Material Selection"
@@ -55,7 +54,6 @@ export default function Home() {
             decisions about material management.
           </GoalSection>
 
-
           <GoalSection
             redirect="/monthCompare"
             ActionName="Monthly Compare"
@@ -70,7 +68,7 @@ export default function Home() {
           <GoalSection
             redirect="/TwoSiteCompare"
             ActionName="Compare between different sites"
-            imgSrc={monthCompare}
+            imgSrc={twoSites}
           >
             This bar graph allows you to compare different materials during
             specific months in two different years. By selecting a material, a
