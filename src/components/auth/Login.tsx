@@ -116,7 +116,7 @@ export default function Login() {
                             <a onClick={clickMicrosoftSignUp} className="pl-6 grid grid-cols-[20%_80%] py-3 text-dark font-medium  rounded shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out w-full flex justify-center items-center mb-3">
                                 <FcGoogle size="1.7rem" />
                                 Continue with Microsoft</a>
-                            <a
+                            {/* <a
                                 href={`/api/auth/signin`}
 
                                 onClick={(e) => {
@@ -125,7 +125,7 @@ export default function Login() {
                                 }}
                             >
                                 Sign in
-                            </a>
+                            </a> */}
 
                         </div>
                     </div>
