@@ -9,67 +9,55 @@ CREATE TYPE "CompanyType" AS ENUM ('COLLECTOR', 'SOURCE');
 
 -- CreateTable
 CREATE TABLE "User" (
-    "id" STRING NOT NULL,
-    "name" STRING,
-    "email" STRING,
+    "id" TEXT NOT NULL,
+    "name" TEXT,
+    "email" TEXT,
     "emailVerified" TIMESTAMP(3),
-    "password" STRING,
-    "image" STRING,
+    "password" TEXT,
+    "image" TEXT,
     "role" "Role" NOT NULL DEFAULT 'TEMP_',
-    "company_id" INT4,
+    "company_id" INTEGER,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Waste" (
-    "id" INT4 NOT NULL DEFAULT unique_rowid(),
-    "waste" STRING NOT NULL,
+    "id" SERIAL NOT NULL,
+    "waste" TEXT NOT NULL,
     "waste_type" "WasteType" NOT NULL,
 
     CONSTRAINT "Waste_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "EntryFile" (
-    "id" INT4 NOT NULL DEFAULT unique_rowid(),
-    "name" STRING NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
-    "user_id" STRING NOT NULL,
-
-    CONSTRAINT "EntryFile_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "Entry" (
-    "id" INT4 NOT NULL DEFAULT unique_rowid(),
-    "collaborator" STRING NOT NULL,
+    "id" SERIAL NOT NULL,
+    "collaborator" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
-    "weight" FLOAT8 NOT NULL,
-    "waste" STRING NOT NULL,
+    "weight" DOUBLE PRECISION NOT NULL,
+    "waste" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
-    "user_id" STRING NOT NULL,
-    "company_id" INT4 NOT NULL,
-    "site" STRING NOT NULL,
-    "entryFileId" INT4 NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "company_id" INTEGER NOT NULL,
+    "site" TEXT NOT NULL,
 
     CONSTRAINT "Entry_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "companies" (
-    "id" INT4 NOT NULL DEFAULT unique_rowid(),
-    "company" STRING NOT NULL,
-    "admin_code" STRING NOT NULL,
-    "user_code" STRING NOT NULL,
-    "address_line_1" STRING NOT NULL,
-    "address_line_2" STRING NOT NULL,
-    "email" STRING NOT NULL,
-    "phone" STRING NOT NULL,
-    "city_id" INT4 NOT NULL,
-    "zip_code" STRING NOT NULL,
+    "id" SERIAL NOT NULL,
+    "company" TEXT NOT NULL,
+    "admin_code" TEXT NOT NULL,
+    "user_code" TEXT NOT NULL,
+    "address_line_1" TEXT NOT NULL,
+    "address_line_2" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "phone" TEXT NOT NULL,
+    "city_id" INTEGER NOT NULL,
+    "zip_code" TEXT NOT NULL,
     "company_type" "CompanyType" NOT NULL,
 
     CONSTRAINT "companies_pkey" PRIMARY KEY ("id")
@@ -77,61 +65,61 @@ CREATE TABLE "companies" (
 
 -- CreateTable
 CREATE TABLE "company_collaborations" (
-    "id" INT4 NOT NULL DEFAULT unique_rowid(),
-    "source_id" INT4 NOT NULL,
-    "collaborator_id" INT4 NOT NULL,
+    "id" SERIAL NOT NULL,
+    "source_id" INTEGER NOT NULL,
+    "collaborator_id" INTEGER NOT NULL,
 
     CONSTRAINT "company_collaborations_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Site" (
-    "id" INT4 NOT NULL DEFAULT unique_rowid(),
-    "site" STRING NOT NULL,
+    "id" SERIAL NOT NULL,
+    "site" TEXT NOT NULL,
 
     CONSTRAINT "Site_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "City" (
-    "id" INT4 NOT NULL DEFAULT unique_rowid(),
-    "city" STRING NOT NULL,
-    "province_id" INT4 NOT NULL,
+    "id" SERIAL NOT NULL,
+    "city" TEXT NOT NULL,
+    "province_id" INTEGER NOT NULL,
 
     CONSTRAINT "City_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Province" (
-    "id" INT4 NOT NULL DEFAULT unique_rowid(),
-    "province" STRING NOT NULL,
+    "id" SERIAL NOT NULL,
+    "province" TEXT NOT NULL,
 
     CONSTRAINT "Province_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Account" (
-    "id" INT4 NOT NULL DEFAULT unique_rowid(),
-    "userId" STRING NOT NULL,
-    "type" STRING NOT NULL,
-    "provider" STRING NOT NULL,
-    "providerAccountId" STRING NOT NULL,
-    "refresh_token" STRING,
-    "access_token" STRING,
-    "expires_at" INT4,
-    "token_type" STRING,
-    "scope" STRING,
-    "id_token" STRING,
-    "session_state" STRING,
+    "id" SERIAL NOT NULL,
+    "userId" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "provider" TEXT NOT NULL,
+    "providerAccountId" TEXT NOT NULL,
+    "refresh_token" TEXT,
+    "access_token" TEXT,
+    "expires_at" INTEGER,
+    "token_type" TEXT,
+    "scope" TEXT,
+    "id_token" TEXT,
+    "session_state" TEXT,
 
     CONSTRAINT "Account_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Session" (
-    "id" INT4 NOT NULL DEFAULT unique_rowid(),
-    "sessionToken" STRING NOT NULL,
-    "userId" STRING NOT NULL,
+    "id" SERIAL NOT NULL,
+    "sessionToken" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
     "expires" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Session_pkey" PRIMARY KEY ("id")
@@ -139,8 +127,8 @@ CREATE TABLE "Session" (
 
 -- CreateTable
 CREATE TABLE "testingData" (
-    "id" INT4 NOT NULL DEFAULT unique_rowid(),
-    "name" STRING NOT NULL,
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
     "creationTime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "jsonArray" JSONB,
 
@@ -149,8 +137,8 @@ CREATE TABLE "testingData" (
 
 -- CreateTable
 CREATE TABLE "VerificationToken" (
-    "identifier" STRING NOT NULL,
-    "token" STRING NOT NULL,
+    "identifier" TEXT NOT NULL,
+    "token" TEXT NOT NULL,
     "expires" TIMESTAMP(3) NOT NULL
 );
 
@@ -185,16 +173,10 @@ CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationTok
 ALTER TABLE "User" ADD CONSTRAINT "User_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "EntryFile" ADD CONSTRAINT "EntryFile_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "Entry" ADD CONSTRAINT "Entry_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Entry" ADD CONSTRAINT "Entry_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Entry" ADD CONSTRAINT "Entry_entryFileId_fkey" FOREIGN KEY ("entryFileId") REFERENCES "EntryFile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "companies" ADD CONSTRAINT "companies_city_id_fkey" FOREIGN KEY ("city_id") REFERENCES "City"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
