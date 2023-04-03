@@ -62,7 +62,7 @@ export default async function handler(req: any, res: any) {
             site: data.site,
             waste: data.waste,
             date: ExcelDateToJSDate(data.transactionDate),
-            // entryFileId: fileEntry.id,
+            // entryFileId:
           })),
         });
 
