@@ -15,6 +15,21 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt"
   },
   
+  callbacks: {
+    async session({ session, user }) {
+      // console.log(session);
+      // console.log(user);
+
+      return session;
+      
+    },
+    async jwt({ token, user, account, profile, isNewUser }) {
+      console.log(token);
+      return token;
+    },
+  },
+
+  
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -46,9 +61,6 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.NEXTAUTH_GOOGLE_CLIENT_SECRET!
     }),
   ],
-  pages: {
-    signIn: '/auth/login',
-    signOut: '/auth/logout',
-  }
+
 }
 export default NextAuth(authOptions)
