@@ -30,7 +30,7 @@ model User {
   entries       Entry[]
   company       Company?    @relation(fields: [company_id], references: [id])
   company_id    Int?
-  // EntryFile     EntryFile[]
+  EntryFile     EntryFile[]
 }
 
 enum WasteType {
@@ -62,15 +62,15 @@ model Waste {
   // entries    Entry[]
 }
 
-// model EntryFile {
-//   id         Int      @id @default(autoincrement())
-//   name       String
-//   created_at DateTime @default(now())
-//   updated_at DateTime @updatedAt
-//   user       User     @relation(fields: [user_id], references: [id])
-//   user_id    String
-//   // entries    Entry[]
-// }
+model EntryFile {
+  id         Int      @id @default(autoincrement())
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user       User     @relation(fields: [user_id], references: [id])
+  user_id    String
+  entries    Entry[]
+}
 
 model Entry {
   id           Int       @id @default(autoincrement())
@@ -89,8 +89,8 @@ model Entry {
   company      Company   @relation(fields: [company_id], references: [id])
   company_id   Int
   site         String // added
-  // EntryFile    EntryFile @relation(fields: [entryFileId], references: [id])
-  // entryFileId  Int
+  EntryFile    EntryFile @relation(fields: [entryFileId], references: [id])
+  entryFileId  Int
 }
 
 enum CompanyType {
@@ -198,4 +198,3 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
-
