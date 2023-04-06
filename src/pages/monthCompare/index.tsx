@@ -221,8 +221,6 @@ export default function Home({
     setHowManyExtraDateInputs(howManyNewInputs + 1);
   }
 
-  // console.log(extraMonthsArray, extraYearsArray, arrayOfExtraDateInputs);
-
   return (
     <>
       <div className="flex justify-center m-10 ">

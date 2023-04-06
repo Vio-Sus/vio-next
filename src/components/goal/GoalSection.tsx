@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import RedirectButton from "../button/RedirectButton";
 import chartPhoto from "../../../public/chartPhoto.png";
-import ButtonColorChange from "@/components/button/ButtonColorChange"
+import ButtonColorChange from "@/components/button/ButtonColorChange";
 type Props = {
   ActionName: string;
   redirect: string;
@@ -30,7 +30,12 @@ export default function GoalSection({
 
       <section className="mt-auto pt-4">
         <div className="flex justify-center pb-2">
-          <ButtonColorChange link={redirect} text="Render Graph"/>
+          <RedirectButton
+            onClick={() => console.log("clicked")}
+            redirect={redirect}
+          >
+            Render Graph
+          </RedirectButton>
         </div>
       </section>
     </div>
