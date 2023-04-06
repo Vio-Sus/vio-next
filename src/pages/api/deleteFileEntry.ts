@@ -16,7 +16,7 @@ export default async function handler(
     selectedData.map(async (m: number) => {
       await prisma.entry.deleteMany({
         where: {
-          // entryFileId: m,
+          entryFileId: m,
         },
       });
       await prisma.entryFile.deleteMany({

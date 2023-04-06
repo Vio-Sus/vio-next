@@ -44,14 +44,14 @@ export default async function handler(req: any, res: any) {
         //  id: 'VAPST- 15153'
         // console.log(ExcelDateToJSDate(data[1]["Transaction Date"]))
 
-        // const fileEntry = await prisma.entryFile.create({
-        //   data: {
-        //     name: req.body.fileName,
-        //     user_id: userFromDb.id,
-        //   },
-        // });
+        const fileEntry = await prisma.entryFile.create({
+          data: {
+            name: req.body.fileName,
+            user_id: userFromDb.id,
+          },
+        });
 
-        // console.log(fileEntry);
+        console.log(fileEntry);
 
         const entries = await prisma.entry.createMany({
           data: sheetData.data.map((data: any) => ({
@@ -62,7 +62,8 @@ export default async function handler(req: any, res: any) {
             site: data.site,
             waste: data.waste,
             date: ExcelDateToJSDate(data.transactionDate),
-            // entryFileId:
+            entryFileId: fileEntry.id,
+
           })),
         });
 
