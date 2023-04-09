@@ -29,12 +29,8 @@ export default function RootForm() {
   const [showAlert, setShowAlert] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
 
-
-
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    console.log("clickk submit")
-    console.log(companyType)
     try {
         axios.post('/api/account/root', {
           companyType,
