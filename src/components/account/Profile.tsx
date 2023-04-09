@@ -167,10 +167,9 @@ export default function Profile() {
   const [loading, setLoading] = useState(false)
 
   function inviteUser(e: React.FormEvent<HTMLFormElement>) {
+    console.log(inviteRole)
     e.preventDefault()
-    console.log("invite user with companyId: ", company?.id)
-    console.log(inviteEmail, inviteRole)
-    if (inviteEmail === '' || inviteRole === '') {
+    if (inviteEmail === '' || inviteRole === '' || inviteRole === 'Select Role') {
       setShowError(true)
       return
     }
@@ -196,8 +195,6 @@ export default function Profile() {
   }
    const [showSucess, setShowSucess] = useState(false)
    const [showError, setShowError] = useState(false)
-   const [inviteRoleName, setInviteRoleName] = useState('')
-
   return (
     <div>
      {showSucess &&  <GreenAlert AletTitle='Success: ' alertText=' User invitation sent'  showAlert={showSucess} setShowAlert={setShowSucess} />}
@@ -252,7 +249,7 @@ export default function Profile() {
                             value={inviteRole}
                             onChange={(e) => setInviteRole(e.target.value)}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5">
-                            <option defaultValue="">Choose a Role</option>
+                            <option defaultValue="">Select Role</option>
                             <option value={company.admin_code?.toString()}>ADMIN</option>
                             <option value={company.user_code?.toString()}>USER</option>
 
