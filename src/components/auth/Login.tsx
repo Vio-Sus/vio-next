@@ -56,10 +56,6 @@ export default function Login() {
         signIn('google');
     }
 
-    function clickMicrosoftSignUp() {
-        signIn('azure-ad');
-    }
-
 
     return (
         <>
@@ -113,9 +109,9 @@ export default function Login() {
                                 <FcGoogle size="1.7rem" />
                                 Continue with Google</a>
 
-                            <a onClick={clickMicrosoftSignUp} className="pl-6 grid grid-cols-[20%_80%] py-3 text-dark font-medium  rounded shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out w-full flex justify-center items-center mb-3">
+                            {/* <a onClick={clickMicrosoftSignUp} className="pl-6 grid grid-cols-[20%_80%] py-3 text-dark font-medium  rounded shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out w-full flex justify-center items-center mb-3">
                                 <FcGoogle size="1.7rem" />
-                                Continue with Microsoft</a>
+                                Continue with Microsoft</a> */}
                             {/* <a
                                 href={`/api/auth/signin`}
 
