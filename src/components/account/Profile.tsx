@@ -169,9 +169,16 @@ export default function Profile() {
     try {
       axios.post(`${process.env.NEXT_PUBLIC_EMAIL_URL}/api/Email`, {
         to: inviteEmail,
-        subject: "Invitation to join your company",
-        body: `You have been invited to join ${company?.company}. Please click the link below to join. <br> <a href="https://vio-next-five.vercel.app/">VIO Sustainability</a>`,
-      })
+        subject: `Invitation to join your ${company?.company}`,
+        body: `You have been invited to join ${company?.company}. Please click the link below to join and enter your usercode with ${inviteRole}. <br> <a href="https://vio-next-five.vercel.app/">VIO Sustainability</a>`,
+      }).then((res) => {
+        if(res.status === 200){
+         alert("Invitation sent")
+         setInviteEmail('')
+          setInviteRole('')
+        }
+      }
+      )
     } catch (error) {
       console.error(error)
     }
