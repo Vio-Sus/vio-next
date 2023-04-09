@@ -8,6 +8,9 @@ import { Prisma } from '@prisma/client';
 import { CiEdit } from 'react-icons/ci'
 import { RxUpdate } from 'react-icons/rx'
 import Loader from '../loader/Loader';
+import ButtonWithLoader from '../button/ButtonWithLoader';
+import GreenAlert from '../alerts/GreenAlert';
+import RedAlert from '../alerts/RedAlert';
 
 
 
@@ -161,20 +164,27 @@ export default function Profile() {
 
   const [inviteEmail, setInviteEmail] = useState('')
   const [inviteRole, setInviteRole] = useState('')
+  const [loading, setLoading] = useState(false)
 
   function inviteUser(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     console.log("invite user with companyId: ", company?.id)
     console.log(inviteEmail, inviteRole)
+    if (inviteEmail === '' || inviteRole === '') {
+      setShowError(true)
+      return
+    }
     try {
+      setLoading(true)
       axios.post(`${process.env.NEXT_PUBLIC_EMAIL_URL}/api/Email`, {
         to: inviteEmail,
-        subject: `Invitation to join your ${company?.company}`,
+        subject: `Invitation to join ${company?.company}`,
         body: `You have been invited to join ${company?.company}. Please click the link below to join and enter your usercode with ${inviteRole}. <br> <a href="https://vio-next-five.vercel.app/">VIO Sustainability</a>`,
       }).then((res) => {
-        if(res.status === 200){
-         alert("Invitation sent")
-         setInviteEmail('')
+        if (res.status === 200) {
+          setLoading(false)
+          setShowSucess(true)
+          setInviteEmail('')
           setInviteRole('')
         }
       }
@@ -184,9 +194,14 @@ export default function Profile() {
     }
 
   }
+   const [showSucess, setShowSucess] = useState(false)
+   const [showError, setShowError] = useState(false)
+   const [inviteRoleName, setInviteRoleName] = useState('')
 
   return (
     <div>
+     {showSucess &&  <GreenAlert AletTitle='Success: ' alertText=' User invitation sent'  showAlert={showSucess} setShowAlert={setShowSucess} />}
+     {showError &&  <RedAlert AletTitle='Error: ' alertText=' Please enter both email and role to invite user' showAlert={showError} setShowAlert={setShowError} />}
       {user && company ? (
         <>
           {editCompany &&
@@ -243,11 +258,11 @@ export default function Profile() {
 
                           </select>
                         </div>
-                        <button
-                          type="submit"
-                          className="bg-[#80CF76] hover:bg-[#9FDF97] hover:shadow-lg text-white text-sm  p-2.5 rounded w-[5rem] self-center"> Invite</button>
+                        <ButtonWithLoader loading={loading} name="Invite" />
+                    
                       </div>
                     </form>
+
 
                     <div className="flex justify-between items-center my-5 px-6">
                     </div>
