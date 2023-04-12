@@ -143,7 +143,7 @@ export default function Profile() {
   }
 
   function handleUpdateUserCode() {
-    console.log("update user code with companyId: ", company?.id)
+    // console.log("update user code with companyId: ", company?.id)
     try {
       axios.put('/api/account/root', { companyId: company?.id, role: 'USER' })
         .then((res) => {
@@ -167,7 +167,6 @@ export default function Profile() {
   const [loading, setLoading] = useState(false)
 
   function inviteUser(e: React.FormEvent<HTMLFormElement>) {
-    console.log(inviteRole)
     e.preventDefault()
     if (inviteEmail === '' || inviteRole === '' || inviteRole === 'Select Role') {
       setShowError(true)
@@ -234,6 +233,7 @@ export default function Profile() {
                     </p>
 
                     {/* **************************  CODE SNIPPET  *************************** */}
+                    {user.role === "ROOT" && (
                     <form onSubmit={inviteUser}>
                       <div className="w-full flex md:flex-row flex-col px-4 py-2 space-y-2 justify-around">
                         <div>
@@ -259,6 +259,7 @@ export default function Profile() {
                     
                       </div>
                     </form>
+                    )}
 
 
                     <div className="flex justify-between items-center my-5 px-6">
