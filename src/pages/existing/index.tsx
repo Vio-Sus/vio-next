@@ -32,6 +32,43 @@ const columns2 = [
     sortable: true,
   },
 ];
+const columnsDataRows = [
+  {
+    name: "Id",
+    selector: (row: any) => row.id,
+    sortable: true,
+  },
+  {
+    name: "collaborator",
+    selector: (row: any) => row.collaborator,
+    sortable: true,
+  },
+  {
+    name: "created_at",
+    selector: (row: any) => row.created_at,
+    sortable: true,
+  },
+  {
+    name: "weight",
+    selector: (row: any) => row.weight,
+    sortable: true,
+  },
+  {
+    name: "waste",
+    selector: (row: any) => row.waste,
+    sortable: true,
+  },
+  {
+    name: "date",
+    selector: (row: any) => row.date,
+    sortable: true,
+  },
+  {
+    name: "site",
+    selector: (row: any) => row.site,
+    sortable: true,
+  },
+];
 
 export default function entry({ allTheData }: any) {
   const user = useSession();
@@ -46,6 +83,9 @@ export default function entry({ allTheData }: any) {
   const router = useRouter();
 
   const [selectedData, setSelectedData] = useState([]);
+  const [showDataRows, setShowDataRows] = useState(false);
+  const [dataRowsData, setDataRowsData] = useState<any>([]);
+
   const theSelectCallBack = ({
     allSelected,
     selectedCount,
@@ -63,28 +103,51 @@ export default function entry({ allTheData }: any) {
     await axios.post("/api/deleteFileEntry", selectedData);
     router.push("/");
   }
+  async function handleGetData() {
+    await axios
+      .post("/api/entryRowReturn", selectedData)
+      .then((result: any) => {
+        console.log(result.data);
+        setDataRowsData(result.data);
+        setShowDataRows(true);
+      });
+    // router.push("/");
+  }
 
   return (
     <>
-      {
-        allTheData.length > 0 ? (
+      {allTheData.length > 0 ? (
+        <DataTable
+          columns={columns2}
+          data={allTheData}
+          striped
+          highlightOnHover
+          noDataComponent
+          selectableRows
+          onSelectedRowsChange={theSelectCallBack}
+        />
+      ) : (
+        <Banner text={"No Input available"} color={"red"} />
+      )}
+      {selectedData.length > 0 && (
+        <>
+          <div className="mt-10">
+            <ButtonPrimary onClick={handleDelete} children="Delete" />
+          </div>
+          <div className="mt-10">
+            <ButtonPrimary onClick={handleGetData} children="Show Data" />
+          </div>
+        </>
+      )}
+      {showDataRows && (
+        <div className="mt-10">
           <DataTable
-            columns={columns2}
-            data={allTheData}
+            columns={columnsDataRows}
+            data={dataRowsData}
             striped
             highlightOnHover
             noDataComponent
-            selectableRows
-            onSelectedRowsChange={theSelectCallBack}
           />
-        ) : (
-          <Banner text={"No Input available"} color={"red"} />
-        )
-        // <p>You need to input something</p>
-      }
-      {selectedData.length > 0 && (
-        <div className="mt-10">
-          <ButtonPrimary onClick={handleDelete} children="Delete" />
         </div>
       )}
     </>
@@ -97,10 +160,10 @@ export async function getServerSideProps() {
     include: {
       user: {
         select: {
-          email: true
-        }
-      }
-    }
+          email: true,
+        },
+      },
+    },
   });
 
   const listOfAllDataJSON = JSON.parse(JSON.stringify(jsonArrayFromBackend));
