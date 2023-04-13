@@ -6,6 +6,7 @@ import axios from "axios";
 import UploadSuccess from "@/components/box/UploadSuccess";
 import { useSession } from "next-auth/react";
 import RedirectButton from "../button/RedirectButton";
+
 interface SheetData {
   [key: string]: any;
 }
@@ -83,13 +84,11 @@ const ImportXlsxCsv: React.FC = () => {
           for (let i = 0; i < data.length; i++) {
             const obj = {
               accountCode: data[i]["ARAccount Code"],
-              weight: data[i]["Weighing Quantity (mt)"],
-              waste: data[i]["Weighing Material"]
-                .replace("Loose", "")
-                .replace(/[\r\n]+/g, "")
-                // slice the last character not the first
-                .slice(0, -1),
-              id: data[i]["Ticket No"],
+              weight: data[i]["Weighing Quantity (MT)"] / 0.90718,
+              waste: data[i]["Weighing Material Profile"]
+                // for better format
+                .replace(/[\r\n]+/g, " "),
+              id: data[i]["Weighing Ticket No"],
               transactionDate: data[i]["Transaction Date"],
             };
             array.push(obj);
@@ -113,7 +112,7 @@ const ImportXlsxCsv: React.FC = () => {
   };
 
   console.log(fileName);
-
+  console.log(sheetData);
 
   async function handleSubmit(
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -123,7 +122,7 @@ const ImportXlsxCsv: React.FC = () => {
       .post("/api/entry", {
         data: sheetData,
         user,
-        fileName
+        fileName,
       })
       .then((res) => {
         console.log(res);
@@ -133,7 +132,6 @@ const ImportXlsxCsv: React.FC = () => {
         console.log(err);
       });
   }
-
 
   return (
     <>

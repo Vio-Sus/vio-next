@@ -3,47 +3,88 @@
 @tailwind utilities;
 
 @layer base {
-    html {
-      font-family: 'Inter', sans-serif;
-    }
+  html {
+    font-family: "Inter", sans-serif;
   }
-  .absolute-center {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9999; /* make sure it's above other content */
-   
+}
+.absolute-center {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999; /* make sure it's above other content */
+}
+
+.alert-box {
+  display: inline-block;
+  text-align: left;
+}
+
+.alert-show {
+  visibility: visible; /* show it when the alert is triggered */
+}
+
+.loader-container {
+  margin-top: 10rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #80cf76;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  .alert-box {
-    display: inline-block;
-    text-align: left;
+  100% {
+    transform: rotate(360deg);
   }
-  
-  .alert-show {
-    visibility: visible; /* show it when the alert is triggered */
-  }
-  
-  .loader-container {
-    margin-top: 10rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-  }
-  
-  .loader {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #80CF76;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    animation: spin 1s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
+}
+
+span.p-button {
+  background-color: #80cf76;
+  color: #fff;
+  cursor: pointer;
+  border: #80cf76;
+}
+
+.p-button:enabled:hover {
+  background-color: #80cf76;
+  color: #fff;
+  cursor: pointer;
+  border: #80cf76;
+}
+
+.p-button:hover {
+  background: #80cf76;
+  color: #fff;
+  cursor: pointer;
+  border: #80cf76;
+}
+
+button.p-button {
+  background-color: #80cf76;
+  color: #fff;
+  cursor: pointer;
+  border: #80cf76;
+}
+
+button.p-button:hover {
+  background-color: #80cf76;
+  color: #fff;
+  cursor: pointer;
+  border: #80cf76;
+}
+
+.p-button:enabled:hover {
+  background: #80cf76;
+}

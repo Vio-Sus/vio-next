@@ -395,11 +395,12 @@ export async function getServerSideProps(context: any) {
   // console.log(dataUntouched);
 
   const materials = transformedData.reduce(
-    (acc: Set<number>, category: any) => {
+    (acc: Set<string>, category: any) => {
       acc.add(category.material);
+      console.log("something to write here", acc);
       return acc;
     },
-    new Set<number>()
+    new Set<string>()
   );
   console.log("materials", materials);
 

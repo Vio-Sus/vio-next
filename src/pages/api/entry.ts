@@ -32,7 +32,7 @@ export default async function handler(req: any, res: any) {
     case "POST":
       try {
         const sheetData = req.body;
-        // console.log('sheetData: ', sheetData.data)
+        console.log("sheetData: ", sheetData);
 
         let userFromDb = await prisma.user.findUniqueOrThrow({
           where: {
@@ -52,6 +52,7 @@ export default async function handler(req: any, res: any) {
         });
 
         console.log(fileEntry);
+        console.log("SHEET DATA: ", sheetData.data);
 
         const entries = await prisma.entry.createMany({
           data: sheetData.data.map((data: any) => ({
@@ -63,7 +64,6 @@ export default async function handler(req: any, res: any) {
             waste: data.waste,
             date: ExcelDateToJSDate(data.transactionDate),
             entryFileId: fileEntry.id,
-
           })),
         });
 

@@ -59,7 +59,7 @@ export default function App({ chartData, scale }: Props) {
         },
         title: {
           display: true,
-          text: `The unit of mass is: ` + scale,
+          text: `The unit of measurement is Tonnes`,
         },
         scales: {
           y: {
@@ -72,10 +72,8 @@ export default function App({ chartData, scale }: Props) {
         },
       },
     };
-    return options
+    return options;
   }, [scale]);
-
-
 
   return <Bar options={options} data={chartData} />;
 }
