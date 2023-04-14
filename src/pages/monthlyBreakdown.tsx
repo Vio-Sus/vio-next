@@ -191,7 +191,7 @@ export default function Home({
         <div className="content-start m-12">
           <form action="#">
             <div className="flex  flex-col gap-3">
-              <div className="flex mb-12  flex-col mb-12">
+              <div className="flex flex-col mb-12">
                 <label htmlFor="yearOne" className="mt-0">
                   Year One
                 </label>
@@ -214,7 +214,7 @@ export default function Home({
                 </select>
               </div>
 
-              <div className="flex mb-12  flex-col mb-12">
+              <div className="flex  flex-col mb-12">
                 <label htmlFor="yearTwo">Year Two</label>
                 <select
                   className="border-2 border-lime-600"
@@ -235,7 +235,7 @@ export default function Home({
                 </select>
               </div>
 
-              <div className="flex mb-12  flex-col mb-12">
+              <div className="flex   flex-col mb-12">
                 <label htmlFor="materials">Material</label>
                 <select
                   className="border-2 border-lime-600"
@@ -286,7 +286,7 @@ export default function Home({
           <div className="content-start m-12">
             <form action="#">
               <div className="flex  flex-col gap-3">
-                <div className="flex mb-12  flex-col mb-12">
+                <div className="flex flex-col mb-12">
                   <label htmlFor="yearOne" className="mt-0">
                     Year One
                   </label>
@@ -309,7 +309,7 @@ export default function Home({
                   </select>
                 </div>
 
-                <div className="flex mb-12  flex-col mb-12">
+                <div className="flex  flex-col mb-12">
                   <label htmlFor="yearTwo">Year Two</label>
                   <select
                     value={yearTwo}
@@ -330,7 +330,7 @@ export default function Home({
                   </select>
                 </div>
 
-                <div className="flex mb-12  flex-col mb-12">
+                <div className="flex  flex-col mb-12">
                   <label htmlFor="materials">Material</label>
                   <select
                     value={material}

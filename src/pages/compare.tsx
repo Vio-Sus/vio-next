@@ -4,41 +4,46 @@ import { prisma } from "../../server/db/client";
 
 import type { ChartData, Datasets } from "@/types/BarChart";
 
-type data = {
-  id: Number;
-  collaborator: string;
-  created_at: Date;
-  updated_at: Date;
+type entries = {
   weight: Number;
   waste: string;
   date: Date;
-  user_id: String;
-  company_id: Number;
-  site: String;
+};
+
+type FormData = {
+  yearOne: string;
+  yearTwo: string;
+  material: string;
 };
 
 export default function Home({
-  data,
+  entries,
   years,
-  months,
   materials,
 }: {
-  data: data[];
+  entries: entries[];
   years: number[];
   materials: string[];
-  months: string[];
 }) {
-  const [yearOne, setYearOne] = useState<string>("");
-  const [yearTwo, setYearTwo] = useState<string>("");
+  const [yearOne, setYearOne] = useState("");
+  const [yearTwo, setYearTwo] = useState("");
   const [firstYearSum, setFirstYearSum] = useState<number>(0);
   const [secondYearSum, setSecondYearSum] = useState<number>(0);
   const [material, setMaterial] = useState<string[]>(materials);
   const [year, setYear] = useState<number[]>(years);
-  const [formData, setFormData] = useState<any>({});
-  const [showGraph, setShowGraph] = useState<boolean>(false);
-  const [dataState, setDataState] = useState({} as ChartData);
+  const [formData, setFormData] = useState<FormData>({
+    yearOne: "",
+    yearTwo: "",
+    material: "",
+  });
 
-  console.log("YEARS: ", years); // in the browser this logs as an array of strings and i have the type set as number[] (ask sam)
+  const [showGraph, setShowGraph] = useState<boolean>(false);
+  const [dataState, setDataState] = useState<ChartData>({
+    labels: [],
+    datasets: [],
+  });
+
+  // console.log("HERE HERE HERE: ", firstYearSum, secondYearSum);
 
   useEffect(() => {
     setDataState({
@@ -46,7 +51,7 @@ export default function Home({
       datasets: [
         {
           label: "UBCV: " + formData.material,
-          data: [firstYearSum / 100000 / 2, secondYearSum / 100000 / 2], // fix this...
+          data: [firstYearSum / 0.90718, secondYearSum / 0.90718],
           borderColor: "#ddeeef",
           backgroundColor: "#ddeeef",
         },
@@ -54,20 +59,19 @@ export default function Home({
     });
   }, [formData, firstYearSum, secondYearSum]);
 
-  console.log("formData", formData);
-  console.log("dataset", dataState);
-
   const firstYear = useMemo(() => {
-    return data.filter((data: any) => {
-      if (year == formData.yearOne && material == formData.material) {
+    return entries.filter((data: any) => {
+      if (+data.year == +formData.yearOne && data.waste == formData.material) {
+        // console.log("DATA FROM YEAR ONE", data);
         return data;
       }
     });
   }, [formData]);
+  // console.log("FIRST YEAR", firstYear);
 
   const secondYear = useMemo(() => {
-    return data.filter((data: any) => {
-      if (year == formData.yearTwo && material == formData.material) {
+    return entries.filter((data: any) => {
+      if (+data.year == +formData.yearTwo && data.waste == formData.material) {
         return data;
       }
     });
@@ -78,7 +82,6 @@ export default function Home({
     firstYear.forEach((element: any) => {
       sum += element.weight;
     });
-
     setFirstYearSum(sum);
 
     let sum2 = 0;
@@ -92,11 +95,12 @@ export default function Home({
     e.preventDefault();
     console.log(yearOne, yearTwo, material[0]);
     setFormData({
-      yearOne: +yearOne,
-      yearTwo: +yearTwo,
+      yearOne: yearOne,
+      yearTwo: yearTwo,
       material: material[0],
     });
     console.log("formData", formData);
+
     setShowGraph(true);
   };
 
@@ -106,7 +110,7 @@ export default function Home({
         <div className="content-start m-12">
           <form action="#">
             <div className="flex  flex-col gap-3">
-              <div className="flex mb-12  flex-col mb-12">
+              <div className="flex  flex-col mb-12">
                 <label htmlFor="yearOne" className="mt-0">
                   Year One
                 </label>
@@ -129,7 +133,7 @@ export default function Home({
                 </select>
               </div>
 
-              <div className="flex mb-12  flex-col mb-12">
+              <div className="flex   flex-col mb-12">
                 <label htmlFor="yearTwo">Year Two</label>
                 <select
                   className="border-2 border-lime-600"
@@ -150,7 +154,7 @@ export default function Home({
                 </select>
               </div>
 
-              <div className="flex mb-12  flex-col mb-12">
+              <div className="flex  flex-col mb-12">
                 <label htmlFor="materials">Material</label>
                 <select
                   className="border-2 border-lime-600"
@@ -161,7 +165,7 @@ export default function Home({
                   }}
                 >
                   <option value="">Select material</option>
-                  {material.map((material: string) => {
+                  {materials.map((material: string) => {
                     return (
                       <option key={material} value={material}>
                         {material}
@@ -201,7 +205,7 @@ export default function Home({
           <div className="content-start m-12">
             <form action="#">
               <div className="flex  flex-col gap-3">
-                <div className="flex mb-12  flex-col mb-12">
+                <div className="flex   flex-col mb-12">
                   <label htmlFor="yearOne" className="mt-0">
                     Year One
                   </label>
@@ -224,7 +228,7 @@ export default function Home({
                   </select>
                 </div>
 
-                <div className="flex mb-12  flex-col mb-12">
+                <div className="flex   flex-col mb-12">
                   <label htmlFor="yearTwo">Year Two</label>
                   <select
                     value={yearTwo}
@@ -245,7 +249,7 @@ export default function Home({
                   </select>
                 </div>
 
-                <div className="flex mb-12  flex-col mb-12">
+                <div className="flex  flex-col mb-12">
                   <label htmlFor="materials">Material</label>
                   <select
                     value={material}
@@ -256,14 +260,7 @@ export default function Home({
                       setMaterial([e.target.value]);
                     }}
                   >
-                    {[
-                      "Containers",
-                      "Mixed Paper",
-                      "Office Paper",
-                      "Refuse (ICI Waste)",
-                      "Corrugated Cardboard",
-                      "Transfer Station Landfill Garbage",
-                    ].map((material: string) => {
+                    {materials.map((material: string) => {
                       return (
                         <option key={material} value={material}>
                           {material}
@@ -293,75 +290,33 @@ export default function Home({
 }
 
 export async function getServerSideProps(context: any) {
-  const allEntries = await prisma.entry.findMany({});
-
-  // console.log(allEntries)
-
-  let transformedData: any = [];
-  allEntries.map((m) => {
-    const year = new Date(m.date).getFullYear().toString();
-    Object.keys(m).forEach((key) => {
-      // console.log(key)
-      if (key !== "Date") {
-        const material = m.waste;
-        const weight = m.weight * 1000;
-        transformedData.push({ year, material, weight });
-      }
-    });
+  const entriesRaw = await prisma.entry.findMany({});
+  const entries = entriesRaw.map((entry: any) => {
+    return {
+      date: entry.date.toISOString(),
+      waste: entry.waste,
+      weight: entry.weight,
+      year: new Date(entry.date).getFullYear(),
+    };
   });
-  // console.log(transformedData);
 
-  let dataUntouched: (string | number | any)[] = [];
-  allEntries.map((m) => {
-    const month = new Date(m.date).getUTCMonth().toString();
-    const year = new Date(m.date).getFullYear().toString();
-    Object.keys(m).forEach((key) => {
-      // if (m[key] == "NA") m[key] = 0;
-      if (key !== "Date") {
-        const material = m.waste;
-        const weight: number | string = m.weight * 1000;
-        const monthName: string = new Date(
-          2000,
-          parseInt(month)
-        ).toLocaleString("default", { month: "long" });
-        // console.log(monthName, material, weight, year)
-        dataUntouched.push({ year, monthName, material, weight });
-      }
-    });
+  // get unique years
+  const years = entries.map((entry: any) => {
+    return new Date(entry.date).getFullYear();
   });
-  // console.log(dataUntouched);
+  const year = [...new Set(years)];
 
-  const materials = transformedData.reduce(
-    (acc: Set<number>, category: any) => {
-      acc.add(category.material);
-      return acc;
-    },
-    new Set<number>()
-  );
-  console.log("materials", materials);
-
-  const years = transformedData.reduce((acc: Set<number>, category: any) => {
-    acc.add(category.year);
-    return acc;
-  }, new Set<number>());
-  console.log("years", years);
-
-  const months = dataUntouched.reduce((acc: Set<number>, category: any) => {
-    acc.add(category.monthName);
-    return acc;
-  }, new Set<number>());
-
-  console.log("months", months);
-  console.log("dataUntouched", dataUntouched);
-  console.log("transformedData", transformedData);
+  // get unique materials
+  const materials = entries.map((entry: any) => {
+    return entry.waste;
+  });
+  const material = [...new Set(materials)];
 
   return {
     props: {
-      data: dataUntouched,
-      // data: transformedData,
-      years: Array.from(years),
-      months: Array.from(months),
-      materials: Array.from(materials),
+      entries,
+      years: Array.from(year),
+      materials: Array.from(material),
     },
   };
 }

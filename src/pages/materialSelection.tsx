@@ -173,7 +173,7 @@ export default function Home({
         <div className="content-start m-12">
           <form action="#">
             <div className="flex  flex-col gap-3">
-              <div className="flex mb-12  flex-col mb-12">
+              <div className="flex  flex-col mb-12">
                 <label htmlFor="yearOne" className="mt-0">
                   Pick year
                 </label>
@@ -196,7 +196,7 @@ export default function Home({
                 </select>
               </div>
 
-              <div className="flex mb-12  flex-col mb-12">
+              <div className="flex  flex-col mb-12">
                 <span>Material</span>
                 {material.map((material: string) => (
                   <div key={material} className="flex items-center">

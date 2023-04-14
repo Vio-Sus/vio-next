@@ -187,7 +187,7 @@ export default function Home({
         <div className="content-start m-12">
           <form action="#">
             <div className="flex  flex-col gap-3">
-              <div className="flex mb-12  flex-col mb-12">
+              <div className="flex  flex-col mb-12">
                 <label htmlFor="yearOne" className="mt-0">
                   Year One
                 </label>
@@ -210,7 +210,7 @@ export default function Home({
                 </select>
               </div>
 
-              <div className="flex mb-12  flex-col mb-12">
+              <div className="flex  flex-col mb-12">
                 <label htmlFor="yearTwo">Year Two</label>
                 <select
                   className="border-2 border-lime-600"
@@ -231,7 +231,7 @@ export default function Home({
                 </select>
               </div>
 
-              <div className="flex mb-12  flex-col mb-12">
+              <div className="flex  flex-col mb-12">
                 <span>Material</span>
                 {material.map((material: string) => (
                   <div key={material} className="flex items-center">
@@ -279,7 +279,7 @@ export default function Home({
           <div className="content-start m-12">
             <form action="#">
               <div className="flex  flex-col gap-3">
-                <div className="flex mb-12  flex-col mb-12">
+                <div className="flex  flex-col mb-12">
                   <label htmlFor="yearOne" className="mt-0">
                     Year One
                   </label>
@@ -302,7 +302,7 @@ export default function Home({
                   </select>
                 </div>
 
-                <div className="flex mb-12  flex-col mb-12">
+                <div className="flex   flex-col mb-12">
                   <label htmlFor="yearTwo" className="mt-0">
                     Pick second year
                   </label>
@@ -324,7 +324,7 @@ export default function Home({
                   </select>
                 </div>
 
-                <div className="flex mb-12  flex-col mb-12">
+                <div className="flex   flex-col mb-12">
                   <span>Material</span>
                   {material.map((material: string) => (
                     <div key={material} className="flex items-center">

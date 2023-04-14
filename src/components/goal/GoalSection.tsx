@@ -16,6 +16,12 @@ export default function GoalSection({
   children,
   imgSrc,
 }: Props) {
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const handleClick = () => {
+    setIsLoading(true);
+  };
+
   return (
     <div className="border-2 gray rounded w-96 h-96 flex flex-col">
       <div className="flex justify-center">
@@ -30,10 +36,7 @@ export default function GoalSection({
 
       <section className="mt-auto pt-4">
         <div className="flex justify-center pb-2">
-          <RedirectButton
-            onClick={() => console.log("clicked")}
-            redirect={redirect}
-          >
+          <RedirectButton onClick={handleClick} redirect={redirect}>
             Render Graph
           </RedirectButton>
         </div>
