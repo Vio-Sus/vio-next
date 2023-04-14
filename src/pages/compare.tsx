@@ -51,7 +51,7 @@ export default function Home({
       datasets: [
         {
           label: "UBCV: " + formData.material,
-          data: [firstYearSum / 0.90718, secondYearSum / 0.90718],
+          data: [firstYearSum, secondYearSum], // / 0.90718
           borderColor: "#ddeeef",
           backgroundColor: "#ddeeef",
         },

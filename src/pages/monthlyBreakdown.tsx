@@ -7,17 +7,10 @@ import { json } from "stream/consumers";
 
 import type { ChartData, Datasets } from "@/types/LineChart";
 
-type data = {
-  id: Number;
-  collaborator: string;
-  created_at: Date;
-  updated_at: Date;
+type entries = {
   weight: Number;
   waste: string;
   date: Date;
-  user_id: String;
-  company_id: Number;
-  site: String;
 };
 
 type FormData = {
@@ -27,15 +20,13 @@ type FormData = {
 };
 
 export default function Home({
-  data,
+  entries,
   years,
-  // months,
   materials,
 }: {
-  data: data[];
+  entries: entries[];
   years: number[];
   materials: string[];
-  months: string[];
 }) {
   const [yearOne, setYearOne] = useState("");
   const [yearTwo, setYearTwo] = useState("");
@@ -119,59 +110,62 @@ export default function Home({
   }, [formData, firstYearTotals, secondYearTotals]);
 
   useEffect(() => {
+    console.log("MADE IT HERE 2");
     // this useEffect is kinda ugly and im repeating myself and i kinda only wanna do the logic once but i dont know how to do that right now...
     console.log("FORM DATA: ", formData);
     let firstMonthlyTotals: any = {
-      January: 0,
-      February: 0,
-      March: 0,
-      April: 0,
-      May: 0,
-      June: 0,
-      July: 0,
-      August: 0,
-      September: 0,
-      October: 0,
-      November: 0,
-      December: 0,
+      "01": 0,
+      "02": 0,
+      "03": 0,
+      "04": 0,
+      "05": 0,
+      "06": 0,
+      "07": 0,
+      "08": 0,
+      "09": 0,
+      "10": 0,
+      "11": 0,
+      "12": 0,
     };
 
-    data.map((m: any) => {
-      if (m.year == year && m.material == material) {
-        let month = m.monthName;
+    entries.map((m: any) => {
+      if (m.year == formData.yearOne && m.waste == formData.material) {
+        let month = m.month;
         let weight = m.weight;
-        if (weight !== "NA" || weight < 0) {
-          firstMonthlyTotals[month] += m.weight / 10000; // convert to tonnes
+        if (weight > 0) {
+          firstMonthlyTotals[month] += weight; // / 10000; // convert to tonnes
         }
       }
     });
     setFirstYearTotals(firstMonthlyTotals);
+    console.log("FIRST MONTHLY TOTALS: ", firstMonthlyTotals);
 
     let secondMonthlyTotals: any = {
-      January: 0,
-      February: 0,
-      March: 0,
-      April: 0,
-      May: 0,
-      June: 0,
-      July: 0,
-      August: 0,
-      September: 0,
-      October: 0,
-      November: 0,
-      December: 0,
+      "01": 0,
+      "02": 0,
+      "03": 0,
+      "04": 0,
+      "05": 0,
+      "06": 0,
+      "07": 0,
+      "08": 0,
+      "09": 0,
+      "10": 0,
+      "11": 0,
+      "12": 0,
     };
 
-    data.map((m: any) => {
-      if (m.year == year && m.material == material) {
-        let month = m.monthName;
+    entries.map((m: any) => {
+      if (m.year == formData.yearTwo && m.waste == formData.material) {
+        let month = m.month;
         let weight = m.weight;
-        if (weight !== "NA" || weight < 0) {
-          secondMonthlyTotals[month] += m.weight / 10000; // convert to tonnes
+        if (weight > 0) {
+          secondMonthlyTotals[month] += weight; // / 10000; // convert to tonnes
         }
       }
     });
     setSecondYearTotals(secondMonthlyTotals);
+    console.log("FIRST MONTHLY TOTALS: ", firstMonthlyTotals);
   }, [formData]);
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -369,76 +363,37 @@ export default function Home({
     </>
   );
 }
+
 export async function getServerSideProps(context: any) {
-  const allEntries = await prisma.entry.findMany({});
-
-  // console.log(allEntries)
-
-  let transformedData: any = [];
-  allEntries.map((m) => {
-    const year = new Date(m.date).getFullYear().toString();
-    Object.keys(m).forEach((key) => {
-      // console.log(key)
-      if (key !== "Date") {
-        const material = m.waste;
-        const weight = m.weight * 1000;
-        transformedData.push({ year, material, weight });
-      }
-    });
+  const entriesRaw = await prisma.entry.findMany({});
+  const entries = entriesRaw.map((entry: any) => {
+    return {
+      date: entry.date.toISOString(),
+      waste: entry.waste,
+      weight: entry.weight,
+      year: new Date(entry.date).getFullYear(),
+      month: entry.date.toISOString().substring(5, 7),
+    };
   });
-  // console.log(transformedData);
+  // console.log(entries);
 
-  let dataUntouched: (string | number | any)[] = [];
-  allEntries.map((m) => {
-    const month = new Date(m.date).getUTCMonth().toString();
-    const year = new Date(m.date).getFullYear().toString();
-    Object.keys(m).forEach((key) => {
-      // if (m[key] == "NA") m[key] = 0;
-      if (key !== "Date") {
-        const material = m.waste;
-        const weight: number | string = m.weight * 1000;
-        const monthName: string = new Date(
-          2000,
-          parseInt(month)
-        ).toLocaleString("default", { month: "long" });
-        // console.log(monthName, material, weight, year)
-        dataUntouched.push({ year, monthName, material, weight });
-      }
-    });
+  // get unique years
+  const years = entries.map((entry: any) => {
+    return new Date(entry.date).getFullYear();
   });
-  // console.log(dataUntouched);
+  const year = [...new Set(years)];
 
-  const materials = transformedData.reduce(
-    (acc: Set<number>, category: any) => {
-      acc.add(category.material);
-      return acc;
-    },
-    new Set<number>()
-  );
-  console.log("materials", materials);
-
-  const years = transformedData.reduce((acc: Set<number>, category: any) => {
-    acc.add(category.year);
-    return acc;
-  }, new Set<number>());
-  console.log("years", years);
-
-  const months = dataUntouched.reduce((acc: Set<number>, category: any) => {
-    acc.add(category.monthName);
-    return acc;
-  }, new Set<number>());
-
-  console.log("months", months);
-  console.log("dataUntouched", dataUntouched);
-  console.log("transformedData", transformedData);
+  // get unique materials
+  const materials = entries.map((entry: any) => {
+    return entry.waste;
+  });
+  const material = [...new Set(materials)];
 
   return {
     props: {
-      data: dataUntouched,
-      // data: transformedData,
-      years: Array.from(years),
-      months: Array.from(months),
-      materials: Array.from(materials),
+      entries,
+      years: Array.from(year),
+      materials: Array.from(material),
     },
   };
 }

@@ -305,56 +305,6 @@ export default function Home({
   );
 }
 
-// export async function getServerSideProps(context: any) {
-//   const allEntries = await prisma.entry.findMany({});
-
-//   let material: string[] = [];
-//   allEntries.map((m) => {
-//     if (!material.includes(m.waste)) {
-//       material.push(m.waste);
-//     }
-//   });
-//   let uniqueMaterial: string[] = [];
-
-//   for (let item of material) {
-//     for (let item2 of material) {
-//       if (item === item2) {
-//         continue;
-//       }
-//       if (item === item2.replace(/\s/g, "")) {
-//         // word 1 is word 2 without spaces
-//         // word 1 is cardboard and word2 is card board
-//         // word 2 is probably correct and word 1 probably needs to be replaced by 2
-
-//         // replace that word with the correct one -- unsure about this
-//         uniqueMaterial.push(item2);
-//       }
-//     }
-//   }
-
-//   console.log("material", material);
-//   console.log("uniqueMaterial", uniqueMaterial);
-//   // material [
-//   //   'Mixed Paper',
-//   //   'Mixed Container',
-//   //   'Corrugated Container',
-//   //   'Unsorted Office Paper',
-//   //   'MixedContainers',
-//   //   'CorrugatedContainers',
-//   //   'Mixed Containers',
-//   //   'Corrugated Containers',
-//   //   'ICI Waste'
-//   // ]
-
-//   // console.log(allEntries);
-
-//   return {
-//     props: {
-//       // allEntries,
-//     },
-//   };
-// }
-
 export async function getServerSideProps(context: any) {
   const allEntries = await prisma.entry.findMany({});
 
