@@ -1,0 +1,23 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-vionext-dev-11334-authRole",
+      "UnauthRoleArn": "arn:aws:iam::144547088334:role/amplify-vionext-dev-11334-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::144547088334:role/amplify-vionext-dev-11334-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-vionext-dev-11334-deployment",
+      "UnauthRoleName": "amplify-vionext-dev-11334-unauthRole",
+      "StackName": "amplify-vionext-dev-11334",
+      "StackId": "arn:aws:cloudformation:us-west-2:144547088334:stack/amplify-vionext-dev-11334/e8796990-e277-11ed-8942-0653cff26b29",
+      "AmplifyAppId": "dfj408k4kfw2p"
+    },
+    "categories": {
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "dfj408k4kfw2p",
+          "type": "cicd"
+        }
+      }
+    }
+  }
+}
